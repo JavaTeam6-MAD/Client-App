@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.SVGPath?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.mycompany.clientxo.AuthScreenController"
+            styleClass="root-container" stylesheets="@styles.css"
+            prefWidth="640" prefHeight="600">
+    
+    <!-- Back Button - Top Left -->
+    <Button fx:id="btnBack" onAction="#onBack" 
+            styleClass="back-button"
+            AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20">
+        <graphic>
+            <HBox alignment="CENTER" spacing="8">
+                <SVGPath content="M15 18l-6-6 6-6" styleClass="back-icon"/>
+                <Label text="Back" styleClass="back-label"/>
+            </HBox>
+        </graphic>
+    </Button>
+    
+    <!-- Main Content - Centered -->
+    <VBox alignment="CENTER" spacing="30" 
+          AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" 
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <padding>
+            <Insets top="60" right="40" bottom="40" left="40"/>
+        </padding>
+        
+        <!-- Game Title Section -->
+        <VBox alignment="CENTER" spacing="10" styleClass="title-section">
+            <Label text="XO" styleClass="game-title"/>
+            <Label text="Tic Tac Toe" styleClass="game-subtitle"/>
+        </VBox>
+        
+        <!-- Network Play Header -->
+        <VBox alignment="CENTER" spacing="8">
+            <Label fx:id="lblHeader" text="Network Play" styleClass="auth-header"/>
+            <Label fx:id="lblSubheader" text="Sign in to play online" styleClass="auth-subheader"/>
+        </VBox>
+        
+        <!-- Auth Form Card -->
+        <VBox alignment="CENTER" spacing="20" styleClass="game-card" maxWidth="380">
+            <padding>
+                <Insets top="32" right="32" bottom="32" left="32"/>
+            </padding>
+            
+            <!-- Username Field -->
+            <VBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="Username" styleClass="input-label"/>
+                <HBox styleClass="input-container" alignment="CENTER_LEFT">
+                    <SVGPath content="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" 
+                             styleClass="input-icon"/>
+                    <TextField fx:id="txtUsername" promptText="Enter your username" 
+                               styleClass="auth-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+            
+            <!-- Password Field -->
+            <VBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="Password" styleClass="input-label"/>
+                <HBox styleClass="input-container" alignment="CENTER_LEFT">
+                    <SVGPath content="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" 
+                             styleClass="input-icon"/>
+                    <PasswordField fx:id="txtPassword" promptText="Enter your password" 
+                                   styleClass="auth-input" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+            
+            <!-- Record Game Checkbox -->
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="checkbox-container">
+                <CheckBox fx:id="chkRecordGame" styleClass="auth-checkbox"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <SVGPath content="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" 
+                             styleClass="checkbox-icon"/>
+                    <Label text="Record game" styleClass="checkbox-label"/>
+                </HBox>
+            </HBox>
+            
+            <!-- Submit Button -->
+            <Button fx:id="btnSubmit" onAction="#onSubmit" 
+                    styleClass="game-button, game-button-primary"
+                    maxWidth="Infinity" text="Login"/>
+            
+            <!-- Toggle Auth Mode -->
+            <Button fx:id="btnToggleMode" onAction="#onToggleMode" 
+                    styleClass="link-button"
+                    text="Don't have an account? Register"/>
+        </VBox>
+    </VBox>
+</AnchorPane>
