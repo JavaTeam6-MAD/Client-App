@@ -37,6 +37,8 @@ public class LobbyScreenController implements Initializable {
     private String pendingChallengeId = null;
     @FXML
     private Button btnBack;
+    @FXML
+    private javafx.scene.control.CheckBox chkRecordGame;
 
     // Data Models
     public static class Player {
@@ -164,7 +166,9 @@ public class LobbyScreenController implements Initializable {
                         alert.setHeaderText(player.name + " accepted your challenge!");
                         alert.setContentText("Starting game...");
                         alert.showAndWait();
-                        // TODO: Navigate to Game Screen
+                        // T0DO: Navigate to Game Screen
+                        boolean isRecording = chkRecordGame.isSelected();
+                        System.out.println("Starting Game (Client Initiated). Recording Enabled: " + isRecording);
                     }
                 });
             } catch (InterruptedException e) {
@@ -188,6 +192,8 @@ public class LobbyScreenController implements Initializable {
             if (type == acceptBtn) {
                 // Start Game
                 System.out.println("Challenge accepted");
+                boolean isRecording = chkRecordGame.isSelected();
+                System.out.println("Starting Game (Client Accepted). Recording Enabled: " + isRecording);
             } else {
                 System.out.println("Challenge rejected");
             }
