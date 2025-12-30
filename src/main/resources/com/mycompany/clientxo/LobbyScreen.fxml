@@ -16,14 +16,7 @@
     </padding>
 
     <!-- Back Button (Top Left) -->
-    <Button fx:id="btnBack" onAction="#onBack" styleClass="back-button" StackPane.alignment="TOP_LEFT">
-        <graphic>
-            <HBox alignment="CENTER_LEFT" spacing="8">
-                <SVGPath content="M19 12H5M12 19l-7-7 7-7" styleClass="back-icon" />
-                <Label styleClass="back-label" text="Back" />
-            </HBox>
-        </graphic>
-    </Button>
+
 
     <!-- User Menu (Top Right) -->
     <HBox alignment="CENTER_RIGHT" spacing="10" StackPane.alignment="TOP_RIGHT">
@@ -85,4 +78,13 @@
         </VBox>
     </VBox>
 
+    <!-- Back Button (Top Left) -->
+    <Button fx:id="btnBack" onAction="#onBack" styleClass="back-button" StackPane.alignment="TOP_LEFT">
+        <graphic>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <SVGPath content="M19 12H5M12 19l-7-7 7-7" styleClass="back-icon" />
+                <Label styleClass="back-label" text="Back" />
+            </HBox>
+        </graphic>
+    </Button>
 </StackPane>
