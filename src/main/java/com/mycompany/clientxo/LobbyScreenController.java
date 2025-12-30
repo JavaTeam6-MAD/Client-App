@@ -37,8 +37,6 @@ public class LobbyScreenController implements Initializable {
     private String pendingChallengeId = null;
     @FXML
     private Button btnBack;
-    @FXML
-    private javafx.scene.control.CheckBox chkRecordGame;
 
     // Data Models
     public static class Player {
@@ -161,13 +159,14 @@ public class LobbyScreenController implements Initializable {
                     updatePlayerList();
 
                     if (accepted) {
+                        javafx.scene.control.CheckBox chkRecord = new javafx.scene.control.CheckBox("Record Game");
                         Alert alert = new Alert(AlertType.INFORMATION);
                         alert.setTitle("Challenge Accepted");
                         alert.setHeaderText(player.name + " accepted your challenge!");
-                        alert.setContentText("Starting game...");
+                        alert.getDialogPane().setContent(chkRecord);
                         alert.showAndWait();
                         // T0DO: Navigate to Game Screen
-                        boolean isRecording = chkRecordGame.isSelected();
+                        boolean isRecording = chkRecord.isSelected();
                         System.out.println("Starting Game (Client Initiated). Recording Enabled: " + isRecording);
                     }
                 });
@@ -181,7 +180,9 @@ public class LobbyScreenController implements Initializable {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Challenge Received");
         alert.setHeaderText(challenger.name + " wants to play!");
-        alert.setContentText("Do you accept?");
+
+        javafx.scene.control.CheckBox chkRecord = new javafx.scene.control.CheckBox("Record Game");
+        alert.getDialogPane().setContent(chkRecord);
 
         ButtonType acceptBtn = new ButtonType("Accept");
         ButtonType rejectBtn = new ButtonType("Reject");
@@ -192,7 +193,7 @@ public class LobbyScreenController implements Initializable {
             if (type == acceptBtn) {
                 // Start Game
                 System.out.println("Challenge accepted");
-                boolean isRecording = chkRecordGame.isSelected();
+                boolean isRecording = chkRecord.isSelected();
                 System.out.println("Starting Game (Client Accepted). Recording Enabled: " + isRecording);
             } else {
                 System.out.println("Challenge rejected");
