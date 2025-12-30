@@ -51,7 +51,6 @@ public class HomeScreenController {
     @FXML
     private void onPlayNetworkMultiplayer() throws IOException {
         System.out.println("Network Multiplayer clicked!");
-        // TODO: Implement network multiplayer authentication
-        System.out.println("Network Multiplayer - Coming Soon!");
+        App.setRoot("auth");
     }
 }
