@@ -1,16 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientxo.PrimaryController">
-   <children>
-      <Label text="Primary View" />
-      <Button fx:id="primaryButton" text="Switch to Secondary View" onAction="#switchToSecondary"/>
-   </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.clientxo.HomeScreenController"
+           styleClass="root-container"
+           stylesheets="@styles.css">
+
+    <!-- Main Content Container -->
+    <VBox alignment="CENTER" spacing="30" maxWidth="400">
+        <padding>
+            <Insets bottom="40" left="40" right="40" top="40" />
+        </padding>
+
+        <!-- Title Section -->
+        <VBox alignment="CENTER" spacing="8" styleClass="title-section">
+            <Label text="XO" styleClass="game-title" />
+            <Label text="Tic Tac Toe" styleClass="game-subtitle" />
+        </VBox>
+
+        <!-- Game Card with Buttons -->
+        <VBox alignment="CENTER" spacing="16" styleClass="game-card">
+            <padding>
+                <Insets bottom="32" left="32" right="32" top="32" />
+            </padding>
+
+            <!-- Play vs Computer Button -->
+            <Button fx:id="btnPlayVsComputer" 
+                    onAction="#onPlayVsComputer" 
+                    styleClass="game-button, game-button-primary"
+                    prefWidth="280" maxWidth="Infinity">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="10">
+                        <SVGPath content="M4 2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6l-4 4v-4H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M8 10h8 M12 6v8" 
+                                 styleClass="button-icon" />
+                        <Label text="Play vs Computer" styleClass="button-label" />
+                    </HBox>
+                </graphic>
+            </Button>
+
+            <!-- Local Multiplayer Button -->
+            <Button fx:id="btnLocalMultiplayer" 
+                    onAction="#onPlayLocalMultiplayer" 
+                    styleClass="game-button, game-button-secondary"
+                    prefWidth="280" maxWidth="Infinity">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="10">
+                        <SVGPath content="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75" 
+                                 styleClass="button-icon" />
+                        <Label text="Local Multiplayer" styleClass="button-label" />
+                    </HBox>
+                </graphic>
+            </Button>
+
+            <!-- Network Multiplayer Button -->
+            <Button fx:id="btnNetworkMultiplayer" 
+                    onAction="#onPlayNetworkMultiplayer" 
+                    styleClass="game-button, game-button-outline"
+                    prefWidth="280" maxWidth="Infinity">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="10">
+                        <SVGPath content="M12 20h.01 M5 12.859a10 10 0 0 1 14 0 M8.5 16.429a5 5 0 0 1 7 0" 
+                                 styleClass="button-icon" />
+                        <Label text="Network Multiplayer" styleClass="button-label" />
+                    </HBox>
+                </graphic>
+            </Button>
+        </VBox>
+
+        <!-- Footer Text -->
+        <Label text="Choose your game mode to start playing" styleClass="footer-text" />
+    </VBox>
+</StackPane>
