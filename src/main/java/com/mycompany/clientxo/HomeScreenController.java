@@ -29,8 +29,7 @@ public class HomeScreenController {
     @FXML
     private void onPlayVsComputer() throws IOException {
         System.out.println("Play vs Computer clicked!");
-        // TODO: Navigate to computer game screen
-        // App.setRoot("gameScreen");
+        App.setRoot("difficulty");
     }
 
     /**
