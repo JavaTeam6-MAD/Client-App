@@ -1,146 +1,39 @@
-/* XO Game - Modern Dark Theme Styles */
+/* XO Game - Cyberpunk/Neon Theme */
 
-/* Root Container - Gradient Hero Background */
+/* Root Container - Dark Grid Background */
 .root-container {
-    -fx-background-color: linear-gradient(to bottom right, #1a1a2e, #16213e, #0f3460);
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        #050510;
+    /* Very dark blue/black base */
+    -fx-background-size: 40px 40px, 40px 40px, cover;
+    -fx-background-repeat: repeat, repeat, no-repeat;
     -fx-min-width: 640;
     -fx-min-height: 480;
 }
 
-/* Title Section */
-.title-section {
-    -fx-padding: 20 0 20 0;
-}
-
+/* Typography */
 .game-title {
-    -fx-font-size: 72px;
+    -fx-text-fill: white;
+    -fx-font-family: 'Segoe UI', sans-serif;
     -fx-font-weight: bold;
-    -fx-text-fill: linear-gradient(to right, #e94560, #ff6b6b);
-    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.5), 20, 0.3, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 10, 0, 0, 0);
 }
 
 .game-subtitle {
-    -fx-font-size: 24px;
-    -fx-font-weight: normal;
-    -fx-text-fill: #a0a0a0;
-    -fx-font-style: italic;
+    -fx-text-fill: #9ca3af;
+    -fx-font-family: 'Segoe UI', sans-serif;
 }
 
-/* Game Card */
+/* Card / Panels */
 .game-card {
-    -fx-background-color: rgba(255, 255, 255, 0.05);
-    -fx-background-radius: 20;
+    -fx-background-color: rgba(15, 18, 33, 0.8);
+    -fx-background-radius: 16;
     -fx-border-color: rgba(255, 255, 255, 0.1);
-    -fx-border-radius: 20;
+    -fx-border-radius: 16;
     -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 0, 10);
 }
-
-/* Base Button Styles */
-.game-button {
-    -fx-min-height: 56px;
-    -fx-pref-height: 56px;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-cursor: hand;
-    -fx-padding: 12 24 12 24;
-}
-
-/* Primary Button - Gradient Pink/Red */
-.game-button-primary {
-    -fx-background-color: linear-gradient(to right, #e94560, #ff6b6b);
-    -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 15, 0, 0, 5);
-}
-
-.game-button-primary:hover {
-    -fx-background-color: linear-gradient(to right, #ff6b6b, #e94560);
-    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.6), 20, 0, 0, 8);
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
-}
-
-.game-button-primary:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-/* Secondary Button - Gradient Purple/Blue */
-.game-button-secondary {
-    -fx-background-color: linear-gradient(to right, #7c3aed, #a855f7);
-    -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.4), 15, 0, 0, 5);
-}
-
-.game-button-secondary:hover {
-    -fx-background-color: linear-gradient(to right, #a855f7, #7c3aed);
-    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.6), 20, 0, 0, 8);
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
-}
-
-.game-button-secondary:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-/* Outline Button - Transparent with Border */
-.game-button-outline {
-    -fx-background-color: transparent;
-    -fx-border-color: linear-gradient(to right, #22d3ee, #06b6d4);
-    -fx-border-width: 2;
-    -fx-text-fill: #22d3ee;
-}
-
-.game-button-outline:hover {
-    -fx-background-color: rgba(34, 211, 238, 0.1);
-    -fx-border-color: #06b6d4;
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
-}
-
-.game-button-outline:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-/* Button Label and Icon */
-.button-label {
-    -fx-text-fill: inherit;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-.game-button-primary .button-label,
-.game-button-secondary .button-label {
-    -fx-text-fill: white;
-}
-
-.game-button-outline .button-label {
-    -fx-text-fill: #22d3ee;
-}
-
-.button-icon {
-    -fx-fill: white;
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
-}
-
-.game-button-outline .button-icon {
-    -fx-fill: #22d3ee;
-}
-
-/* Footer Text */
-.footer-text {
-    -fx-font-size: 14px;
-    -fx-text-fill: #6b7280;
-}
-
-/* ============================================ */
-/* Auth Screen Styles                          */
-/* ============================================ */
 
 /* Back Button */
 .back-button {
@@ -152,7 +45,7 @@
 }
 
 .back-button:hover {
-    -fx-text-fill: #e94560;
+    -fx-text-fill: #ffffff;
 }
 
 .back-icon {
@@ -162,168 +55,379 @@
 }
 
 .back-button:hover .back-icon {
-    -fx-fill: #e94560;
+    -fx-fill: #ffffff;
 }
 
 .back-label {
     -fx-text-fill: #6b7280;
     -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Segoe UI', sans-serif;
 }
 
 .back-button:hover .back-label {
-    -fx-text-fill: #e94560;
-}
-
-/* Auth Headers */
-.auth-header {
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
 }
 
-.auth-subheader {
-    -fx-font-size: 16px;
-    -fx-text-fill: #6b7280;
+/* Score Board HUD */
+.score-board {
+    -fx-background-color: #0F1221;
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    /* Outer glow for HUD feel */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0, 0, 5);
 }
 
-/* Input Fields */
-.input-label {
+.score-label {
+    -fx-text-fill: #8F9BB3;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #ffffff;
+    -fx-font-family: 'Segoe UI', sans-serif;
 }
 
+.score-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.score-value-x {
+    -fx-text-fill: #00FFFF;
+    /* Cyan */
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.6), 10, 0, 0, 0);
+}
+
+.score-value-o {
+    -fx-text-fill: #C000FF;
+    /* Purple */
+    -fx-effect: dropshadow(gaussian, rgba(192, 0, 255, 0.6), 10, 0, 0, 0);
+}
+
+.vs-text {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 20px;
+    -fx-opacity: 0.8;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* Status Text */
+.status-text {
+    -fx-font-size: 24px;
+    -fx-text-fill: #00FFFF;
+    /* Default to Cyan for "You Win" style */
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.4), 10, 0, 0, 0);
+}
+
+.status-text-normal {
+    -fx-text-fill: #ffffff;
+    -fx-effect: none;
+}
+
+/* Grid Container */
+.game-grid-container {
+    -fx-alignment: center;
+}
+
+/* Grid Cells (Buttons) */
+.grid-cell {
+    -fx-background-color: #0F1221;
+    -fx-background-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+    /* We remove font-size here as we are using SVGs, but keep it for fallback */
+    -fx-cursor: hand;
+    -fx-min-width: 100px;
+    -fx-min-height: 100px;
+    -fx-pref-width: 100px;
+    -fx-pref-height: 100px;
+    -fx-alignment: center;
+}
+
+.grid-cell:hover {
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-background-color: #161B2E;
+}
+
+/* SVG Icon Styles */
+.icon-x {
+    -fx-stroke: #00FFFF;
+    -fx-stroke-width: 8;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+    /* Lines only for X */
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 15, 0, 0, 0);
+}
+
+.icon-o {
+    -fx-stroke: #C000FF;
+    /* Purple/Magenta */
+    -fx-stroke-width: 8;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+    /* Circle outline */
+    -fx-effect: dropshadow(gaussian, rgba(208, 0, 255, 0.8), 15, 0, 0, 0);
+}
+
+/* Winning Line Highlight */
+.winning-cell {
+    -fx-border-color: #00FFFF;
+    -fx-border-width: 2;
+    -fx-background-color: rgba(0, 255, 255, 0.1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 20, 0, 0, 0);
+}
+
+/* General Buttons */
+/* General Buttons */
+.game-button {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-padding: 14 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 4);
+    -fx-font-size: 16px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.game-button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.game-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Play vs Computer (Red/Pink Gradient) */
+.game-button-primary {
+    -fx-background-color: linear-gradient(to right, #ff5f6d, #ffc371);
+    /* Fallback */
+    -fx-background-color: linear-gradient(to right, #F85768, #FE7958);
+    /* Match Image */
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.4), 15, 0, 0, 5);
+}
+
+.game-button-primary:hover {
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.6), 20, 0, 0, 8);
+}
+
+/* Local Multiplayer (Purple Gradient) */
+.game-button-secondary {
+    -fx-background-color: linear-gradient(to right, #8a2be2, #da70d6);
+    /* Fallback */
+    -fx-background-color: linear-gradient(to right, #7D51FE, #A857FE);
+    /* Match Image */
+    -fx-effect: dropshadow(gaussian, rgba(125, 81, 254, 0.4), 15, 0, 0, 5);
+    -fx-text-fill: white;
+}
+
+.game-button-secondary:hover {
+    -fx-background-color: linear-gradient(to right, #8D65FE, #B66AFE);
+    -fx-effect: dropshadow(gaussian, rgba(125, 81, 254, 0.6), 20, 0, 0, 8);
+}
+
+/* Network (Cyber/Blue Outline or Dark) */
+.game-button-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #00E5FF;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+    -fx-text-fill: #00E5FF;
+}
+
+.game-button-outline:hover {
+    -fx-background-color: rgba(0, 229, 255, 0.1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.4), 15, 0, 0, 0);
+}
+
+.game-button-outline .button-icon {
+    -fx-fill: #00E5FF;
+}
+
+/* Play Again Button - Enhanced */
+.play-again-button {
+    -fx-background-color: linear-gradient(to right, #00C853, #69F0AE);
+    /* Neon Green Gradient */
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-background-radius: 30;
+    -fx-padding: 12 30;
+    -fx-effect: dropshadow(gaussian, rgba(105, 240, 174, 0.6), 15, 0, 0, 5);
+    -fx-cursor: hand;
+}
+
+.play-again-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(105, 240, 174, 0.8), 20, 0, 0, 8);
+}
+
+.play-again-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Alert / Dialog Styling */
+.dialog-pane {
+    -fx-background-color: #0F1221;
+    -fx-border-color: #e94560;
+    -fx-border-width: 2;
+}
+
+.dialog-pane>.content.label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-background-color: #161B2E;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-text-fill: #e94560;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color: #ff5e78;
+}
+
+.player-item {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 12;
+}
+
+.player-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+.player-name {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.player-score {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+}
+
+.player-avatar {
+    -fx-background-color: rgba(233, 69, 96, 0.2);
+    -fx-background-radius: 50%;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-alignment: center;
+}
+
+.player-avatar-text {
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+}
+
+/* Status Indicators */
+.status-indicator-online {
+    -fx-fill: #10b981;
+    /* Green */
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.5), 6, 0, 0, 0);
+}
+
+.status-indicator-offline {
+    -fx-fill: #6b7280;
+    /* Gray */
+}
+
+/* Inputs */
+.input-label {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 14px;
+}
+
+/* Inputs & Auth */
 .input-container {
     -fx-background-color: rgba(255, 255, 255, 0.05);
-    -fx-background-radius: 10;
-    -fx-border-color: rgba(255, 255, 255, 0.15);
-    -fx-border-radius: 10;
-    -fx-border-width: 1;
-    -fx-padding: 0 0 0 12;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 8;
+    -fx-padding: 0 12;
 }
 
 .input-container:focused-within {
     -fx-border-color: #e94560;
-}
-
-.input-icon {
-    -fx-fill: #6b7280;
-    -fx-scale-x: 0.7;
-    -fx-scale-y: 0.7;
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 10, 0, 0, 0);
 }
 
 .auth-input {
     -fx-background-color: transparent;
-    -fx-text-fill: #ffffff;
-    -fx-prompt-text-fill: #6b7280;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-padding: 14 12 14 8;
-    -fx-border-width: 0;
+    -fx-padding: 12 0;
 }
 
-.auth-input:focused {
-    -fx-background-color: transparent;
-    -fx-border-width: 0;
+.input-icon {
+    -fx-fill: #9ca3af;
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
 }
 
-/* Checkbox */
-.checkbox-container {
-    -fx-padding: 8 0 8 0;
+.input-container:focused-within .input-icon {
+    -fx-fill: #e94560;
 }
 
-.auth-checkbox {
-    -fx-text-fill: #ffffff;
+.auth-header {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
 
-.auth-checkbox .box {
-    -fx-background-color: rgba(255, 255, 255, 0.05);
-    -fx-border-color: rgba(255, 255, 255, 0.2);
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-}
-
-.auth-checkbox:selected .box {
-    -fx-background-color: #e94560;
-    -fx-border-color: #e94560;
-}
-
-.auth-checkbox:selected .mark {
-    -fx-background-color: white;
-}
-
-.checkbox-icon {
-    -fx-fill: #6b7280;
-    -fx-scale-x: 0.7;
-    -fx-scale-y: 0.7;
-}
-
-.checkbox-label {
-    -fx-text-fill: #ffffff;
+.auth-subheader {
+    -fx-text-fill: #9ca3af;
     -fx-font-size: 14px;
 }
 
-/* Link Button */
+/* Button Internals */
+.button-label {
+    -fx-text-fill: inherit;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.button-icon {
+    -fx-fill: inherit;
+    -fx-fill: white;
+}
+
+.game-button-primary {
+    /* Same as base game-button */
+}
+
 .link-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #6b7280;
-    -fx-font-size: 14px;
+    -fx-text-fill: #9ca3af;
+    -fx-underline: true;
     -fx-cursor: hand;
-    -fx-padding: 8 16 8 16;
 }
 
 .link-button:hover {
     -fx-text-fill: #e94560;
 }
 
-/* ============================================ */
-/* Lobby Screen Styles                         */
-/* ============================================ */
-
-/* Player List Item */
-.player-item {
-    -fx-background-color: rgba(255, 255, 255, 0.05);
-    -fx-border-color: rgba(255, 255, 255, 0.15);
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 10;
-}
-
-.player-item:hover {
-    -fx-border-color: rgba(233, 69, 96, 0.3);
-}
-
-.player-avatar {
-    -fx-background-color: rgba(233, 69, 96, 0.2);
-    -fx-background-radius: 20;
-    -fx-min-width: 40;
-    -fx-min-height: 40;
-    -fx-alignment: center;
-}
-
-.player-avatar-text {
-    -fx-font-size: 20px;
-    -fx-fill: white;
-}
-
-.player-name {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-.player-score {
-    -fx-text-fill: #6b7280;
+.footer-text {
+    -fx-text-fill: #4b5563;
     -fx-font-size: 12px;
-}
-
-.status-indicator-online {
-    -fx-fill: #10b981; /* Success Green */
-}
-
-.player-offline .player-item {
-     -fx-opacity: 0.6;
-}
-
-.player-offline .player-avatar {
-    -fx-background-color: rgba(107, 114, 128, 0.3);
 }
