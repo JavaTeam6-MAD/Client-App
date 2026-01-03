@@ -6,10 +6,7 @@ import javafx.scene.control.Button;
 
 /**
  * Controller for the HomeScreen FXML view.
- * Handles navigation to different game modes:
- * - Play vs Computer
- * - Local Multiplayer
- * - Network Multiplayer
+ * Handles navigation to different game modes using GameState.
  */
 public class HomeScreenController {
 
@@ -22,34 +19,24 @@ public class HomeScreenController {
     @FXML
     private Button btnNetworkMultiplayer;
 
-    /**
-     * Called when the user clicks "Play vs Computer" button.
-     * Navigates to the single player game screen.
-     */
     @FXML
     private void onPlayVsComputer() throws IOException {
         System.out.println("Play vs Computer clicked!");
+        GameState.getInstance().setCurrentMode(GameState.GameMode.SINGLE_PLAYER);
         App.setRoot("difficulty");
     }
 
-    /**
-     * Called when the user clicks "Local Multiplayer" button.
-     * Navigates to the local multiplayer game screen.
-     */
     @FXML
     private void onPlayLocalMultiplayer() throws IOException {
         System.out.println("Local Multiplayer clicked!");
-        // TODO: Navigate to local multiplayer screen
-        // App.setRoot("localMultiplayerScreen");
+        GameState.getInstance().setCurrentMode(GameState.GameMode.LOCAL_MULTIPLAYER);
+        App.setRoot("GameScreen");
     }
 
-    /**
-     * Called when the user clicks "Network Multiplayer" button.
-     * Navigates to the authentication screen.
-     */
     @FXML
     private void onPlayNetworkMultiplayer() throws IOException {
         System.out.println("Network Multiplayer clicked!");
+        GameState.getInstance().setCurrentMode(GameState.GameMode.NETWORK_MULTIPLAYER);
         App.setRoot("auth");
     }
 }

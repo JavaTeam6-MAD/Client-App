@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 public class AuthController {
 
@@ -41,14 +42,23 @@ public class AuthController {
     }
 
     @FXML
-    private void onAction(ActionEvent event) {
+    private void onAction(ActionEvent event) throws IOException {
         String name = usernameField.getText();
         String password = passwordField.getText();
-        
-        // TODO: Implement actual network logic here
+
+        if (name == null || name.trim().isEmpty()) {
+            showAlert("Error", "Please enter a username.");
+            return;
+        }
+
+        // Mock Authentication
         System.out.println((isLogin ? "Login" : "Register") + " with: " + name);
-        
-        // For demonstration, just go back or show valid state
+
+        // Save to GameState
+        GameState.getInstance().setUsername(name);
+
+        // Navigate to Lobby
+        App.setRoot("LobbyScreen");
     }
 
     @FXML
@@ -69,5 +79,12 @@ public class AuthController {
             actionButton.setText("Register");
             toggleButton.setText("Already have an account? Login");
         }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.show();
     }
 }
