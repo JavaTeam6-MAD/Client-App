@@ -28,6 +28,15 @@
         </StackPane.margin>
     </Button>
 
+    <!-- Recording Indicator (Top Right) - Simple Red Circle -->
+    <StackPane fx:id="recordingIndicator" 
+               style="-fx-min-width: 16; -fx-min-height: 16; -fx-max-width: 16; -fx-max-height: 16; -fx-background-color: #ef4444; -fx-background-radius: 50%; -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.8), 12, 0, 0, 0);" 
+               StackPane.alignment="TOP_RIGHT" visible="false" managed="false">
+        <StackPane.margin>
+            <Insets top="24" right="24"/>
+        </StackPane.margin>
+    </StackPane>
+
     <VBox alignment="CENTER" spacing="24" maxWidth="480">
         <padding>
             <Insets top="40" bottom="24" left="24" right="24"/>

@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
@@ -41,6 +42,9 @@ public class GameController {
     @FXML
     private Button homeButton; // New Button for navigation
 
+    @FXML
+    private StackPane recordingIndicator;
+
     public void setPlayerNames(String nameX, String nameO) {
         if (nameX != null && !nameX.isEmpty()) {
             playerXName.setText(nameX);
@@ -56,7 +60,9 @@ public class GameController {
 
     @FXML
     public void initialize() {
-
+        // Example: Enable recording indicator when game starts
+        // Uncomment the line below to show the recording indicator:
+        showRecordingIndicator();
     }
 
     @FXML
@@ -111,5 +117,40 @@ public class GameController {
             st.setToY(1.0);
             st.play();
         }
+    }
+
+    /**
+     * Show the recording indicator with pulse animation
+     */
+    public void showRecordingIndicator() {
+        if (recordingIndicator != null) {
+            recordingIndicator.setVisible(true);
+            recordingIndicator.setManaged(true);
+            startRecordingAnimation();
+        }
+    }
+
+    /**
+     * Hide the recording indicator
+     */
+    public void hideRecordingIndicator() {
+        if (recordingIndicator != null) {
+            recordingIndicator.setVisible(false);
+            recordingIndicator.setManaged(false);
+        }
+    }
+
+    /**
+     * Animate the recording indicator with a pulsing effect
+     */
+    private void startRecordingAnimation() {
+        ScaleTransition pulse = new ScaleTransition(Duration.millis(1000), recordingIndicator);
+        pulse.setFromX(1.0);
+        pulse.setFromY(1.0);
+        pulse.setToX(1.05);
+        pulse.setToY(1.05);
+        pulse.setCycleCount(ScaleTransition.INDEFINITE);
+        pulse.setAutoReverse(true);
+        pulse.play();
     }
 }
