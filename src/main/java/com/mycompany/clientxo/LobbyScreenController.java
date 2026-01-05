@@ -10,15 +10,12 @@ import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 
@@ -46,22 +43,20 @@ public class LobbyScreenController implements Initializable {
     private String currentView = "FRIENDS"; // FRIENDS or LEADERBOARD
     private String pendingChallengeId = null;
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
 
     @FXML
     private void onTabFriends() {
-        
+
     }
 
     @FXML
     private void onTabLeaderboard() {
-       
+
     }
 
-  
     @FXML
     private void onProfile() {
         try {
@@ -73,12 +68,11 @@ public class LobbyScreenController implements Initializable {
 
     @FXML
     private void onRecordedGames() {
-        // Mock Recorded Games List
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Recorded Games");
-        alert.setHeaderText("Your Match History");
-        alert.setContentText("1. vs CyberNinja (Win)\n2. vs PixelMaster (Loss)\n(No other games found)");
-        alert.show();
+        try {
+            App.setRoot("GameHistoryScreen");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
