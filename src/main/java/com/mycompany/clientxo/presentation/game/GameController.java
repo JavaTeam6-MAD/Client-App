@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
@@ -69,11 +71,26 @@ public class GameController {
 
     @FXML
     private void handleBack(ActionEvent event) {
-        try {
-            App.setRoot("primary");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Show confirmation dialog with custom styling
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Leave Game?");
+        alert.setHeaderText("Are you sure you want to go back?");
+        alert.setContentText("The current game will end and you will lose this match.");
+
+        // Apply custom cyberpunk theme styling
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/com/mycompany/clientxo/styles.css").toExternalForm());
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    App.setRoot("primary");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            // If Cancel, do nothing - stay on game screen
+        });
     }
 
     @FXML
