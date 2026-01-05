@@ -1,4 +1,4 @@
-package com.mycompany.clientxo.presentation.difficultyscreen;
+package com.mycompany.clientxo.presentation.singleGameScreen.difficultyscreen;
 
 import com.mycompany.clientxo.App;
 
