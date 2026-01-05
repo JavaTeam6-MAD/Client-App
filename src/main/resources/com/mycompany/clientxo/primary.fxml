@@ -66,7 +66,7 @@
                     prefWidth="280" maxWidth="Infinity">
                 <graphic>
                     <HBox alignment="CENTER" spacing="10">
-                        <SVGPath content="M12 20h.01 M5 12.859a10 10 0 0 1 14 0 M8.5 16.429a5 5 0 0 1 7 0" 
+                        <SVGPath content="M12 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-14C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z" 
                                  styleClass="button-icon" />
                         <Label text="Network Multiplayer" styleClass="button-label" />
                     </HBox>
