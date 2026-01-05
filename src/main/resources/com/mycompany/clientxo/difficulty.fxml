@@ -13,6 +13,8 @@
            styleClass="root-container"
            stylesheets="@styles.css">
 
+    
+
     <!-- Main Content Container -->
     <VBox alignment="CENTER" spacing="30" maxWidth="600">
         <padding>
@@ -73,19 +75,21 @@
                 </graphic>
             </Button>
 
-            <!-- Back Button -->
-            <Button onAction="#onBack" 
-                    styleClass="back-button"
-                    prefWidth="280">
-                 <graphic>
-                    <HBox alignment="CENTER" spacing="8">
-                        <SVGPath content="M19 12H5 M12 19l-7-7 7-7" 
-                                 styleClass="back-icon" />
-                        <Label text="Back to Main Menu" styleClass="back-label" />
-                    </HBox>
-                </graphic>
-            </Button>
+
 
         </VBox>
     </VBox>
+
+    <!-- Back Button (Top Left) -->
+    <Button onAction="#onBack" styleClass="back-button" StackPane.alignment="TOP_LEFT">
+        <StackPane.margin>
+            <Insets top="16" left="16"/>
+        </StackPane.margin>
+        <graphic>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <SVGPath content="M19 12H5M12 19l-7-7 7-7" styleClass="back-icon" />
+                <Label text="Back" styleClass="back-label"/>
+            </HBox>
+        </graphic>
+    </Button>
 </StackPane>
