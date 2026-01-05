@@ -37,7 +37,14 @@ public class GameController {
     @FXML
     private Button homeButton; // New Button for navigation
 
-   
+    public void setPlayerNames(String nameX, String nameO) {
+        if (nameX != null && !nameX.isEmpty()) {
+            playerXName.setText(nameX);
+        }
+        if (nameO != null && !nameO.isEmpty()) {
+            playerOName.setText(nameO);
+        }
+    }
 
     // SVG Paths
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
@@ -45,27 +52,22 @@ public class GameController {
 
     @FXML
     public void initialize() {
-   
+
     }
 
     @FXML
     private void handleGridClick(ActionEvent event) {
-       
-    }
 
-    
-   
+    }
 
     @FXML
     private void resetGame(ActionEvent event) {
-        
+
     }
-
-
 
     @FXML
     private void handleBack(ActionEvent event) {
-       try {
+        try {
             App.setRoot("primary");
         } catch (Exception e) {
             e.printStackTrace();
