@@ -5,7 +5,7 @@
     -fx-background-color:
         linear-gradient(from 0% 0% to 0% 100%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        #050510;
+        #0B122E;
     /* Very dark blue/black base */
     -fx-background-size: 40px 40px, 40px 40px, cover;
     -fx-background-repeat: repeat, repeat, no-repeat;
@@ -15,24 +15,27 @@
 
 /* Typography */
 .game-title {
-    -fx-text-fill: white;
+    -fx-text-fill: #F85768;
     -fx-font-family: 'Segoe UI', sans-serif;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 10, 0, 0, 0);
+    -fx-font-size: 80px;
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.5), 20, 0, 0, 0);
 }
 
 .game-subtitle {
     -fx-text-fill: #9ca3af;
     -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-style: italic;
+    -fx-font-size: 24px;
 }
 
 /* Card / Panels */
 .game-card {
-    -fx-background-color: rgba(15, 18, 33, 0.8);
-    -fx-background-radius: 16;
+    -fx-background-color: rgba(255, 255, 255, 0.05); /* Subtle transparent card */
+    -fx-background-radius: 25;
     -fx-border-color: rgba(255, 255, 255, 0.1);
-    -fx-border-radius: 16;
-    -fx-border-width: 1;
+    -fx-border-radius: 25;
+    -fx-border-width: 1.5;
 }
 
 /* Back Button */
@@ -205,10 +208,9 @@
 
 /* Play vs Computer (Red/Pink Gradient) */
 .game-button-primary {
-    -fx-background-color: linear-gradient(to right, #ff5f6d, #ffc371);
-    /* Fallback */
     -fx-background-color: linear-gradient(to right, #F85768, #FE7958);
-    /* Match Image */
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
     -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.4), 15, 0, 0, 5);
 }
 
@@ -218,12 +220,10 @@
 
 /* Local Multiplayer (Purple Gradient) */
 .game-button-secondary {
-    -fx-background-color: linear-gradient(to right, #8a2be2, #da70d6);
-    /* Fallback */
     -fx-background-color: linear-gradient(to right, #7D51FE, #A857FE);
-    /* Match Image */
-    -fx-effect: dropshadow(gaussian, rgba(125, 81, 254, 0.4), 15, 0, 0, 5);
+    -fx-background-radius: 15;
     -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(125, 81, 254, 0.4), 15, 0, 0, 5);
 }
 
 .game-button-secondary:hover {
@@ -235,8 +235,8 @@
 .game-button-outline {
     -fx-background-color: transparent;
     -fx-border-color: #00E5FF;
-    -fx-border-width: 2;
-    -fx-border-radius: 12;
+    -fx-border-width: 2.5;
+    -fx-border-radius: 15;
     -fx-text-fill: #00E5FF;
 }
 
