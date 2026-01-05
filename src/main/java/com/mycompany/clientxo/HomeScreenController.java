@@ -4,7 +4,6 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-
 public class HomeScreenController {
 
     @FXML
@@ -23,7 +22,7 @@ public class HomeScreenController {
 
     @FXML
     private void onPlayLocalMultiplayer() throws IOException {
-        App.setRoot("GameScreen");
+        App.setRoot("LocalPlayersNameDialog");
     }
 
     @FXML

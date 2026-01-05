@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.clientxo.LocalPlayersNameDialogController"
+           styleClass="root-container"
+           stylesheets="@styles.css">
+
+    <!-- Main Content Container -->
+    <VBox alignment="CENTER" spacing="30" maxWidth="600">
+        <padding>
+            <Insets bottom="40" left="40" right="40" top="40" />
+        </padding>
+
+        <!-- Title Section -->
+        <VBox alignment="CENTER" spacing="8" styleClass="title-section">
+            <Label text="Player Names" styleClass="game-title" style="-fx-font-size: 48px;" />
+            <Label text="Enter names for local multiplayer" styleClass="game-subtitle" />
+        </VBox>
+
+        <!-- Game Card with Inputs -->
+        <VBox alignment="CENTER" spacing="20" styleClass="game-card">
+            <padding>
+                <Insets bottom="32" left="32" right="32" top="32" />
+            </padding>
+
+            <!-- Player X Input -->
+            <VBox spacing="8" styleClass="input-container">
+                 <Label text="Player X Name" styleClass="input-label"/>
+                 <TextField fx:id="playerXInput" promptText="Enter Name for X" text="Player X" styleClass="auth-input"/>
+            </VBox>
+
+            <!-- Player O Input -->
+            <VBox spacing="8" styleClass="input-container">
+                 <Label text="Player O Name" styleClass="input-label"/>
+                 <TextField fx:id="playerOInput" promptText="Enter Name for O" text="Player O" styleClass="auth-input"/>
+            </VBox>
+
+            <!-- Start Game Button -->
+            <Button onAction="#onStartGame" 
+                    styleClass="game-button, game-button-secondary"
+                    prefWidth="280">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="10">
+                        <Label text="Start Game" styleClass="button-label" />
+                    </HBox>
+                </graphic>
+            </Button>
+
+            <!-- Back Button -->
+            <Button onAction="#onBack" 
+                    styleClass="back-button"
+                    prefWidth="280">
+                 <graphic>
+                    <HBox alignment="CENTER" spacing="8">
+                        <SVGPath content="M19 12H5 M12 19l-7-7 7-7" 
+                                 styleClass="back-icon" />
+                        <Label text="Back to Main Menu" styleClass="back-label" />
+                    </HBox>
+                </graphic>
+            </Button>
+
+        </VBox>
+    </VBox>
+</StackPane>
