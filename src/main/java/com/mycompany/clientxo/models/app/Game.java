@@ -13,7 +13,7 @@ public class Game {
     long score;
     Player player1;
     Player player2;
-    char[][] gameBoard;
+    protected char[][] gameBoard;
     Player currentPlayer;
     
     
