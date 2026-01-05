@@ -27,10 +27,8 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
-        // Load current data
-        GameState state = GameState.getInstance();
-        usernameField.setText(state.getUsername());
-        selectedCharId = state.getCharacterId();
+        usernameField.setText("Ahmed");
+        selectedCharId = "2";
         updateCharSelectionUI();
     }
 
@@ -49,11 +47,6 @@ public class ProfileController {
             return;
         }
 
-        // Save to GameState - In real app, send update to server here
-        GameState.getInstance().setUsername(newName);
-        GameState.getInstance().setCharacterId(selectedCharId);
-
-        // Navigate back
         App.setRoot("LobbyScreen");
     }
 
@@ -101,7 +94,6 @@ public class ProfileController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setContentText(content);
-        // Apply styling if needed (e.g. valid DialogPane css)
         alert.show();
     }
 }

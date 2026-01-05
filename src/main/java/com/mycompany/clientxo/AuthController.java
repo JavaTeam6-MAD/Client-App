@@ -50,14 +50,6 @@ public class AuthController {
             showAlert("Error", "Please enter a username.");
             return;
         }
-
-        // Mock Authentication
-        System.out.println((isLogin ? "Login" : "Register") + " with: " + name);
-
-        // Save to GameState
-        GameState.getInstance().setUsername(name);
-
-        // Navigate to Lobby
         App.setRoot("LobbyScreen");
     }
 

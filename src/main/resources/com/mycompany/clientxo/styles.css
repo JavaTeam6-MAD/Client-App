@@ -431,3 +431,33 @@
     -fx-text-fill: #4b5563;
     -fx-font-size: 12px;
 }
+
+.difficulty-easy {
+    -fx-background-color: linear-gradient(to right, #10b981, #34d399);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.4), 15, 0, 0, 5);
+}
+
+.difficulty-easy:hover {
+    -fx-background-color: linear-gradient(to right, #34d399, #10b981);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.6), 20, 0, 0, 8);
+}
+
+.difficulty-medium {
+    -fx-background-color: linear-gradient(to right, #f59e0b, #fbbf24);
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.4), 15, 0, 0, 5);
+}
+
+.difficulty-medium:hover {
+    -fx-background-color: linear-gradient(to right, #fbbf24, #f59e0b);
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.6), 20, 0, 0, 8);
+}
+
+.difficulty-hard {
+    -fx-background-color: linear-gradient(to right, #ef4444, #f87171);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 15, 0, 0, 5);
+}
+
+.difficulty-hard:hover {
+    -fx-background-color: linear-gradient(to right, #f87171, #ef4444);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.6), 20, 0, 0, 8);
+}
