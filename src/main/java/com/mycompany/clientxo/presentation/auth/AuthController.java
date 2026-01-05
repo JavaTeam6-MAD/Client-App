@@ -1,4 +1,6 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.auth;
+
+import com.mycompany.clientxo.App;
 
 import java.io.IOException;
 import javafx.event.ActionEvent;

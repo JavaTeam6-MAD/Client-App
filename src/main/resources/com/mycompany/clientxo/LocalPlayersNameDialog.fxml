@@ -10,7 +10,7 @@
 <?import javafx.geometry.Insets?>
 
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-           fx:controller="com.mycompany.clientxo.LocalPlayersNameDialogController"
+           fx:controller="com.mycompany.clientxo.presentation.localplayersnamedialog.LocalPlayersNameDialogController"
            styleClass="root-container"
            stylesheets="@styles.css">
 

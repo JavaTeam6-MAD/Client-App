@@ -1,4 +1,6 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.difficultyscreen;
+
+import com.mycompany.clientxo.App;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
@@ -6,7 +8,7 @@ import javafx.fxml.FXML;
 public class DifficultyScreenController {
 
     @FXML
-    private void onEasy() throws IOException { 
+    private void onEasy() throws IOException {
         App.setRoot("GameScreen");
     }
 

@@ -1,4 +1,6 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.game;
+
+import com.mycompany.clientxo.App;
 
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;

@@ -1,4 +1,4 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.gamehistory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

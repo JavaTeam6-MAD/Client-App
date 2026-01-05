@@ -1,4 +1,6 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.lobbyscreen;
+
+import com.mycompany.clientxo.App;
 
 import java.net.URL;
 import java.util.ArrayList;

@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.SVGPath?>
 
 <StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
-           fx:controller="com.mycompany.clientxo.GameController"
+           fx:controller="com.mycompany.clientxo.presentation.game.GameController"
            styleClass="root-container" stylesheets="@styles.css">
 
     <!-- Back Button (Top Left) -->

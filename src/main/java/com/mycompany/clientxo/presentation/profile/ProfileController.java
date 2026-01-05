@@ -1,4 +1,6 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.profile;
+
+import com.mycompany.clientxo.App;
 
 import java.io.IOException;
 import javafx.fxml.FXML;

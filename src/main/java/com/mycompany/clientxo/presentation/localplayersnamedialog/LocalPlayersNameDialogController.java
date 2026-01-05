@@ -1,4 +1,7 @@
-package com.mycompany.clientxo;
+package com.mycompany.clientxo.presentation.localplayersnamedialog;
+
+import com.mycompany.clientxo.App;
+import com.mycompany.clientxo.presentation.game.GameController;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
