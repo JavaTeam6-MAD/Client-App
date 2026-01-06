@@ -43,16 +43,22 @@ public class LocalMultiplayerGameController {
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
     private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
 
-    private LocalGame game = new LocalGame();
+    private LocalGameManager game = new LocalGameManager();
     
     public void setPlayerNames(String nameX, String nameO) {
         playerXName.setText(nameX.isEmpty() ? "Player X" : nameX);
         playerOName.setText(nameO.isEmpty() ? "Player O" : nameO);
     }
+    
+    private void setEndGameButtonsVisible(boolean visible) {
+        playAgainButton.setVisible(visible);
+        homeButton.setVisible(visible);
+    }
 
     @FXML
     public void initialize() {
-
+        // just to make sure that the buttons is inVisible
+        setEndGameButtonsVisible(false);
     }
 
     @FXML
@@ -77,14 +83,16 @@ public class LocalMultiplayerGameController {
             char currentPlayer = game.getCurrentPlayer();
             drawSymbol(button, currentPlayer);
             
-            if(game.chechWinner()) {
+            if(game.checkWinner()) {
                 game.setGameActive(false);
                 game.incrementScore();
                 updateUI();
                 statusText.setText("Winner: " + (currentPlayer == 'X' ? playerXName.getText() : playerOName.getText()));
+                setEndGameButtonsVisible(true);
             } else if(game.isBoardFull()) {
                 game.setGameActive(false);
                 statusText.setText("It's a Draw!");
+                setEndGameButtonsVisible(true);
             } else {
                 game.nextTurn();
                 statusText.setText("Turn: " + (game.getCurrentPlayer() == 'X' ? playerXName.getText() : playerOName.getText()));
@@ -113,6 +121,7 @@ public class LocalMultiplayerGameController {
                 ((Button) node).setGraphic(null);
             }
         }
+        setEndGameButtonsVisible(false);
     }
 
     @FXML
