@@ -41,11 +41,36 @@ public class GameHistoryController implements Initializable {
     @FXML
     private Label lblDraws;
 
+    // Filter buttons
+    @FXML
+    private Button btnFilterAll;
+
+    @FXML
+    private Button btnFilterWin;
+
+    @FXML
+    private Button btnFilterLoss;
+
+    @FXML
+    private Button btnFilterDraw;
+
+    @FXML
+    private Button btnToggleRecorded;
+
     private List<GameHistory> gameHistoryList;
+
+    // Filter state
+    private enum ResultFilter {
+        ALL, WIN, LOSS, DRAW
+    }
+
+    private ResultFilter currentResultFilter = ResultFilter.ALL;
+    private boolean showOnlyRecorded = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadGameHistory();
+        updateFilterButtonStates();
         displayGameHistory();
         updateStats();
     }
@@ -101,14 +126,38 @@ public class GameHistoryController implements Initializable {
     }
 
     private void displayGameHistory() {
-        if (gameHistoryList.isEmpty()) {
+        // Clear existing items
+        gamesListContainer.getChildren().clear();
+
+        // Apply filters
+        List<GameHistory> filteredGames = gameHistoryList.stream()
+                .filter(game -> {
+                    // Apply result filter
+                    switch (currentResultFilter) {
+                        case WIN:
+                            return game.isPlayerWon() && !game.isDraw();
+                        case LOSS:
+                            return !game.isPlayerWon() && !game.isDraw();
+                        case DRAW:
+                            return game.isDraw();
+                        case ALL:
+                        default:
+                            return true;
+                    }
+                })
+                .filter(game -> !showOnlyRecorded || game.isRecordedGameAvailable())
+                .collect(java.util.stream.Collectors.toList());
+
+        if (filteredGames.isEmpty()) {
+            lblEmptyState
+                    .setText(gameHistoryList.isEmpty() ? "No games played yet" : "No games match the selected filters");
             lblEmptyState.setVisible(true);
             lblEmptyState.setManaged(true);
         } else {
             lblEmptyState.setVisible(false);
             lblEmptyState.setManaged(false);
 
-            for (GameHistory game : gameHistoryList) {
+            for (GameHistory game : filteredGames) {
                 VBox gameCard = createGameCard(game);
                 gamesListContainer.getChildren().add(gameCard);
             }
@@ -240,6 +289,60 @@ public class GameHistoryController implements Initializable {
                 return "👻";
             default:
                 return "👤";
+        }
+    }
+
+    // Filter handlers
+    @FXML
+    private void onFilterAll() {
+        currentResultFilter = ResultFilter.ALL;
+        updateFilterButtonStates();
+        displayGameHistory();
+    }
+
+    @FXML
+    private void onFilterWin() {
+        currentResultFilter = ResultFilter.WIN;
+        updateFilterButtonStates();
+        displayGameHistory();
+    }
+
+    @FXML
+    private void onFilterLoss() {
+        currentResultFilter = ResultFilter.LOSS;
+        updateFilterButtonStates();
+        displayGameHistory();
+    }
+
+    @FXML
+    private void onFilterDraw() {
+        currentResultFilter = ResultFilter.DRAW;
+        updateFilterButtonStates();
+        displayGameHistory();
+    }
+
+    @FXML
+    private void onToggleRecorded() {
+        showOnlyRecorded = !showOnlyRecorded;
+        btnToggleRecorded.setText(showOnlyRecorded ? "ON" : "OFF");
+        highlightButton(btnToggleRecorded, showOnlyRecorded);
+        displayGameHistory();
+    }
+
+    private void updateFilterButtonStates() {
+        highlightButton(btnFilterAll, currentResultFilter == ResultFilter.ALL);
+        highlightButton(btnFilterWin, currentResultFilter == ResultFilter.WIN);
+        highlightButton(btnFilterLoss, currentResultFilter == ResultFilter.LOSS);
+        highlightButton(btnFilterDraw, currentResultFilter == ResultFilter.DRAW);
+        highlightButton(btnToggleRecorded, showOnlyRecorded);
+    }
+
+    private void highlightButton(Button btn, boolean selected) {
+        if (selected) {
+            btn.setStyle(
+                    "-fx-border-color: #00FFFF; -fx-background-color: rgba(0, 255, 255, 0.2); -fx-padding: 4 12; -fx-font-size: 11px; -fx-min-width: 50;");
+        } else {
+            btn.setStyle("-fx-padding: 4 12; -fx-font-size: 11px; -fx-min-width: 50;");
         }
     }
 }
