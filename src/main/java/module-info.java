@@ -1,6 +1,7 @@
 module com.mycompany.clientxo {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.media;
 
     opens com.mycompany.clientxo to javafx.fxml;
     opens com.mycompany.clientxo.presentation.auth to javafx.fxml;
