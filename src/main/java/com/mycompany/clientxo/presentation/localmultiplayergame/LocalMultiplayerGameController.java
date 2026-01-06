@@ -1,6 +1,10 @@
 package com.mycompany.clientxo.presentation.localmultiplayergame;
 
 import com.mycompany.clientxo.App;
+import com.mycompany.clientxo.utils.SoundManager;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
@@ -38,18 +42,21 @@ public class LocalMultiplayerGameController {
     private Button playAgainButton;
     @FXML
     private Button homeButton;
-    
+
     // SVG Paths
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
     private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
 
+    // Sound Manager instance
+    private SoundManager soundManager;
+
     private LocalGameManager game = new LocalGameManager();
-    
+
     public void setPlayerNames(String nameX, String nameO) {
         playerXName.setText(nameX.isEmpty() ? "Player X" : nameX);
         playerOName.setText(nameO.isEmpty() ? "Player O" : nameO);
     }
-    
+
     private void setEndGameButtonsVisible(boolean visible) {
         playAgainButton.setVisible(visible);
         homeButton.setVisible(visible);
@@ -57,6 +64,9 @@ public class LocalMultiplayerGameController {
 
     @FXML
     public void initialize() {
+        // Initialize sound manager
+        soundManager = SoundManager.getInstance();
+
         // just to make sure that the buttons is inVisible
         setEndGameButtonsVisible(false);
     }
@@ -64,49 +74,54 @@ public class LocalMultiplayerGameController {
     @FXML
     private void handleGridClick(ActionEvent event) {
         Button button = (Button) event.getSource();
-        
+
         Integer r = GridPane.getRowIndex(button);
         Integer c = GridPane.getColumnIndex(button);
-        int row,col;
-        if(r == null) {
+        int row, col;
+        if (r == null) {
             row = 0;
         } else {
             row = r;
         }
-        if(c == null) {
+        if (c == null) {
             col = 0;
         } else {
             col = c;
         }
-        
-        if(game.makeMove(row, col)) {
+
+        if (game.makeMove(row, col)) {
+            // Play click sound
+            if (soundManager != null) {
+                soundManager.playSound(SoundManager.PLACE_X);
+            }
             char currentPlayer = game.getCurrentPlayer();
             drawSymbol(button, currentPlayer);
-            
-            if(game.checkWinner()) {
+
+            if (game.checkWinner()) {
                 game.setGameActive(false);
                 game.incrementScore();
                 updateUI();
                 statusText.setText("Winner: " + (currentPlayer == 'X' ? playerXName.getText() : playerOName.getText()));
                 setEndGameButtonsVisible(true);
-            } else if(game.isBoardFull()) {
+            } else if (game.isBoardFull()) {
                 game.setGameActive(false);
                 statusText.setText("It's a Draw!");
                 setEndGameButtonsVisible(true);
             } else {
                 game.nextTurn();
-                statusText.setText("Turn: " + (game.getCurrentPlayer() == 'X' ? playerXName.getText() : playerOName.getText()));
+                statusText.setText(
+                        "Turn: " + (game.getCurrentPlayer() == 'X' ? playerXName.getText() : playerOName.getText()));
             }
-        } 
+        }
     }
-    
+
     private void drawSymbol(Button button, char symbol) {
         SVGPath path = new SVGPath();
         path.setContent(symbol == 'X' ? PATH_X : PATH_O);
         path.setStyle("-fx-stroke: " + (symbol == 'X' ? "#FF4B2B" : "#2193b0") + "; -fx-stroke-width: 5;");
         button.setGraphic(path);
     }
-    
+
     private void updateUI() {
         scoreX.setText(String.valueOf(game.getScoreX()));
         scoreO.setText(String.valueOf(game.getScoreO()));
@@ -114,6 +129,11 @@ public class LocalMultiplayerGameController {
 
     @FXML
     private void resetGame(ActionEvent event) {
+        // Play button click sound
+        if (soundManager != null) {
+            soundManager.playSound(SoundManager.BUTTON_CLICK);
+        }
+
         game.resetGame();
         statusText.setText("Turn: " + playerXName.getText());
         for (Node node : gameGrid.getChildren()) {
@@ -126,15 +146,40 @@ public class LocalMultiplayerGameController {
 
     @FXML
     private void handleBack(ActionEvent event) {
-        try {
-            App.setRoot("primary");
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Play button click sound
+        if (soundManager != null) {
+            soundManager.playSound(SoundManager.BUTTON_CLICK);
         }
+
+        // Show confirmation dialog with custom styling
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Leave Game?");
+        alert.setHeaderText("Are you sure you want to go back?");
+        alert.setContentText("The current game will end and you will lose this match.");
+
+        // Apply custom cyberpunk theme styling
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/com/mycompany/clientxo/styles.css").toExternalForm());
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    App.setRoot("primary");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            // If Cancel, do nothing - stay on game screen
+        });
     }
 
     @FXML
     private void onHome(ActionEvent event) {
+        // Play button click sound
+        if (soundManager != null) {
+            soundManager.playSound(SoundManager.BUTTON_CLICK);
+        }
+
         try {
             App.setRoot("primary");
         } catch (Exception e) {
