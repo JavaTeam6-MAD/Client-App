@@ -24,7 +24,7 @@ public class HomeScreenController {
 
     @FXML
     private void onPlayLocalMultiplayer() throws IOException {
-        App.setRoot("LocalPlayersNameDialog");
+        App.setRoot("localPlayersNameDialog");
     }
 
     @FXML
