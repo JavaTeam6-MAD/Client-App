@@ -4,10 +4,14 @@
  */
 package com.mycompany.clientxo.data.repo_interface;
 
+import com.mycompany.clientxo.models.app.Game;
+import java.util.List;
+
 /**
  *
  * @author abdel
  */
 public interface GameRepository {
-    
+    List<Game> getGameHistory();
+    get
 }

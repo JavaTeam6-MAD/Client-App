@@ -13,8 +13,9 @@ public class Game {
     long score;
     Player player1;
     Player player2;
-    char[][] gameBoard;
-    Player currentPlayer;
+    String status;
+    
+    
     
     
     public int getId() {
