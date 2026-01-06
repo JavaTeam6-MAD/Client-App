@@ -8,6 +8,6 @@ package com.mycompany.clientxo.models.app;
  *
  * @author abdel
  */
-class RecordedGame {
+public class RecordedGame {
     
 }
