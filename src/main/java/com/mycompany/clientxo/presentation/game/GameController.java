@@ -1,6 +1,7 @@
 package com.mycompany.clientxo.presentation.game;
 
 import com.mycompany.clientxo.App;
+import com.mycompany.clientxo.utils.SoundManager;
 
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
@@ -45,6 +46,9 @@ public class GameController {
     @FXML
     private StackPane recordingIndicator;
 
+    // Sound Manager instance
+    private SoundManager soundManager;
+
     public void setPlayerNames(String nameX, String nameO) {
         if (nameX != null && !nameX.isEmpty()) {
             playerXName.setText(nameX);
@@ -60,6 +64,9 @@ public class GameController {
 
     @FXML
     public void initialize() {
+        // Initialize sound manager
+        soundManager = SoundManager.getInstance();
+
         // Example: Enable recording indicator when game starts
         // Uncomment the line below to show the recording indicator:
         showRecordingIndicator();
@@ -67,16 +74,29 @@ public class GameController {
 
     @FXML
     private void handleGridClick(ActionEvent event) {
-
+        // Play click sound - will later distinguish between X and O
+        if (soundManager != null) {
+            // Alternate between X and O sounds based on current player
+            // For now, playing a generic click sound
+            soundManager.playSound(SoundManager.PLACE_X);
+        }
     }
 
     @FXML
     private void resetGame(ActionEvent event) {
-
+        // Play button click sound
+        if (soundManager != null) {
+            soundManager.playSound(SoundManager.BUTTON_CLICK);
+        }
     }
 
     @FXML
     private void handleBack(ActionEvent event) {
+        // Play button click sound
+        if (soundManager != null) {
+            soundManager.playSound(SoundManager.BUTTON_CLICK);
+        }
+
         // Show confirmation dialog with custom styling
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Leave Game?");
@@ -101,6 +121,11 @@ public class GameController {
 
     @FXML
     private void onHome(ActionEvent event) {
+        // Play button click sound
+        if (soundManager != null) {
+            soundManager.playSound(SoundManager.BUTTON_CLICK);
+        }
+
         try {
             App.setRoot("primary");
         } catch (Exception e) {
