@@ -118,7 +118,7 @@ public class LocalMultiplayerGameController {
     private void drawSymbol(Button button, char symbol) {
         SVGPath path = new SVGPath();
         path.setContent(symbol == 'X' ? PATH_X : PATH_O);
-        path.setStyle("-fx-stroke: " + (symbol == 'X' ? "#FF4B2B" : "#2193b0") + "; -fx-stroke-width: 5;");
+        path.getStyleClass().add(symbol == 'X' ? "icon-x" : "icon-o");
         button.setGraphic(path);
     }
 
