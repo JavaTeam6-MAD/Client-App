@@ -8,6 +8,8 @@ package com.mycompany.clientxo.models.utils;
  *
  * @author abdel
  */
-public class GameStatus {
-    
+public enum  GameStatus {
+    WIN,
+    DRAW,
+    LOSE
 }

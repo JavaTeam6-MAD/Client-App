@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface GameRepository {
     List<Game> getGameHistory();
-    get
+    RecordedGame getRecordedGame(int gameID);
 }

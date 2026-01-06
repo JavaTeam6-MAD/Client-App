@@ -4,6 +4,9 @@
  */
 package com.mycompany.clientxo.models.app;
 
+import com.mycompany.clientxo.models.utils.GameStatus;
+import java.util.Date;
+
 /**
  *
  * @author abdel
@@ -13,11 +16,18 @@ public class Game {
     long score;
     Player player1;
     Player player2;
-    String status;
-    
-    
-    
-    
+    GameStatus status;
+    Date date;
+    boolean isRecorded;
+
+    public boolean isIsRecorded() {
+        return isRecorded;
+    }
+
+    public void setIsRecorded(boolean isRecorded) {
+        this.isRecorded = isRecorded;
+    }
+
     public int getId() {
         return id;
     }
@@ -50,20 +60,20 @@ public class Game {
         this.player2 = player2;
     }
 
-    public char[][] getGameBoard() {
-        return gameBoard;
+    public GameStatus getStatus() {
+        return status;
     }
 
-    public void setGameBoard(char[][] gameBoard) {
-        this.gameBoard = gameBoard;
+    public void setStatus(GameStatus status) {
+        this.status = status;
     }
 
-    public Player getCurrentPlayer() {
-        return currentPlayer;
+    public Date getDate() {
+        return date;
     }
 
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
+    public void setDate(Date date) {
+        this.date = date;
     }
     
 }
