@@ -30,6 +30,11 @@ public class HomeScreenController {
 
     @FXML
     private void onPlayNetworkMultiplayer() throws IOException {
-        App.setRoot(Routes.AUTH);
+        HomeManager homeManager = new HomeManager();
+        if (homeManager.getCurrentPlayer() != null) {
+            App.setRoot(Routes.LOBBY);
+        } else {
+            App.setRoot(Routes.AUTH);
+        }
     }
 }
