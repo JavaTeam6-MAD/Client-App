@@ -1,0 +1,97 @@
+package com.mycompany.presentation.lobbyscreen;
+
+import com.mycompany.core.navigation.Routes;
+import com.mycompany.App;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
+public class LobbyScreenController implements Initializable {
+
+    @FXML
+    private Label lblUserName;
+    @FXML
+    private Label lblUserScore;
+    @FXML
+    private Label lblUserChar;
+    @FXML
+    private Button btnTabFriends;
+    @FXML
+    private Button btnTabLeaderboard;
+    @FXML
+    private HBox friendsHeader;
+    @FXML
+    private Label lblOnlineCount;
+    @FXML
+    private Label lblOfflineCount;
+    @FXML
+    private VBox listContainer;
+
+    private String currentView = "FRIENDS"; // FRIENDS or LEADERBOARD
+    private String pendingChallengeId = null;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+    }
+
+    @FXML
+    private void onTabFriends() {
+
+    }
+
+    @FXML
+    private void onTabLeaderboard() {
+
+    }
+
+    @FXML
+    private void onProfile() {
+        try {
+            App.setRoot(Routes.PROFILE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onRecordedGames() {
+        try {
+            App.setRoot(Routes.GAME_HISTORY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onBack() {
+        try {
+            App.setRoot(Routes.HOME);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getCharacterSymbol(String charId) {
+        if (charId == null)
+            return "👤";
+        switch (charId) {
+            case "dragon":
+                return "🐲";
+            case "robot":
+                return "🤖";
+            case "alien":
+                return "👽";
+            case "ghost":
+                return "👻";
+            default:
+                return "👤";
+        }
+    }
+}
