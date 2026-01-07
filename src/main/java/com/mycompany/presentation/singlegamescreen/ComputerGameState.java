@@ -1,4 +1,4 @@
-package com.mycompany.presentation.difficultyscreen;
+package com.mycompany.presentation.singlegamescreen;
 
 public class ComputerGameState {
     private char[] board;
@@ -6,7 +6,6 @@ public class ComputerGameState {
     private int scoreX;
     private int scoreO;
     private int difficulty; // 1: Easy, 2: Medium, 3: Hard
-    
 
     public char[] getBoard() {
         return board;

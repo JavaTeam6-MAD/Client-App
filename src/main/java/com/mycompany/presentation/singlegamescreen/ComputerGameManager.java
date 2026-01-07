@@ -1,4 +1,4 @@
-package com.mycompany.presentation.difficultyscreen;
+package com.mycompany.presentation.singlegamescreen;
 
 import java.util.ArrayList;
 import java.util.Arrays;

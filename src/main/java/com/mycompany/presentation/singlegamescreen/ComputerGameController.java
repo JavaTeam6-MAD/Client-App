@@ -1,4 +1,4 @@
-package com.mycompany.presentation.difficultyscreen;
+package com.mycompany.presentation.singlegamescreen;
 
 import com.mycompany.App;
 import com.mycompany.core.utils.SoundManager;
