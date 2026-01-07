@@ -521,3 +521,16 @@
     -fx-background-color: linear-gradient(to right, #f87171, #ef4444);
     -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.6), 20, 0, 0, 8);
 }
+
+/* Danger Button (Red Gradient) */
+.game-button-danger {
+    -fx-background-color: linear-gradient(to right, #ef4444, #f87171);
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 15, 0, 0, 5);
+}
+
+.game-button-danger:hover {
+    -fx-background-color: linear-gradient(to right, #f87171, #ef4444);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.6), 20, 0, 0, 8);
+}
