@@ -1,5 +1,7 @@
 package com.mycompany.clientxo;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +21,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 600);
+        scene = new Scene(loadFXML(Routes.HOME), 640, 600);
         stage.setTitle("XO - Tic Tac Toe");
         stage.setScene(scene);
         stage.show();

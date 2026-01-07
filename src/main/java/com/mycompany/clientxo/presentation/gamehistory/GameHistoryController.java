@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.gamehistory;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 
 import java.io.IOException;
@@ -257,7 +259,7 @@ public class GameHistoryController implements Initializable {
     @FXML
     private void onBack() {
         try {
-            App.setRoot("LobbyScreen");
+            App.setRoot(Routes.LOBBY);
         } catch (IOException e) {
             e.printStackTrace();
         }

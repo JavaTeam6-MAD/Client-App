@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.localmultiplayergame;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 import com.mycompany.clientxo.utils.SoundManager;
 
@@ -164,7 +166,7 @@ public class LocalMultiplayerGameController {
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    App.setRoot("primary");
+                    App.setRoot(Routes.HOME);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -181,7 +183,7 @@ public class LocalMultiplayerGameController {
         }
 
         try {
-            App.setRoot("primary");
+            App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();
         }

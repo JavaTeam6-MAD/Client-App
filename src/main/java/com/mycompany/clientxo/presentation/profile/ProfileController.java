@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.profile;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 
 import java.io.IOException;
@@ -36,7 +38,7 @@ public class ProfileController {
 
     @FXML
     private void onBack() throws IOException {
-        App.setRoot("LobbyScreen");
+        App.setRoot(Routes.LOBBY);
     }
 
     @FXML
@@ -49,7 +51,7 @@ public class ProfileController {
             return;
         }
 
-        App.setRoot("LobbyScreen");
+        App.setRoot(Routes.LOBBY);
     }
 
     @FXML
