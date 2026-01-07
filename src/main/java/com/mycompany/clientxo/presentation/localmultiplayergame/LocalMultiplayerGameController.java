@@ -166,7 +166,7 @@ public class LocalMultiplayerGameController {
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    App.setRoot(Routes.PRIMARY);
+                    App.setRoot(Routes.HOME);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -183,7 +183,7 @@ public class LocalMultiplayerGameController {
         }
 
         try {
-            App.setRoot(Routes.PRIMARY);
+            App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();
         }
