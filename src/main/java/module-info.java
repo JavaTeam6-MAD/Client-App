@@ -6,7 +6,7 @@ module com.mycompany.clientxo {
     opens com.mycompany.clientxo to javafx.fxml;
     opens com.mycompany.clientxo.presentation.auth to javafx.fxml;
     opens com.mycompany.clientxo.presentation.difficultyscreen to javafx.fxml;
-    opens com.mycompany.clientxo.presentation.game to javafx.fxml;
+
     opens com.mycompany.clientxo.presentation.gamehistory to javafx.fxml;
     opens com.mycompany.clientxo.presentation.homescreen to javafx.fxml;
     opens com.mycompany.clientxo.presentation.lobbyscreen to javafx.fxml;

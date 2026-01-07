@@ -148,6 +148,20 @@
     -fx-pref-width: 100px;
     -fx-pref-height: 100px;
     -fx-alignment: center;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    /* Fallback */
+}
+
+.grid-cell-x {
+    -fx-text-fill: #00FFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.6), 10, 0, 0, 0);
+}
+
+.grid-cell-o {
+    -fx-text-fill: #C000FF;
+    -fx-effect: dropshadow(gaussian, rgba(192, 0, 255, 0.6), 10, 0, 0, 0);
 }
 
 .grid-cell:hover {
