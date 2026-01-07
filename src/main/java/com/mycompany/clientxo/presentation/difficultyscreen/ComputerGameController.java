@@ -3,7 +3,7 @@ package com.mycompany.clientxo.presentation.difficultyscreen;
 import com.mycompany.clientxo.App;
 import com.mycompany.clientxo.utils.SoundManager;
 import javafx.animation.PauseTransition;
-import javafx.animation.ScaleTransition;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -42,6 +42,7 @@ public class ComputerGameController {
     // Static field to receive difficulty from previous screen
     public static int difficulty = 3;
 
+    private boolean isPlayerTurn = true;
     private ComputerGameManager gameManager;
     private SoundManager soundManager;
 
@@ -54,6 +55,8 @@ public class ComputerGameController {
         statusText.setText("Your Turn (X)");
         setEndGameButtonsVisible(false);
         initGrid();
+        updateScoreBoard();
+        isPlayerTurn = true;
     }
 
     private void initGrid() {
@@ -76,7 +79,7 @@ public class ComputerGameController {
 
     @FXML
     private void handleGridClick(ActionEvent event) {
-        if (!gameManager.isGameActive())
+        if (!gameManager.isGameActive() || !isPlayerTurn)
             return;
 
         Button btn = (Button) event.getSource();
@@ -87,14 +90,13 @@ public class ComputerGameController {
             if (soundManager != null)
                 soundManager.playSound(SoundManager.PLACE_X);
             drawSymbol(btn, 'X');
-            animateButton(btn);
 
             if (checkGameOver('X'))
                 return;
 
             // Computer Turn
             statusText.setText("Computer's Turn...");
-            disableAllButtons();
+            isPlayerTurn = false;
 
             PauseTransition pause = new PauseTransition(Duration.seconds(0.7));
             pause.setOnFinished(e -> {
@@ -104,14 +106,13 @@ public class ComputerGameController {
                     if (soundManager != null)
                         soundManager.playSound(SoundManager.PLACE_O);
                     drawSymbol(aiBtn, 'O');
-                    animateButton(aiBtn);
 
                     if (checkGameOver('O'))
                         return;
                 }
 
                 statusText.setText("Your Turn (X)");
-                enableEmptyButtons();
+                isPlayerTurn = true;
             });
             pause.play();
         }
@@ -149,7 +150,6 @@ public class ComputerGameController {
         SVGPath path = new SVGPath();
         path.setContent(symbol == 'X' ? PATH_X : PATH_O);
         path.getStyleClass().add(symbol == 'X' ? "icon-x" : "icon-o");
-        path.setFill(null); // Ensure fill is null as per CSS
         button.setGraphic(path);
     }
 
@@ -158,30 +158,9 @@ public class ComputerGameController {
         scoreO.setText(String.valueOf(gameManager.getScoreO()));
     }
 
-    private void disableAllButtons() {
-        for (Node node : gameGrid.getChildren()) {
-            if (node instanceof Button) {
-                node.setDisable(true);
-            }
-        }
-    }
-
-    private void enableEmptyButtons() {
-        char[] board = gameManager.getBoard();
-        int i = 0;
-        for (Node node : gameGrid.getChildren()) {
-            if (node instanceof Button) {
-                if (board[i] == ' ') {
-                    node.setDisable(false);
-                }
-                i++;
-            }
-        }
-    }
-
     private void endGame() {
         setEndGameButtonsVisible(true);
-        disableAllButtons();
+        // We don't disable buttons visually to keep the glow, logic prevents clicks
     }
 
     @FXML
@@ -192,13 +171,13 @@ public class ComputerGameController {
         gameManager.resetGame();
         statusText.setText("Your Turn (X)");
         setEndGameButtonsVisible(false);
+        isPlayerTurn = true;
 
         for (Node node : gameGrid.getChildren()) {
             if (node instanceof Button) {
                 Button btn = (Button) node;
                 btn.setGraphic(null);
                 btn.setDisable(false);
-                animateButtonReset(btn);
             }
         }
     }
@@ -235,25 +214,5 @@ public class ComputerGameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void animateButton(Button btn) {
-        if (btn.getGraphic() != null) {
-            ScaleTransition st = new ScaleTransition(Duration.millis(300), btn.getGraphic());
-            st.setFromX(0.1);
-            st.setFromY(0.1);
-            st.setToX(1.0);
-            st.setToY(1.0);
-            st.play();
-        }
-    }
-
-    private void animateButtonReset(Button btn) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(300), btn);
-        st.setFromX(0.1);
-        st.setFromY(0.1);
-        st.setToX(1.0);
-        st.setToY(1.0);
-        st.play();
     }
 }

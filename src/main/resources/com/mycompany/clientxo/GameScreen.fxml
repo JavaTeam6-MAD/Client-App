@@ -50,7 +50,7 @@
             
             <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                 <Label fx:id="playerXName" text="You" styleClass="score-label"/>
-                <Label fx:id="scoreX" text="1" styleClass="score-value, score-value-x"/>
+                <Label fx:id="scoreX" text="0" styleClass="score-value, score-value-x"/>
             </VBox>
             
             <Label text="VS" styleClass="vs-text"/>
