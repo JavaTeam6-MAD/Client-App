@@ -2,6 +2,7 @@ package com.mycompany.presentation.auth;
 
 import com.mycompany.core.navigation.Routes;
 import com.mycompany.App;
+import com.mycompany.model.app.Player;
 
 import java.io.IOException;
 import javafx.event.ActionEvent;
@@ -13,6 +14,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 
 public class AuthController {
+    
+     AuthManager authManager = new AuthManager();
+        Player player;
 
     @FXML
     private Label headerLabel;
@@ -53,7 +57,22 @@ public class AuthController {
             showAlert("Error", "Please enter a username.");
             return;
         }
-        App.setRoot(Routes.LOBBY);
+        if (password == null || password.trim().isEmpty()) {
+            showAlert("Error", "Please enter a password.");
+            return;
+        }
+
+        if (isLogin) {
+            player = authManager.login(name, password);
+        } else {
+            player = authManager.register(name, password);
+        }
+
+        if (player != null && player.getId() != 0) {
+            App.setRoot(Routes.LOBBY);
+        } else {
+            showAlert("Authentication Failed", "Invalid credentials or server error.");
+        }
     }
 
     @FXML

@@ -12,10 +12,18 @@ import java.util.List;
  * @author abdel
  */
 public interface PlayerRepository {
-    
-    Player login(String name , String password);
-    Player register(String name , String password);
+
+    Player login(String name, String password);
+
+    Player register(String name, String password);
+
     Player changeUserName(String name);
+
     Player changePassword(String password);
+
     List<Player> getFriends();
+
+    Player getCurrentPlayer();
+
+    void logout();
 }
