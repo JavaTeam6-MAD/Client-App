@@ -2,6 +2,7 @@ package com.mycompany.presentation.difficultyscreen;
 
 import com.mycompany.core.navigation.Routes;
 import com.mycompany.App;
+import com.mycompany.presentation.singlegamescreen.ComputerGameController;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
