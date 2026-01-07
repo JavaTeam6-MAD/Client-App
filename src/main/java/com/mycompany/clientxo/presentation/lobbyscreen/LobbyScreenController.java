@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.lobbyscreen;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 
 import java.net.URL;
@@ -62,7 +64,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onProfile() {
         try {
-            App.setRoot("ProfileScreen");
+            App.setRoot(Routes.PROFILE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,7 +73,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onRecordedGames() {
         try {
-            App.setRoot("GameHistoryScreen");
+            App.setRoot(Routes.GAME_HISTORY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,7 +82,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onBack() {
         try {
-            App.setRoot("primary");
+            App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();
         }

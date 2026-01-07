@@ -1,28 +1,21 @@
 package com.mycompany.clientxo.presentation.game;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 import com.mycompany.clientxo.utils.SoundManager;
 
-import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.SVGPath;
-import javafx.util.Duration;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import javafx.util.Duration;
 
 public class GameController {
 
@@ -57,10 +50,6 @@ public class GameController {
             playerOName.setText(nameO);
         }
     }
-
-    // SVG Paths
-    private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
-    private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
 
     @FXML
     public void initialize() {
@@ -110,7 +99,7 @@ public class GameController {
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    App.setRoot("primary");
+                    App.setRoot(Routes.HOME);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -127,20 +116,9 @@ public class GameController {
         }
 
         try {
-            App.setRoot("primary");
+            App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void animateButton(Button btn) {
-        if (btn.getGraphic() != null) {
-            ScaleTransition st = new ScaleTransition(Duration.millis(300), btn.getGraphic());
-            st.setFromX(0.1);
-            st.setFromY(0.1);
-            st.setToX(1.0);
-            st.setToY(1.0);
-            st.play();
         }
     }
 

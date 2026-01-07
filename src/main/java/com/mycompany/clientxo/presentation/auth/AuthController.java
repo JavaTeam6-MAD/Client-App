@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.auth;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class AuthController {
 
     @FXML
     private void onBack(ActionEvent event) throws IOException {
-        App.setRoot("primary");
+        App.setRoot(Routes.HOME);
     }
 
     @FXML
@@ -52,7 +54,7 @@ public class AuthController {
             showAlert("Error", "Please enter a username.");
             return;
         }
-        App.setRoot("LobbyScreen");
+        App.setRoot(Routes.LOBBY);
     }
 
     @FXML

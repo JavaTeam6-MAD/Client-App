@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.homescreen;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 
 import java.io.IOException;
@@ -19,16 +21,16 @@ public class HomeScreenController {
 
     @FXML
     private void onPlayVsComputer() throws IOException {
-        App.setRoot("difficulty");
+        App.setRoot(Routes.DIFFICULTY);
     }
 
     @FXML
     private void onPlayLocalMultiplayer() throws IOException {
-        App.setRoot("localPlayersNameDialog");
+        App.setRoot(Routes.LOCAL_PLAYERS_NAME_DIALOG);
     }
 
     @FXML
     private void onPlayNetworkMultiplayer() throws IOException {
-        App.setRoot("auth");
+        App.setRoot(Routes.AUTH);
     }
 }

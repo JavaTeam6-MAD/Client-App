@@ -1,5 +1,7 @@
 package com.mycompany.clientxo.presentation.localplayersnamedialog;
 
+import com.mycompany.clientxo.core.navigation.Routes;
+
 import com.mycompany.clientxo.App;
 import com.mycompany.clientxo.presentation.game.GameController;
 import com.mycompany.clientxo.presentation.localmultiplayergame.LocalMultiplayerGameController;
@@ -47,7 +49,7 @@ public class LocalPlayersNameDialogController {
     @FXML
     private void onBack() {
         try {
-            App.setRoot("primary");
+            App.setRoot(Routes.HOME);
         } catch (IOException e) {
             e.printStackTrace();
         }
