@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.SVGPath?>
 
 <StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
-           fx:controller="com.mycompany.presentation.game.GameController"
+           fx:controller="com.mycompany.presentation.difficultyscreen.ComputerGameController"
            styleClass="root-container" stylesheets="@styles.css">
 
     <!-- Back Button (Top Left) -->
@@ -50,7 +50,7 @@
             
             <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                 <Label fx:id="playerXName" text="You" styleClass="score-label"/>
-                <Label fx:id="scoreX" text="1" styleClass="score-value, score-value-x"/>
+                <Label fx:id="scoreX" text="0" styleClass="score-value, score-value-x"/>
             </VBox>
             
             <Label text="VS" styleClass="vs-text"/>

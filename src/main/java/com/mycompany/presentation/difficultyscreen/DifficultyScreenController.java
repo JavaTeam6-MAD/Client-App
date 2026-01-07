@@ -10,16 +10,22 @@ public class DifficultyScreenController {
 
     @FXML
     private void onEasy() throws IOException {
+        ComputerGameController.difficulty = 1;
+
         App.setRoot(Routes.GAME);
     }
 
     @FXML
     private void onMedium() throws IOException {
+        ComputerGameController.difficulty = 2;
+
         App.setRoot(Routes.GAME);
     }
 
     @FXML
     private void onHard() throws IOException {
+        ComputerGameController.difficulty = 3;
+
         App.setRoot(Routes.GAME);
     }
 
