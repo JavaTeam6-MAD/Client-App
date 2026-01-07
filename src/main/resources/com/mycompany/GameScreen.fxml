@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.SVGPath?>
+
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.presentation.difficultyscreen.ComputerGameController"
+           styleClass="root-container" stylesheets="@styles.css">
+
+    <!-- Back Button (Top Left) -->
+    <Button styleClass="back-button" onAction="#handleBack" StackPane.alignment="TOP_LEFT">
+        <graphic>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <SVGPath content="M19 12H5M12 19l-7-7 7-7" styleClass="back-icon"/>
+                <Label text="BACK" styleClass="back-label"/>
+            </HBox>
+        </graphic>
+        <StackPane.margin>
+            <Insets top="24" left="24"/>
+        </StackPane.margin>
+    </Button>
+
+    <!-- Recording Indicator (Top Right) - Simple Red Circle -->
+    <StackPane fx:id="recordingIndicator" 
+               style="-fx-min-width: 16; -fx-min-height: 16; -fx-max-width: 16; -fx-max-height: 16; -fx-background-color: #ef4444; -fx-background-radius: 50%; -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.8), 12, 0, 0, 0);" 
+               StackPane.alignment="TOP_RIGHT" visible="false" managed="false">
+        <StackPane.margin>
+            <Insets top="24" right="24"/>
+        </StackPane.margin>
+    </StackPane>
+
+    <VBox alignment="CENTER" spacing="24" maxWidth="480">
+        <padding>
+            <Insets top="40" bottom="24" left="24" right="24"/>
+        </padding>
+
+        <!-- Score Board HUD -->
+        <HBox styleClass="score-board" alignment="CENTER" spacing="0" prefHeight="100" prefWidth="480">
+            <padding>
+                <Insets top="16" bottom="16" left="32" right="32"/>
+            </padding>
+            
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Label fx:id="playerXName" text="You" styleClass="score-label"/>
+                <Label fx:id="scoreX" text="0" styleClass="score-value, score-value-x"/>
+            </VBox>
+            
+            <Label text="VS" styleClass="vs-text"/>
+            
+            <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <Label fx:id="playerOName" text="Computer" styleClass="score-label"/>
+                <Label fx:id="scoreO" text="0" styleClass="score-value, score-value-o"/>
+            </VBox>
+        </HBox>
+
+        <!-- Status Text -->
+        <Label fx:id="statusText" text="You Win!" styleClass="status-text"/>
+
+        <!-- Game Grid -->
+        <VBox styleClass="game-grid-container" alignment="CENTER">
+            <GridPane fx:id="gameGrid" hgap="12" vgap="12" alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" />
+                    <ColumnConstraints hgrow="NEVER" />
+                    <ColumnConstraints hgrow="NEVER" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="NEVER" />
+                    <RowConstraints vgrow="NEVER" />
+                    <RowConstraints vgrow="NEVER" />
+                </rowConstraints>
+
+                <Button userData="0" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <Button userData="1" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Button userData="2" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                
+                <Button userData="3" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Button userData="4" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Button userData="5" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                
+                <Button userData="6" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <Button userData="7" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Button userData="8" styleClass="grid-cell" onAction="#handleGridClick" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            </GridPane>
+        </VBox>
+
+        <!-- End Game Actions -->
+        <HBox alignment="CENTER" spacing="16">
+            <Button fx:id="playAgainButton" text="PLAY AGAIN" styleClass="play-again-button"
+                    onAction="#resetGame" visible="false"/>
+                    
+            <Button fx:id="homeButton" text="HOME" styleClass="game-button, game-button-secondary"
+                    onAction="#onHome" visible="false" />
+        </HBox>
+
+    </VBox>
+
+</StackPane>
