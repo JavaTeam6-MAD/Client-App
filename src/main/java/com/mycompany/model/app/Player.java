@@ -4,21 +4,23 @@
  */
 package com.mycompany.model.app;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author abdel
  */
-public class Player {
+public class Player implements Serializable {
+    private static final long serialVersionUID = 1L;
     int id;
     String userName;
     String password;
-    String avatar ;
+    String avatar;
     long score;
     boolean isActive;
     boolean isAvailable;
-    
+
     public int getId() {
         return id;
     }
@@ -74,7 +76,5 @@ public class Player {
     public void setIsAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
-    
-    
-    
+
 }
