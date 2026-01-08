@@ -288,69 +288,106 @@
     -fx-scale-y: 0.95;
 }
 
-/* Alert / Dialog Styling - Enhanced Cyberpunk Theme (Red Warning) */
+/* Alert / Dialog Styling - Base */
 .dialog-pane {
+    -fx-background-color: #0B122E;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0, 0, 0);
+}
+
+/* Error Dialog (Red) */
+.dialog-pane.error {
     -fx-background-color:
         linear-gradient(from 0% 0% to 0% 100%, rgba(233, 69, 96, 0.1) 0%, transparent 100%),
         #0B122E;
     -fx-border-color: #e94560;
-    -fx-border-width: 2;
-    -fx-border-radius: 15;
-    -fx-background-radius: 15;
     -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 20, 0, 0, 0);
 }
 
+.dialog-pane.error:header .header-panel {
+    -fx-background-color: rgba(233, 69, 96, 0.08);
+    -fx-border-color: rgba(233, 69, 96, 0.3);
+}
+
+.dialog-pane.error:header .header-panel .label {
+    -fx-text-fill: #F85768;
+}
+
+.dialog-pane.error .button {
+    -fx-background-color: linear-gradient(to right, #F85768, #e94560);
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.5), 10, 0, 0, 3);
+}
+
+.dialog-pane.error .button:hover {
+    -fx-background-color: linear-gradient(to right, #ff5e78, #F85768);
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.7), 15, 0, 0, 5);
+}
+
+/* Information/Success Dialog (Green/Cyan) */
+.dialog-pane.information {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, rgba(0, 200, 83, 0.1) 0%, transparent 100%),
+        #0B122E;
+    -fx-border-color: #00C853;
+    -fx-effect: dropshadow(gaussian, rgba(0, 200, 83, 0.4), 20, 0, 0, 0);
+}
+
+.dialog-pane.information:header .header-panel {
+    -fx-background-color: rgba(0, 200, 83, 0.08);
+    -fx-border-color: rgba(0, 200, 83, 0.3);
+}
+
+.dialog-pane.information:header .header-panel .label {
+    -fx-text-fill: #00C853;
+}
+
+.dialog-pane.information .button {
+    -fx-background-color: linear-gradient(to right, #00C853, #69F0AE);
+    -fx-text-fill: #003300; 
+    -fx-effect: dropshadow(gaussian, rgba(0, 200, 83, 0.5), 10, 0, 0, 3);
+}
+
+.dialog-pane.information .button:hover {
+    -fx-background-color: linear-gradient(to right, #69F0AE, #00C853);
+    -fx-effect: dropshadow(gaussian, rgba(105, 240, 174, 0.7), 15, 0, 0, 5);
+}
+
 /* Dialog Content Text */
-.dialog-pane>.content.label {
+.dialog-pane > .content.label {
     -fx-text-fill: #e2e8f0;
     -fx-font-size: 14px;
     -fx-padding: 20 20 20 20;
 }
 
-/* Dialog Header */
+/* Header Panel Base */
 .dialog-pane:header .header-panel {
-    -fx-background-color: rgba(233, 69, 96, 0.08);
     -fx-padding: 16;
     -fx-border-width: 0 0 1 0;
-    -fx-border-color: rgba(233, 69, 96, 0.3);
 }
 
 .dialog-pane:header .header-panel .label {
-    -fx-text-fill: #F85768;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.5), 8, 0, 0, 0);
 }
 
-/* Dialog Buttons */
-.dialog-pane .button-bar {
-    -fx-padding: 16;
-}
-
+/* Base Dialog Buttons */
 .dialog-pane .button {
-    -fx-background-color: linear-gradient(to right, #F85768, #e94560);
+    /* Fallback if specific class not matched */
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
     -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-padding: 10 20;
-    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.5), 10, 0, 0, 3);
 }
 
-.dialog-pane .button:hover {
-    -fx-background-color: linear-gradient(to right, #ff5e78, #F85768);
-    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.7), 15, 0, 0, 5);
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
+.dialog-pane .button-bar {
+    -fx-padding: 16;
 }
 
-.dialog-pane .button:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-/* Cancel Button Specific Styling */
+/* Cancel Button Specific Styling (Keep as is) */
 .dialog-pane .button:cancel {
     -fx-background-color: transparent;
     -fx-border-color: #6b7280;

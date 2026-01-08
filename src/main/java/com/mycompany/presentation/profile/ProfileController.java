@@ -10,13 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-import com.mycompany.data.repo_impl.PlayerRepositoryImpl;
 import com.mycompany.data.repo_interface.PlayerRepository;
 import com.mycompany.model.app.Player;
 
 public class ProfileController {
 
-    private PlayerRepository playerRepository = new PlayerRepositoryImpl();
+    private final ProfileManager profileManager = new ProfileManager();
 
     @FXML
     private TextField usernameField;
@@ -32,21 +31,14 @@ public class ProfileController {
     @FXML
     private Button charAlien;
 
-    private String selectedCharId;
-
     @FXML
     public void initialize() {
-        Player player = playerRepository.getCurrentPlayer();
+        Player player = profileManager.getCurrentPlayer();
         if (player != null) {
             usernameField.setText(player.getUserName());
-            selectedCharId = player.getAvatar();
         } else {
             usernameField.setText("");
         }
-        // selectedCharId = "2"; // Default for now until avatar logic is fully
-        // implemented
-        if (selectedCharId == null)
-            selectedCharId = "robot"; // Default fallback
         updateCharSelectionUI();
     }
 
@@ -60,79 +52,50 @@ public class ProfileController {
         String newName = usernameField.getText();
         String newPass = passwordField.getText();
 
-        boolean success = true;
-        StringBuilder errorMessage = new StringBuilder();
+        String error = profileManager.saveProfile(newName, newPass);
 
-        Player currentPlayer = playerRepository.getCurrentPlayer();
-
-        // Update Username
-        if (newName != null && !newName.trim().isEmpty() && !newName.equals(currentPlayer.getUserName())) {
-            Player res = playerRepository.changeUserName(newName);
-            if (res == null || res.getId() == 0) {
-                success = false;
-                errorMessage.append("Failed to update username.\n");
-            }
-        } else if (newName == null || newName.trim().isEmpty()) {
-            showAlert("Invalid Input", "Username cannot be empty.");
-            return;
-        }
-
-        // Update Password
-        if (newPass != null && !newPass.trim().isEmpty()) {
-            Player res = playerRepository.changePassword(newPass);
-            if (res == null || res.getId() == 0) {
-                success = false;
-                errorMessage.append("Failed to update password.\n");
-            }
-        }
-
-        // Update Avatar
-        String currentAvatar = currentPlayer.getAvatar();
-        if (selectedCharId != null && !selectedCharId.equals(currentAvatar)) {
-            Player res = playerRepository.changeAvatar(selectedCharId);
-            if (res == null || res.getId() == 0) {
-                success = false;
-                errorMessage.append("Failed to update avatar.\n");
-            }
-        }
-
-        if (success) {
+        if (error == null) {
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Profile updated successfully!");
             onBack();
         } else {
-            showAlert("Error", errorMessage.length() == 0 ? "Update failed" : errorMessage.toString());
+            if (error.equals("Username cannot be empty.")) {
+                showAlert(Alert.AlertType.ERROR, "Invalid Input", error);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", error);
+            }
         }
     }
 
     @FXML
     private void onCharRobot() {
-        selectChar("robot");
+        profileManager.selectChar("robot");
+        updateCharSelectionUI();
     }
 
     @FXML
     private void onCharGhost() {
-        selectChar("ghost");
+        profileManager.selectChar("ghost");
+        updateCharSelectionUI();
     }
 
     @FXML
     private void onCharDragon() {
-        selectChar("dragon");
+        profileManager.selectChar("dragon");
+        updateCharSelectionUI();
     }
 
     @FXML
     private void onCharAlien() {
-        selectChar("alien");
-    }
-
-    private void selectChar(String id) {
-        selectedCharId = id;
+        profileManager.selectChar("alien");
         updateCharSelectionUI();
     }
 
     private void updateCharSelectionUI() {
-        highlightButton(charRobot, "robot".equals(selectedCharId));
-        highlightButton(charGhost, "ghost".equals(selectedCharId));
-        highlightButton(charDragon, "dragon".equals(selectedCharId));
-        highlightButton(charAlien, "alien".equals(selectedCharId));
+        String selectedId = profileManager.getSelectedCharId();
+        highlightButton(charRobot, "robot".equals(selectedId));
+        highlightButton(charGhost, "ghost".equals(selectedId));
+        highlightButton(charDragon, "dragon".equals(selectedId));
+        highlightButton(charAlien, "alien".equals(selectedId));
     }
 
     private void highlightButton(Button btn, boolean selected) {
@@ -143,10 +106,17 @@ public class ProfileController {
         }
     }
 
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(content);
-        alert.show();
+
+        // Apply CSS
+        if (alert.getDialogPane().getScene().getWindow() != null) {
+            alert.getDialogPane().getStylesheets()
+                    .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+        }
+
+        alert.showAndWait();
     }
 }
