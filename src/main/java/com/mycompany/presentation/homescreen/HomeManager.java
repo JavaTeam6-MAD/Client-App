@@ -14,4 +14,8 @@ public class HomeManager {
     public Player getCurrentPlayer() {
         return playerRepository.getCurrentPlayer();
     }
+
+    public Player login(String userName, String password) {
+        return playerRepository.login(userName, password);
+    }
 }

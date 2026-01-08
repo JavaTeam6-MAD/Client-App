@@ -37,7 +37,20 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player changeUserName(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Player currentPlayer = playerDAO.get();
+        if (currentPlayer == null || currentPlayer.getId() == 0) {
+            // Handle case where no user is logged in if necessary, though UI should prevent
+            // this
+            return new Player();
+        }
+
+        Player updatedPlayer = remoteDataSource.changeUserName(currentPlayer.getId(), name);
+
+        if (updatedPlayer != null && updatedPlayer.getId() != 0) {
+            // Update local storage
+            playerDAO.save(updatedPlayer);
+        }
+        return updatedPlayer;
     }
 
     @Override
@@ -61,6 +74,18 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public void logout() {
+        Player player = playerDAO.get();
+        if (player != null) {
+            remoteDataSource.logout(player.getId());
+        }
         playerDAO.clear();
+    }
+
+    @Override
+    public void setPlayerUnavailable() {
+        Player player = playerDAO.get();
+        if (player != null) {
+            remoteDataSource.logout(player.getId());
+        }
     }
 }

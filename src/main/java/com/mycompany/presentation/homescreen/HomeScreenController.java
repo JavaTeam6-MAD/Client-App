@@ -5,9 +5,12 @@ import com.mycompany.App;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 
 public class HomeScreenController {
+
+    HomeManager homeManager;
 
     @FXML
     private Button btnPlayVsComputer;
@@ -30,9 +33,19 @@ public class HomeScreenController {
 
     @FXML
     private void onPlayNetworkMultiplayer() throws IOException {
-        HomeManager homeManager = new HomeManager();
-        if (homeManager.getCurrentPlayer() != null) {
-            App.setRoot(Routes.LOBBY);
+         homeManager = new HomeManager();
+        var localPlayer = homeManager.getCurrentPlayer();
+        if (localPlayer != null) {
+            var player = homeManager.login(localPlayer.getUserName(), localPlayer.getPassword());
+            if (player.getId() != 0) {
+                App.setRoot(Routes.LOBBY);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Server Connection Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Could not connect to server. Please try again later.");
+                alert.showAndWait();
+            }
         } else {
             App.setRoot(Routes.AUTH);
         }
