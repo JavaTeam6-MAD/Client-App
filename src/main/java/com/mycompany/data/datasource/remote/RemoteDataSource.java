@@ -19,7 +19,7 @@ public class RemoteDataSource {
     }
 
     public Player changeUserName(int id, String newName) {
-        return sendRequest(new ChangeNameRequestModel(id, newName));
+        return sendPlayerRequest(new ChangeNameRequestModel(id, newName));
     }
 
     public void logout(int playerId) {
