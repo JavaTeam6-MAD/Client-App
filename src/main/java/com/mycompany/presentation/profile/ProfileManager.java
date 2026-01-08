@@ -6,27 +6,26 @@ import com.mycompany.model.app.Player;
 
 public class ProfileManager {
     private final PlayerRepository playerRepository;
-    private final ProfileState state;
+    private String selectedCharId;
 
     public ProfileManager() {
         this.playerRepository = new PlayerRepositoryImpl();
-        this.state = new ProfileState();
     }
 
     public Player getCurrentPlayer() {
         Player player = playerRepository.getCurrentPlayer();
-        if (player != null && state.getSelectedCharId() == null) {
-            state.setSelectedCharId(player.getAvatar() != null ? player.getAvatar() : "robot");
+        if (player != null && selectedCharId == null) {
+            selectedCharId = player.getAvatar() != null ? player.getAvatar() : "robot";
         }
         return player;
     }
 
     public String getSelectedCharId() {
-        return state.getSelectedCharId();
+        return selectedCharId;
     }
 
     public void selectChar(String id) {
-        state.setSelectedCharId(id);
+        this.selectedCharId = id;
     }
 
     // Returns error message or null if success
@@ -64,7 +63,7 @@ public class ProfileManager {
 
         // Update Avatar
         String currentAvatar = currentPlayer.getAvatar();
-        String selectedCharId = state.getSelectedCharId();
+        // String selectedCharId is already a field in this class, using it directly
 
         if (selectedCharId != null && !selectedCharId.equals(currentAvatar)) {
             Player res = playerRepository.changeAvatar(selectedCharId);
