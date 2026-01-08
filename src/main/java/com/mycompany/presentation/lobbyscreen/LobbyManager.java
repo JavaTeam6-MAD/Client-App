@@ -4,6 +4,8 @@ import com.mycompany.data.repo_impl.PlayerRepositoryImpl;
 import com.mycompany.data.repo_interface.PlayerRepository;
 import com.mycompany.model.app.Player;
 
+import java.util.List;
+
 public class LobbyManager {
     private final PlayerRepository playerRepository;
 
@@ -19,6 +21,9 @@ public class LobbyManager {
         playerRepository.logout();
     }
 
+    public List<Player> getFriends() {
+        return playerRepository.getFriends();
+    }
     public void leaveLobby() {
         playerRepository.setPlayerUnavailable();
     }
