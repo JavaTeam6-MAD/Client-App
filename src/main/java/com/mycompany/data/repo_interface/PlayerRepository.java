@@ -26,4 +26,6 @@ public interface PlayerRepository {
     Player getCurrentPlayer();
 
     void logout();
+
+    void setPlayerUnavailable();
 }
