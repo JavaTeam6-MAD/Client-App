@@ -4,7 +4,6 @@
  */
 package com.mycompany.data.repo_interface;
 
-import com.mycompany.model.app.Game;
 import com.mycompany.model.app.RecordedGame;
 import java.util.List;
 
@@ -13,6 +12,5 @@ import java.util.List;
  * @author abdel
  */
 public interface GameRepository {
-    List<Game> getGameHistory();
-    RecordedGame getRecordedGame(int gameId);
+    List<RecordedGame> getGameHistory(int playerId);
 }

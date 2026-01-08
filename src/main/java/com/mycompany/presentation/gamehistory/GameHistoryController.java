@@ -2,10 +2,14 @@ package com.mycompany.presentation.gamehistory;
 
 import com.mycompany.core.navigation.Routes;
 import com.mycompany.App;
+import com.mycompany.data.datasource.local.PlayerDAO;
+import com.mycompany.model.app.RecordedGame;
+import com.mycompany.model.app.Player;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -59,6 +63,8 @@ public class GameHistoryController implements Initializable {
     private Button btnToggleRecorded;
 
     private List<GameHistory> gameHistoryList;
+    private GameHistoryManager gameHistoryManager;
+    private PlayerDAO playerDAO;
 
     // Filter state
     private enum ResultFilter {
@@ -70,6 +76,9 @@ public class GameHistoryController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        gameHistoryManager = new GameHistoryManager();
+        playerDAO = new PlayerDAO();
+
         loadGameHistory();
         updateFilterButtonStates();
         displayGameHistory();
@@ -77,53 +86,69 @@ public class GameHistoryController implements Initializable {
     }
 
     private void loadGameHistory() {
-        // Mock data - In a real application, this would fetch from a server/database
+        // Fetch real data from database via repository
         gameHistoryList = new ArrayList<>();
 
-        gameHistoryList.add(new GameHistory(
-                "game001",
-                LocalDateTime.now().minusDays(1).minusHours(3),
-                "CyberNinja",
-                "robot",
-                true,
-                false,
-                true));
+        // Get current player
+        Player currentPlayer = playerDAO.get();
+        if (currentPlayer == null) {
+            System.err.println("No current player found. Cannot load game history.");
+            return;
+        }
 
-        gameHistoryList.add(new GameHistory(
-                "game002",
-                LocalDateTime.now().minusDays(2).minusHours(5),
-                "PixelMaster",
-                "alien",
-                false,
-                false,
-                true));
+        // Fetch games from server
+        List<RecordedGame> recordedGames = gameHistoryManager.getGameHistory(currentPlayer.getId());
 
-        gameHistoryList.add(new GameHistory(
-                "game003",
-                LocalDateTime.now().minusDays(3).minusHours(7),
-                "GhostKing",
-                "ghost",
-                true,
-                false,
-                false));
+        // Check if no games or error
+        if (recordedGames.isEmpty() || recordedGames.get(0).getGameId() == 0) {
+            System.out.println("No game history found for player: " + currentPlayer.getUserName());
+            return;
+        }
 
-        gameHistoryList.add(new GameHistory(
-                "game004",
-                LocalDateTime.now().minusDays(5).minusHours(2),
-                "DragonSlayer",
-                "dragon",
-                false,
-                true,
-                true));
+        // Convert RecordedGame to GameHistory (UI model)
+        for (RecordedGame game : recordedGames) {
+            GameHistory historyItem = convertToGameHistory(game, currentPlayer.getId());
+            gameHistoryList.add(historyItem);
+        }
 
-        gameHistoryList.add(new GameHistory(
-                "game005",
-                LocalDateTime.now().minusDays(7).minusHours(4),
-                "NeonWarrior",
-                "robot",
-                true,
-                false,
-                true));
+        System.out.println("Loaded " + gameHistoryList.size() + " games from database");
+    }
+
+    private GameHistory convertToGameHistory(RecordedGame recorded, int currentPlayerId) {
+        // Determine opponent
+        String opponentName;
+        String opponentCharacter;
+        boolean playerWon;
+
+        if (recorded.getPlayer1Id() == currentPlayerId) {
+            // Current player is Player 1
+            opponentName = recorded.getPlayer2Name();
+            opponentCharacter = recorded.getPlayer2Avatar();
+            playerWon = (recorded.getStatus() == 1);
+        } else {
+            // Current player is Player 2
+            opponentName = recorded.getPlayer1Name();
+            opponentCharacter = recorded.getPlayer1Avatar();
+            playerWon = (recorded.getStatus() == 2);
+        }
+
+        boolean isDraw = (recorded.getStatus() == 3);
+
+        // Convert Date to LocalDateTime
+        LocalDateTime dateTime = recorded.getDate()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        return new GameHistory(
+                String.valueOf(recorded.getGameId()),
+                dateTime,
+                opponentName,
+                opponentCharacter,
+                playerWon,
+                isDraw,
+                false // recordedGameAvailable - not implemented yet
+        );
     }
 
     private void displayGameHistory() {
