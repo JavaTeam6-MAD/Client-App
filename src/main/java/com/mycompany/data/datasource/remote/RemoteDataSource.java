@@ -36,8 +36,7 @@ public class RemoteDataSource {
       }
       return new java.util.ArrayList<>();
   }
-    private Player sendRequest(Object request) {
-
+   
     public Player changeUserName(int id, String newName) {
         return sendPlayerRequest(new ChangeNameRequestModel(id, newName));
     }

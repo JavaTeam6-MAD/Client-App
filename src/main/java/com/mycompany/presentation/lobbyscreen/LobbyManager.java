@@ -23,6 +23,7 @@ public class LobbyManager {
 
     public List<Player> getFriends() {
         return playerRepository.getFriends();
+    }
     public void leaveLobby() {
         playerRepository.setPlayerUnavailable();
     }
