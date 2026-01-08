@@ -8,6 +8,8 @@ import com.mycompany.model.requestModel.getFriendsRequestModel;
 
 import java.util.List;
 import com.mycompany.model.requestModel.ChangeNameRequestModel;
+import com.mycompany.model.requestModel.ChangePasswordRequestModel;
+import com.mycompany.model.requestModel.ChangeAvatarRequestModel;
 
 public class RemoteDataSource {
     private static final String SERVER_IP = "localhost";
@@ -39,6 +41,14 @@ public class RemoteDataSource {
    
     public Player changeUserName(int id, String newName) {
         return sendPlayerRequest(new ChangeNameRequestModel(id, newName));
+    }
+
+    public Player changePassword(int id, String password) {
+        return sendPlayerRequest(new ChangePasswordRequestModel(id, password));
+    }
+
+    public Player changeAvatar(int id, String avatar) {
+        return sendPlayerRequest(new ChangeAvatarRequestModel(id, avatar));
     }
 
     public void logout(int playerId) {

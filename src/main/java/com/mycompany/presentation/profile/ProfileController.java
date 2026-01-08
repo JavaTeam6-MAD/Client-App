@@ -39,11 +39,14 @@ public class ProfileController {
         Player player = playerRepository.getCurrentPlayer();
         if (player != null) {
             usernameField.setText(player.getUserName());
-            // selectedCharId = player.getAvatar(); // Use this when avatar is synced
+            selectedCharId = player.getAvatar();
         } else {
             usernameField.setText("");
         }
-        selectedCharId = "2"; // Default for now until avatar logic is fully implemented
+        // selectedCharId = "2"; // Default for now until avatar logic is fully
+        // implemented
+        if (selectedCharId == null)
+            selectedCharId = "robot"; // Default fallback
         updateCharSelectionUI();
     }
 
@@ -57,17 +60,46 @@ public class ProfileController {
         String newName = usernameField.getText();
         String newPass = passwordField.getText();
 
-        if (newName == null || newName.trim().isEmpty()) {
+        boolean success = true;
+        StringBuilder errorMessage = new StringBuilder();
+
+        Player currentPlayer = playerRepository.getCurrentPlayer();
+
+        // Update Username
+        if (newName != null && !newName.trim().isEmpty() && !newName.equals(currentPlayer.getUserName())) {
+            Player res = playerRepository.changeUserName(newName);
+            if (res == null || res.getId() == 0) {
+                success = false;
+                errorMessage.append("Failed to update username.\n");
+            }
+        } else if (newName == null || newName.trim().isEmpty()) {
             showAlert("Invalid Input", "Username cannot be empty.");
             return;
         }
 
-        Player updatedPlayer = playerRepository.changeUserName(newName);
+        // Update Password
+        if (newPass != null && !newPass.trim().isEmpty()) {
+            Player res = playerRepository.changePassword(newPass);
+            if (res == null || res.getId() == 0) {
+                success = false;
+                errorMessage.append("Failed to update password.\n");
+            }
+        }
 
-        if (updatedPlayer != null && updatedPlayer.getId() != 0) {
+        // Update Avatar
+        String currentAvatar = currentPlayer.getAvatar();
+        if (selectedCharId != null && !selectedCharId.equals(currentAvatar)) {
+            Player res = playerRepository.changeAvatar(selectedCharId);
+            if (res == null || res.getId() == 0) {
+                success = false;
+                errorMessage.append("Failed to update avatar.\n");
+            }
+        }
+
+        if (success) {
             onBack();
         } else {
-            showAlert("Error", "Failed to update profile. Please try again.");
+            showAlert("Error", errorMessage.length() == 0 ? "Update failed" : errorMessage.toString());
         }
     }
 

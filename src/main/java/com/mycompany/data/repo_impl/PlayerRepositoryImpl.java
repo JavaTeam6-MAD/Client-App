@@ -55,7 +55,32 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player changePassword(String password) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Player currentPlayer = playerDAO.get();
+        if (currentPlayer == null || currentPlayer.getId() == 0) {
+            return new Player();
+        }
+
+        Player updatedPlayer = remoteDataSource.changePassword(currentPlayer.getId(), password);
+
+        if (updatedPlayer != null && updatedPlayer.getId() != 0) {
+            playerDAO.save(updatedPlayer);
+        }
+        return updatedPlayer;
+    }
+
+    @Override
+    public Player changeAvatar(String avatar) {
+        Player currentPlayer = playerDAO.get();
+        if (currentPlayer == null || currentPlayer.getId() == 0) {
+            return new Player();
+        }
+
+        Player updatedPlayer = remoteDataSource.changeAvatar(currentPlayer.getId(), avatar);
+
+        if (updatedPlayer != null && updatedPlayer.getId() != 0) {
+            playerDAO.save(updatedPlayer);
+        }
+        return updatedPlayer;
     }
 
     @Override
