@@ -56,7 +56,7 @@ public class LobbyScreenController implements Initializable {
                 lblUserChar.setText(getCharacterSymbol(player.getAvatar()));
             }
         }
-        
+
         loadFriends();
     }
 
@@ -64,20 +64,28 @@ public class LobbyScreenController implements Initializable {
         // Update Tab Active States
         String activeStyle = "-fx-background-color: rgba(168, 85, 247, 0.2); -fx-border-color: #a855f7;";
         String inactiveStyle = "-fx-background-color: transparent; -fx-border-color: rgba(255,255,255,0.1);";
-        
+
         if (sortByScore) {
-             btnTabFriends.setStyle("-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + inactiveStyle);
-             btnTabLeaderboard.setStyle("-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + activeStyle);
+            btnTabFriends.setStyle(
+                    "-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
+                            + inactiveStyle);
+            btnTabLeaderboard.setStyle(
+                    "-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
+                            + activeStyle);
         } else {
-             btnTabFriends.setStyle("-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + activeStyle);
-             btnTabLeaderboard.setStyle("-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + inactiveStyle);
+            btnTabFriends.setStyle(
+                    "-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
+                            + activeStyle);
+            btnTabLeaderboard.setStyle(
+                    "-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
+                            + inactiveStyle);
         }
 
         // Run on background thread to avoid blocking UI
         new Thread(() -> {
             // storage in ArrayList to ensure mutability
             List<Player> friends = new java.util.ArrayList<>(lobbyManager.getFriends());
-            
+
             if (sortByScore) {
                 // Add current player for leaderboard
                 Player currentPlayer = lobbyManager.getCurrentPlayer();
@@ -94,42 +102,45 @@ public class LobbyScreenController implements Initializable {
                         friends.add(currentPlayer);
                     }
                 }
-                
+
                 // Sort by score descending (high to low)
                 friends.sort((p1, p2) -> Long.compare(p2.getScore(), p1.getScore()));
                 currentView = "LEADERBOARD";
             } else {
-                 // Sort friends: Online first, then Offline
-                 friends.sort((p1, p2) -> {
-                     // isActive() returns true for online
-                     boolean p1Online = p1.isIsActive();
-                     boolean p2Online = p2.isIsActive();
-                     if (p1Online && !p2Online) return -1;
-                     if (!p1Online && p2Online) return 1;
-                     return 0;
-                 });
-                 currentView = "FRIENDS";
+                // Sort friends: Online first, then Offline
+                friends.sort((p1, p2) -> {
+                    // isActive() returns true for online
+                    boolean p1Online = p1.isIsActive();
+                    boolean p2Online = p2.isIsActive();
+                    if (p1Online && !p2Online)
+                        return -1;
+                    if (!p1Online && p2Online)
+                        return 1;
+                    return 0;
+                });
+                currentView = "FRIENDS";
             }
-            
+
             javafx.application.Platform.runLater(() -> {
                 updatePlayerList(friends);
             });
         }).start();
     }
-    
+
     // Default loadFriends for initial load (Friends view)
     private void loadFriends() {
         loadFriends(false);
     }
 
     private void updatePlayerList(java.util.List<Player> players) {
-        if (players == null) return;
-        
+        if (players == null)
+            return;
+
         int onlineCount = 0;
         int offlineCount = 0;
-        
+
         listContainer.getChildren().clear();
-        
+
         for (Player p : players) {
             // Check if it's the current user
             Player currentUser = lobbyManager.getCurrentPlayer();
@@ -142,13 +153,18 @@ public class LobbyScreenController implements Initializable {
             }
 
             boolean isOnline = p.isIsActive(); // Using isActive as isOnline
-            if (isOnline) onlineCount++; else offlineCount++;
-            
+            if (isOnline)
+                onlineCount++;
+            else
+                offlineCount++;
+
             listContainer.getChildren().add(createPlayerItem(p));
         }
-        
-        if (lblOnlineCount != null) lblOnlineCount.setText("Online (" + onlineCount + ")");
-        if (lblOfflineCount != null) lblOfflineCount.setText("Offline (" + offlineCount + ")");
+
+        if (lblOnlineCount != null)
+            lblOnlineCount.setText("Online (" + onlineCount + ")");
+        if (lblOfflineCount != null)
+            lblOfflineCount.setText("Offline (" + offlineCount + ")");
     }
 
     private HBox createPlayerItem(Player player) {
@@ -160,7 +176,8 @@ public class LobbyScreenController implements Initializable {
         // Highlight current player in Leaderboard
         Player currentUser = lobbyManager.getCurrentPlayer();
         if (currentUser != null && player.getId() == currentUser.getId()) {
-            item.setStyle("-fx-border-color: #6900ff; -fx-border-width: 2px; -fx-border-radius: 10px; -fx-background-radius: 10px;");
+            item.setStyle(
+                    "-fx-border-color: #6900ff; -fx-border-width: 2px; -fx-border-radius: 10px; -fx-background-radius: 10px;");
         }
 
         // Avatar
@@ -168,7 +185,7 @@ public class LobbyScreenController implements Initializable {
         avatar.getStyleClass().add("player-avatar");
         Label avatarEmoji = new Label(getCharacterSymbol(player.getAvatar()));
         avatarEmoji.getStyleClass().add("player-avatar-text");
-        
+
         // Status Indicator
         javafx.scene.shape.Circle statusDot = new javafx.scene.shape.Circle(5);
         if (player.isIsActive()) {
@@ -178,7 +195,7 @@ public class LobbyScreenController implements Initializable {
         }
         statusDot.setStroke(javafx.scene.paint.Color.WHITE);
         statusDot.setStrokeWidth(1);
-        
+
         avatar.getChildren().addAll(avatarEmoji, statusDot);
         javafx.scene.layout.StackPane.setAlignment(statusDot, javafx.geometry.Pos.BOTTOM_RIGHT);
         javafx.scene.layout.StackPane.setMargin(statusDot, new javafx.geometry.Insets(0, 0, 4, 4));
@@ -189,7 +206,7 @@ public class LobbyScreenController implements Initializable {
         name.getStyleClass().add("player-name");
         Label score = new Label("Score: " + player.getScore());
         score.getStyleClass().add("player-score");
-        
+
         // Activ Status
         String statusText;
         String statusColor;
@@ -205,7 +222,7 @@ public class LobbyScreenController implements Initializable {
         }
         Label availability = new Label(statusText);
         availability.setStyle("-fx-font-size: 10px; -fx-text-fill: " + statusColor + ";");
-        
+
         info.getChildren().addAll(name, score, availability);
         javafx.scene.layout.HBox.setHgrow(info, javafx.scene.layout.Priority.ALWAYS);
 
@@ -214,19 +231,25 @@ public class LobbyScreenController implements Initializable {
         btnAction.getStyleClass().addAll("game-button", "game-button-outline");
         btnAction.setStyle("-fx-font-size: 12px; -fx-padding: 8 16; -fx-min-height: 36px; -fx-pref-height: 36px;");
         btnAction.setText("Challenge");
-        
+
         // Disable challenge if offline
         if (!player.isIsActive()) {
             btnAction.setDisable(true);
         }
-        
+
         // "button getChlange do not do any ting in him"
         btnAction.setOnAction(e -> {
             // Do nothing as requested
-             System.out.println("Challenge clicked for " + player.getUserName());
+            System.out.println("Challenge clicked for " + player.getUserName());
         });
 
-        item.getChildren().addAll(avatar, info, btnAction);
+        item.getChildren().addAll(avatar, info);
+
+        // Only show Challenge button in Friends view
+        if (!"LEADERBOARD".equals(currentView)) {
+            item.getChildren().add(btnAction);
+        }
+
         return item;
     }
 
@@ -237,7 +260,7 @@ public class LobbyScreenController implements Initializable {
 
     @FXML
     private void onTabLeaderboard() {
-         loadFriends(true);
+        loadFriends(true);
     }
 
     @FXML
@@ -279,7 +302,7 @@ public class LobbyScreenController implements Initializable {
 
             javafx.scene.control.DialogPane dialogPane = alert.getDialogPane();
             if (getClass().getResource("/com/mycompany/styles.css") != null) {
-                 dialogPane.getStylesheets().add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+                dialogPane.getStylesheets().add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
             }
             dialogPane.getStyleClass().add("dialog-pane");
 
