@@ -10,7 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import com.mycompany.data.repo_impl.PlayerRepositoryImpl;
+import com.mycompany.data.repo_interface.PlayerRepository;
+import com.mycompany.model.app.Player;
+
 public class ProfileController {
+
+    private PlayerRepository playerRepository = new PlayerRepositoryImpl();
 
     @FXML
     private TextField usernameField;
@@ -30,8 +36,14 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
-        usernameField.setText("Ahmed");
-        selectedCharId = "2";
+        Player player = playerRepository.getCurrentPlayer();
+        if (player != null) {
+            usernameField.setText(player.getUserName());
+            // selectedCharId = player.getAvatar(); // Use this when avatar is synced
+        } else {
+            usernameField.setText("");
+        }
+        selectedCharId = "2"; // Default for now until avatar logic is fully implemented
         updateCharSelectionUI();
     }
 
@@ -50,7 +62,13 @@ public class ProfileController {
             return;
         }
 
-        App.setRoot(Routes.LOBBY);
+        Player updatedPlayer = playerRepository.changeUserName(newName);
+
+        if (updatedPlayer != null && updatedPlayer.getId() != 0) {
+            onBack();
+        } else {
+            showAlert("Error", "Failed to update profile. Please try again.");
+        }
     }
 
     @FXML

@@ -4,6 +4,7 @@ import com.mycompany.model.app.Player;
 import com.mycompany.model.requestModel.LoginRequestModel;
 import com.mycompany.model.requestModel.LogoutRequestModel;
 import com.mycompany.model.requestModel.RegisterRequestModel;
+import com.mycompany.model.requestModel.ChangeNameRequestModel;
 
 public class RemoteDataSource {
     private static final String SERVER_IP = "localhost";
@@ -15,6 +16,10 @@ public class RemoteDataSource {
 
     public Player register(String username, String password) {
         return sendPlayerRequest(new RegisterRequestModel(username, password));
+    }
+
+    public Player changeUserName(int id, String newName) {
+        return sendPlayerRequest(new ChangeNameRequestModel(id, newName));
     }
 
     public void logout(int playerId) {
