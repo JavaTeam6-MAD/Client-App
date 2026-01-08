@@ -18,6 +18,9 @@ public class RemoteDataSource {
         return sendPlayerRequest(new RegisterRequestModel(username, password));
     }
 
+    public Player changeUserName(int id, String newName) {
+        return sendRequest(new ChangeNameRequestModel(id, newName));
+    }
 
     public void logout(int playerId) {
         try {
