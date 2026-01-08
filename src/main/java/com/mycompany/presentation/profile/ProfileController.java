@@ -58,6 +58,9 @@ public class ProfileController {
     @FXML
     private void onSave() throws IOException {
         String newName = usernameField.getText();
+        if (newName != null) {
+            newName = newName.trim();
+        }
         String newPass = passwordField.getText();
 
         boolean success = true;
@@ -73,7 +76,7 @@ public class ProfileController {
                 errorMessage.append("Failed to update username.\n");
             }
         } else if (newName == null || newName.trim().isEmpty()) {
-            showAlert("Invalid Input", "Username cannot be empty.");
+            showAlert(Alert.AlertType.ERROR, "Invalid Input", "Username cannot be empty.");
             return;
         }
 
@@ -97,9 +100,11 @@ public class ProfileController {
         }
 
         if (success) {
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Profile updated successfully!");
             onBack();
         } else {
-            showAlert("Error", errorMessage.length() == 0 ? "Update failed" : errorMessage.toString());
+            showAlert(Alert.AlertType.ERROR, "Error",
+                    errorMessage.length() == 0 ? "Update failed" : errorMessage.toString());
         }
     }
 
@@ -143,10 +148,17 @@ public class ProfileController {
         }
     }
 
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(content);
-        alert.show();
+
+        // Apply CSS
+        if (alert.getDialogPane().getScene().getWindow() != null) {
+            alert.getDialogPane().getStylesheets()
+                    .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+        }
+
+        alert.showAndWait();
     }
 }
