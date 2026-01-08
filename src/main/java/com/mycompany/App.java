@@ -1,6 +1,7 @@
 package com.mycompany;
 
 import com.mycompany.core.navigation.Routes;
+import com.mycompany.data.datasource.local.PlayerDAO;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

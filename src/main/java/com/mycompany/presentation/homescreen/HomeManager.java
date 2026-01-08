@@ -16,6 +16,7 @@ public class HomeManager {
     }
 
     public Player login(String userName, String password) {
+        System.out.println(userName + password);
         return playerRepository.login(userName, password);
     }
 }
