@@ -18,13 +18,7 @@ public class RemoteDataSource {
         return sendPlayerRequest(new RegisterRequestModel(username, password));
     }
 
-<<<<<<< HEAD
-    public Player changeUserName(int id, String newName) {
-        return sendRequest(new ChangeNameRequestModel(id, newName));
-    }
 
-    private Player sendRequest(Object request) {
-=======
     public void logout(int playerId) {
         try {
             RemoteServerConnection.getInstance().connect(SERVER_IP, SERVER_PORT);
@@ -35,7 +29,6 @@ public class RemoteDataSource {
     }
 
     private Player sendPlayerRequest(Object request) {
->>>>>>> 840542dd57f2928295c6fbbc127c4e88591f9ebf
         try {
             RemoteServerConnection.getInstance().connect(SERVER_IP, SERVER_PORT);
             RemoteServerConnection.getInstance().send(request);
