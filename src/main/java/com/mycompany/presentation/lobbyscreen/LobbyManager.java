@@ -18,4 +18,8 @@ public class LobbyManager {
     public void logout() {
         playerRepository.logout();
     }
+
+    public void leaveLobby() {
+        playerRepository.setPlayerUnavailable();
+    }
 }

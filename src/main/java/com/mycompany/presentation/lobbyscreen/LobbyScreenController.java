@@ -87,6 +87,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onBack() {
         try {
+            lobbyManager.leaveLobby();
             App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();

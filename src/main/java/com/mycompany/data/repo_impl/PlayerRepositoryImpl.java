@@ -68,6 +68,18 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public void logout() {
+        Player player = playerDAO.get();
+        if (player != null) {
+            remoteDataSource.logout(player.getId());
+        }
         playerDAO.clear();
+    }
+
+    @Override
+    public void setPlayerUnavailable() {
+        Player player = playerDAO.get();
+        if (player != null) {
+            remoteDataSource.logout(player.getId());
+        }
     }
 }
