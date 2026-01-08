@@ -4,6 +4,8 @@ import com.mycompany.data.datasource.local.PlayerDAO;
 import com.mycompany.data.datasource.remote.RemoteDataSource;
 import com.mycompany.data.repo_interface.PlayerRepository;
 import com.mycompany.model.app.Player;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerRepositoryImpl implements PlayerRepository {
@@ -58,7 +60,11 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public List<Player> getFriends() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Player currentPlayer = playerDAO.get();
+        if (currentPlayer != null) {
+            return remoteDataSource.getFriends(currentPlayer.getId());
+        }
+        return new ArrayList<>();
     }
 
     @Override

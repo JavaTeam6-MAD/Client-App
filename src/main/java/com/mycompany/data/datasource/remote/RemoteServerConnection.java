@@ -1,8 +1,14 @@
 package com.mycompany.data.datasource.remote;
 
+import com.mycompany.model.app.Player;
+
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 
 public class RemoteServerConnection {
     private static RemoteServerConnection instance;
@@ -33,5 +39,12 @@ public class RemoteServerConnection {
 
     public Object receive() throws Exception {
         return (in != null) ? in.readObject() : null;
+    }
+    public List receiveList() throws IOException, ClassNotFoundException {
+        Object response = (in != null) ? in.readObject() : null;
+        if (response instanceof List) {
+           return (List) response;
+        }
+        return null;
     }
 }
