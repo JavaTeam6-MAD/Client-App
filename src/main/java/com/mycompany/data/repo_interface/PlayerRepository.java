@@ -21,6 +21,8 @@ public interface PlayerRepository {
 
     Player changePassword(String password);
 
+    Player changeAvatar(String avatar);
+
     List<Player> getFriends();
 
     Player getCurrentPlayer();
