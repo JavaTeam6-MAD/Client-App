@@ -61,6 +61,18 @@ public class LobbyScreenController implements Initializable {
     }
 
     private void loadFriends(boolean sortByScore) {
+        // Update Tab Active States
+        String activeStyle = "-fx-background-color: rgba(168, 85, 247, 0.2); -fx-border-color: #a855f7;";
+        String inactiveStyle = "-fx-background-color: transparent; -fx-border-color: rgba(255,255,255,0.1);";
+        
+        if (sortByScore) {
+             btnTabFriends.setStyle("-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + inactiveStyle);
+             btnTabLeaderboard.setStyle("-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + activeStyle);
+        } else {
+             btnTabFriends.setStyle("-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + activeStyle);
+             btnTabLeaderboard.setStyle("-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; " + inactiveStyle);
+        }
+
         // Run on background thread to avoid blocking UI
         new Thread(() -> {
             // storage in ArrayList to ensure mutability
@@ -70,13 +82,32 @@ public class LobbyScreenController implements Initializable {
                 // Add current player for leaderboard
                 Player currentPlayer = lobbyManager.getCurrentPlayer();
                 if (currentPlayer != null) {
-                    friends.add(currentPlayer);
+                    // Fix: Check for duplicates before adding
+                    boolean exists = false;
+                    for (Player p : friends) {
+                        if (p.getId() == currentPlayer.getId()) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        friends.add(currentPlayer);
+                    }
                 }
                 
                 // Sort by score descending (high to low)
                 friends.sort((p1, p2) -> Long.compare(p2.getScore(), p1.getScore()));
                 currentView = "LEADERBOARD";
             } else {
+                 // Sort friends: Online first, then Offline
+                 friends.sort((p1, p2) -> {
+                     // isActive() returns true for online
+                     boolean p1Online = p1.isIsActive();
+                     boolean p2Online = p2.isIsActive();
+                     if (p1Online && !p2Online) return -1;
+                     if (!p1Online && p2Online) return 1;
+                     return 0;
+                 });
                  currentView = "FRIENDS";
             }
             
@@ -123,7 +154,14 @@ public class LobbyScreenController implements Initializable {
     private HBox createPlayerItem(Player player) {
         HBox item = new HBox(10);
         item.getStyleClass().add("player-item");
+        item.setPadding(new javafx.geometry.Insets(10));
         item.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        // Highlight current player in Leaderboard
+        Player currentUser = lobbyManager.getCurrentPlayer();
+        if (currentUser != null && player.getId() == currentUser.getId()) {
+            item.setStyle("-fx-border-color: #6900ff; -fx-border-width: 2px; -fx-border-radius: 10px; -fx-background-radius: 10px;");
+        }
 
         // Avatar
         javafx.scene.layout.StackPane avatar = new javafx.scene.layout.StackPane();
@@ -151,7 +189,24 @@ public class LobbyScreenController implements Initializable {
         name.getStyleClass().add("player-name");
         Label score = new Label("Score: " + player.getScore());
         score.getStyleClass().add("player-score");
-        info.getChildren().addAll(name, score);
+        
+        // Activ Status
+        String statusText;
+        String statusColor;
+        if (!player.isIsActive()) {
+            statusText = "Offline";
+            statusColor = "#9ca3af"; // Gray
+        } else if (player.isIsAvailable()) {
+            statusText = "Available";
+            statusColor = "#10b981"; // Green
+        } else {
+            statusText = "In Game";
+            statusColor = "#f59e0b"; // Amber/Orange
+        }
+        Label availability = new Label(statusText);
+        availability.setStyle("-fx-font-size: 10px; -fx-text-fill: " + statusColor + ";");
+        
+        info.getChildren().addAll(name, score, availability);
         javafx.scene.layout.HBox.setHgrow(info, javafx.scene.layout.Priority.ALWAYS);
 
         // Action Button
@@ -159,6 +214,11 @@ public class LobbyScreenController implements Initializable {
         btnAction.getStyleClass().addAll("game-button", "game-button-outline");
         btnAction.setStyle("-fx-font-size: 12px; -fx-padding: 8 16; -fx-min-height: 36px; -fx-pref-height: 36px;");
         btnAction.setText("Challenge");
+        
+        // Disable challenge if offline
+        if (!player.isIsActive()) {
+            btnAction.setDisable(true);
+        }
         
         // "button getChlange do not do any ting in him"
         btnAction.setOnAction(e -> {
