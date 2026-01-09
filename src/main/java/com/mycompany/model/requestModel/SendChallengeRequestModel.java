@@ -13,41 +13,38 @@ import java.io.Serializable;
 public class SendChallengeRequestModel implements Serializable{
     private static final long serialVersionUID = 1L;
    
-    int player1Id;
-    int player2Id;
-    boolean player1isRecording; 
+    int senderPlayerId;
+    int receiverPlayer2Id;
+    boolean senderPLayerisRecording; 
 
-    public SendChallengeRequestModel(int player1Id, int player2Id, boolean player1isRecording) {
-        this.player1Id = player1Id;
-        this.player2Id = player2Id;
-        this.player1isRecording = player1isRecording;
+    public SendChallengeRequestModel(int senderPlayerId, int receiverPlayer2Id) {
+        this.senderPlayerId = senderPlayerId;
+        this.receiverPlayer2Id = receiverPlayer2Id;
     }
 
-    public int getPlayer1Id() {
-        return player1Id;
+    public int getSenderPlayerId() {
+        return senderPlayerId;
     }
 
-    public void setPlayer1Id(int player1Id) {
-        this.player1Id = player1Id;
+    public void setSenderPlayerId(int senderPlayerId) {
+        this.senderPlayerId = senderPlayerId;
     }
 
-    public int getPlayer2Id() {
-        return player2Id;
+    public int getReceiverPlayer2Id() {
+        return receiverPlayer2Id;
     }
 
-    public void setPlayer2Id(int player2Id) {
-        this.player2Id = player2Id;
+    public void setReceiverPlayer2Id(int receiverPlayer2Id) {
+        this.receiverPlayer2Id = receiverPlayer2Id;
     }
 
-    public boolean isPlayer1isRecording() {
-        return player1isRecording;
+    public boolean isSenderPLayerisRecording() {
+        return senderPLayerisRecording;
     }
 
-    public void setPlayer1isRecording(boolean player1isRecording) {
-        this.player1isRecording = player1isRecording;
+    public void setSenderPLayerisRecording(boolean senderPLayerisRecording) {
+        this.senderPLayerisRecording = senderPLayerisRecording;
     }
-    
-    
     
     
 }
