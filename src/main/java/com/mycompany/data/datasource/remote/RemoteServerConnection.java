@@ -63,6 +63,10 @@ public class RemoteServerConnection {
         return (in != null) ? in.readObject() : null;
     }
 
+    public ObjectInputStream getInputStream() {
+        return in;
+    }
+
     public List receiveList() throws IOException, ClassNotFoundException {
         Object response = (in != null) ? in.readObject() : null;
         if (response instanceof List) {

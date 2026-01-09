@@ -1,69 +1,46 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.model.responseModel;
 
 import java.io.Serializable;
 
-/**
- *
- * @author abdel
- */
-public class MakeMoveResponseModel implements Serializable{
-     private static final long serialVersionUID = 1L;
-    int symbol;
-    int senderPlayer1Id;
-    int receiverPlayer2Id;
-    int row;
-    int column;
+public class MakeMoveResponseModel implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private int row;
+    private int col;
+    private int playerId; // Who made the move
+    private String symbol; // "X" or "O"
+    private boolean isGameOver;
+    private String winner; // "X", "O", "Draw", or null
 
-    public MakeMoveResponseModel(int symbol, int senderPlayer1Id, int receiverPlayer2Id, int row, int column) {
-        this.symbol = symbol;
-        this.senderPlayer1Id = senderPlayer1Id;
-        this.receiverPlayer2Id = receiverPlayer2Id;
+    public MakeMoveResponseModel(int row, int col, int playerId, String symbol, boolean isGameOver, String winner) {
         this.row = row;
-        this.column = column;
-    }
-
-    public int getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(int symbol) {
+        this.col = col;
+        this.playerId = playerId;
         this.symbol = symbol;
-    }
-
-    public int getSenderPlayer1Id() {
-        return senderPlayer1Id;
-    }
-
-    public void setSenderPlayer1Id(int senderPlayer1Id) {
-        this.senderPlayer1Id = senderPlayer1Id;
-    }
-
-    public int getReceiverPlayer2Id() {
-        return receiverPlayer2Id;
-    }
-
-    public void setReceiverPlayer2Id(int receiverPlayer2Id) {
-        this.receiverPlayer2Id = receiverPlayer2Id;
+        this.isGameOver = isGameOver;
+        this.winner = winner;
     }
 
     public int getRow() {
         return row;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public int getCol() {
+        return col;
     }
 
-    public int getColumn() {
-        return column;
+    public int getPlayerId() {
+        return playerId;
+    }
+    
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
+    public boolean isGameOver() {
+        return isGameOver;
     }
 
+    public String getWinner() {
+        return winner;
+    }
 }

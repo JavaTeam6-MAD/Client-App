@@ -10,6 +10,7 @@ import java.util.List;
 import com.mycompany.model.requestModel.ChangeNameRequestModel;
 import com.mycompany.model.requestModel.ChangePasswordRequestModel;
 import com.mycompany.model.requestModel.ChangeAvatarRequestModel;
+import java.io.ObjectInputStream;
 
 public class RemoteDataSource {
     private static String serverIp = "localhost";
@@ -27,22 +28,40 @@ public class RemoteDataSource {
         return sendPlayerRequest(new RegisterRequestModel(username, password));
     }
 
+    private ServerListener listener;
+
+    public void startListening(NetworkCallback callback) {
+        if (listener != null && listener.isAlive()) {
+            return;
+        }
+        try {
+            RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
+            ObjectInputStream in = RemoteServerConnection.getInstance().getInputStream();
+            listener = new ServerListener(in, callback);
+            listener.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopListening() {
+        if (listener != null) {
+            listener.stopListener();
+            listener = null;
+        }
+    }
+
     public List<Player> getFriends(int userId) {
         try {
             RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
             RemoteServerConnection.getInstance().send(new getFriendsRequestModel(userId));
-            // Using receive() which returns Object, then checking type.
-            Object response = RemoteServerConnection.getInstance().receive();
-            if (response instanceof List) {
-                System.out.println("List Player coming");
-                return (List<Player>) response;
-            }
+            // Response handled by Listener
         } catch (Exception e) {
             System.err.println("Error loading friends: " + e.getMessage());
             e.printStackTrace();
             RemoteServerConnection.getInstance().disconnect();
         }
-        return new java.util.ArrayList<>();
+        return new java.util.ArrayList<>(); // Empty list, populated async
     }
 
     public Player changeUserName(int id, String newName) {

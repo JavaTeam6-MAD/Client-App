@@ -10,4 +10,5 @@ public class Routes {
     public static final String LOCAL_PLAYERS_NAME_DIALOG = "LocalPlayersNameDialog";
     public static final String PROFILE = "ProfileScreen";
     public static final String DIFFICULTY = "difficulty";
+    public static final String NETWORK_GAME = "NetworkGameScreen";
 }

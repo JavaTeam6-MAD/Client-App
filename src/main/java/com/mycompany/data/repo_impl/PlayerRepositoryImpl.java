@@ -113,4 +113,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             remoteDataSource.logout(player.getId());
         }
     }
+
+    public void startListening(com.mycompany.data.datasource.remote.NetworkCallback callback) {
+        remoteDataSource.startListening(callback);
+    }
+
+    public void stopListening() {
+        remoteDataSource.stopListening();
+    }
 }

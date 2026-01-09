@@ -24,7 +24,16 @@ public class LobbyManager {
     public List<Player> getFriends() {
         return playerRepository.getFriends();
     }
+
     public void leaveLobby() {
         playerRepository.setPlayerUnavailable();
+    }
+
+    public void startListening(com.mycompany.data.datasource.remote.NetworkCallback callback) {
+        ((PlayerRepositoryImpl) playerRepository).startListening(callback);
+    }
+
+    public void stopListening() {
+        ((PlayerRepositoryImpl) playerRepository).stopListening();
     }
 }

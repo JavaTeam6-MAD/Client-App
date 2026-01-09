@@ -4,21 +4,23 @@
  */
 package com.mycompany.model.requestModel;
 
-import com.mycompany.model.utils.GameStatus;
+import java.io.Serializable;
 
 /**
  *
  * @author abdel
  */
-public class EndGameSessionRequestModel {
+public class AcceptChallengeRequestModel implements Serializable{
+    private static final long serialVersionUID = 1L;
+   
     int player1Id;
     int player2Id;
-    GameStatus player1Status;
+    boolean player2isRecording;
 
-    public EndGameSessionRequestModel(int player1Id, int player2Id, GameStatus player1Status) {
+    public AcceptChallengeRequestModel(int player1Id, int player2Id, boolean player2isRecording) {
         this.player1Id = player1Id;
         this.player2Id = player2Id;
-        this.player1Status = player1Status;
+        this.player2isRecording = player2isRecording;
     }
 
     public int getPlayer1Id() {
@@ -37,14 +39,14 @@ public class EndGameSessionRequestModel {
         this.player2Id = player2Id;
     }
 
-    public GameStatus getPlayer1Status() {
-        return player1Status;
+    public boolean isPlayer2isRecording() {
+        return player2isRecording;
     }
 
-    public void setPlayer1Status(GameStatus player1Status) {
-        this.player1Status = player1Status;
+    public void setPlayer2isRecording(boolean player2isRecording) {
+        this.player2isRecording = player2isRecording;
     }
-    
-    
-    
+
+   
+
 }

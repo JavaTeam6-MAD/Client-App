@@ -1,28 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.model.responseModel;
 
-import com.mycompany.model.app.Player;
 import java.io.Serializable;
 
-/**
- *
- * @author abdel
- */
 public class ReceiveChallengeResponseModel implements Serializable {
     private static final long serialVersionUID = 1L;
     int senderPlayerId;
-    Player receiverPlayer;
+    int receiverPlayerId;
     boolean accepted;
     boolean receiverPlayerIsRecording;
+    // Fields for Game Start details
+    int gameId;
+    String gameIdUuid; 
 
-    public ReceiveChallengeResponseModel(int senderPlayerId, Player receiverPlayer, boolean accepted, boolean receiverPlayerIsRecording) {
+    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted, boolean receiverPlayerIsRecording) {
         this.senderPlayerId = senderPlayerId;
-        this.receiverPlayer = receiverPlayer;
+        this.receiverPlayerId = receiverPlayerId;
         this.accepted = accepted;
         this.receiverPlayerIsRecording = receiverPlayerIsRecording;
+    }
+    
+    // Overloaded for Game Start
+    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted, boolean receiverPlayerIsRecording, String gameIdUuid) {
+        this.senderPlayerId = senderPlayerId;
+        this.receiverPlayerId = receiverPlayerId;
+        this.accepted = accepted;
+        this.receiverPlayerIsRecording = receiverPlayerIsRecording;
+        this.gameIdUuid = gameIdUuid;
     }
 
     public int getSenderPlayerId() {
@@ -33,12 +36,12 @@ public class ReceiveChallengeResponseModel implements Serializable {
         this.senderPlayerId = senderPlayerId;
     }
 
-    public Player getReceiverPlayer() {
-        return receiverPlayer;
+    public int getReceiverPlayerId() {
+        return receiverPlayerId;
     }
 
-    public void setReceiverPlayer(Player receiverPlayer) {
-        this.receiverPlayer = receiverPlayer;
+    public void setReceiverPlayerId(int receiverPlayerId) {
+        this.receiverPlayerId = receiverPlayerId;
     }
 
     public boolean isAccepted() {
@@ -57,4 +60,11 @@ public class ReceiveChallengeResponseModel implements Serializable {
         this.receiverPlayerIsRecording = receiverPlayerIsRecording;
     }
     
+    public String getGameIdUuid() {
+        return gameIdUuid;
+    }
+    
+    public void setGameIdUuid(String gameIdUuid) {
+        this.gameIdUuid = gameIdUuid;
+    }
 }
