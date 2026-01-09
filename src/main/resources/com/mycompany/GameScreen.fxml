@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.media.MediaView?>
 
 <StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
            fx:controller="com.mycompany.presentation.singlegamescreen.ComputerGameController"
@@ -102,5 +103,6 @@
         </HBox>
 
     </VBox>
+
 
 </StackPane>

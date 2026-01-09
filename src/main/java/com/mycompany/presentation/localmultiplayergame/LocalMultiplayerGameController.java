@@ -7,6 +7,10 @@ import com.mycompany.core.utils.SoundManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+
 import javafx.animation.ScaleTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,7 +18,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 
 public class LocalMultiplayerGameController {
@@ -35,6 +43,9 @@ public class LocalMultiplayerGameController {
     private Button playAgainButton;
     @FXML
     private Button homeButton;
+
+    private Stage videoStage;
+    private MediaPlayer mediaPlayer;
 
     // SVG Paths
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
@@ -96,6 +107,7 @@ public class LocalMultiplayerGameController {
                 updateUI();
                 statusText.setText("Winner: " + (currentPlayer == 'X' ? playerXName.getText() : playerOName.getText()));
                 setEndGameButtonsVisible(true);
+                playWinVideo();
             } else if (game.isBoardFull()) {
                 game.setGameActive(false);
                 statusText.setText("It's a Draw!");
@@ -127,6 +139,7 @@ public class LocalMultiplayerGameController {
             soundManager.playSound(SoundManager.BUTTON_CLICK);
         }
 
+        stopWinVideo();
         game.resetGame();
         statusText.setText("Turn: " + playerXName.getText());
         for (Node node : gameGrid.getChildren()) {
@@ -143,6 +156,8 @@ public class LocalMultiplayerGameController {
         if (soundManager != null) {
             soundManager.playSound(SoundManager.BUTTON_CLICK);
         }
+
+        stopWinVideo();
 
         // Show confirmation dialog with custom styling
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -173,6 +188,7 @@ public class LocalMultiplayerGameController {
             soundManager.playSound(SoundManager.BUTTON_CLICK);
         }
 
+        stopWinVideo();
         try {
             App.setRoot(Routes.HOME);
         } catch (Exception e) {
@@ -188,6 +204,58 @@ public class LocalMultiplayerGameController {
             st.setToX(1.0);
             st.setToY(1.0);
             st.play();
+        }
+    }
+
+    private void playWinVideo() {
+        try {
+            stopWinVideo(); // Ensure any previous video/stage is closed
+
+            String path = getClass().getResource("/com/mycompany/winVideo/win.mp4").toExternalForm();
+            Media media = new Media(path);
+            mediaPlayer = new MediaPlayer(media);
+
+            MediaView mediaView = new MediaView(mediaPlayer);
+            mediaView.setFitWidth(800);
+            mediaView.setFitHeight(600);
+            mediaView.setPreserveRatio(true);
+
+            StackPane root = new StackPane(mediaView);
+            // Optional: Black background
+            root.setStyle("-fx-background-color: black;");
+
+            Scene scene = new Scene(root, 800, 600);
+
+            videoStage = new Stage();
+            videoStage.setTitle("Winner!");
+            videoStage.setScene(scene);
+            videoStage.initModality(Modality.APPLICATION_MODAL); // Block interaction with game window
+
+            // Handle user closing the window manually
+            videoStage.setOnHidden(e -> stopWinVideo());
+
+            videoStage.show();
+
+            mediaPlayer.setOnEndOfMedia(() -> {
+                stopWinVideo();
+            });
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Win video not found or could not be played: " + e.getMessage());
+        }
+    }
+
+    private void stopWinVideo() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+        if (videoStage != null) {
+            if (videoStage.isShowing()) {
+                videoStage.close();
+            }
+            videoStage = null;
         }
     }
 }
