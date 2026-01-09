@@ -13,15 +13,15 @@ import java.io.Serializable;
 public class MakeMoveRequestModel implements Serializable {
     private static final long serialVersionUID = 1L;
     int symbol;
-    int player1Id;
-    int player2Id;
+    int senderPlayer1Id;
+    int receiverPlayer2Id;
     int row;
     int column;
 
-    public MakeMoveRequestModel(int symbol, int player1Id, int player2Id, int row, int column) {
+    public MakeMoveRequestModel(int symbol, int senderPlayer1Id, int receiverPlayer2Id, int row, int column) {
         this.symbol = symbol;
-        this.player1Id = player1Id;
-        this.player2Id = player2Id;
+        this.senderPlayer1Id = senderPlayer1Id;
+        this.receiverPlayer2Id = receiverPlayer2Id;
         this.row = row;
         this.column = column;
     }
@@ -34,20 +34,20 @@ public class MakeMoveRequestModel implements Serializable {
         this.symbol = symbol;
     }
 
-    public int getPlayer1Id() {
-        return player1Id;
+    public int getSenderPlayer1Id() {
+        return senderPlayer1Id;
     }
 
-    public void setPlayer1Id(int player1Id) {
-        this.player1Id = player1Id;
+    public void setSenderPlayer1Id(int senderPlayer1Id) {
+        this.senderPlayer1Id = senderPlayer1Id;
     }
 
-    public int getPlayer2Id() {
-        return player2Id;
+    public int getReceiverPlayer2Id() {
+        return receiverPlayer2Id;
     }
 
-    public void setPlayer2Id(int player2Id) {
-        this.player2Id = player2Id;
+    public void setReceiverPlayer2Id(int receiverPlayer2Id) {
+        this.receiverPlayer2Id = receiverPlayer2Id;
     }
 
     public int getRow() {
@@ -65,8 +65,8 @@ public class MakeMoveRequestModel implements Serializable {
     public void setColumn(int column) {
         this.column = column;
     }
- 
-    
+
+  
 }
 
 

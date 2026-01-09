@@ -5,12 +5,16 @@
 package com.mycompany.model.responseModel;
 
 import com.mycompany.model.app.Player;
+import java.io.Serializable;
 
 /**
  *
  * @author abdel
  */
-public class SendChallengeResponseModel {
+public class SendChallengeResponseModel implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    
     boolean accepted;
     Player RequestedPlayer;
 

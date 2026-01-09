@@ -11,30 +11,30 @@ import com.mycompany.model.utils.GameStatus;
  * @author abdel
  */
 public class EndGameSessionRequestModel {
-    int player1Id;
-    int player2Id;
+    int senderPlayer1Id;
+    int receiverPlayer2Id;
     GameStatus player1Status;
 
-    public EndGameSessionRequestModel(int player1Id, int player2Id, GameStatus player1Status) {
-        this.player1Id = player1Id;
-        this.player2Id = player2Id;
+    public EndGameSessionRequestModel(int senderPlayer1Id, int receiverPlayer2Id, GameStatus player1Status) {
+        this.senderPlayer1Id = senderPlayer1Id;
+        this.receiverPlayer2Id = receiverPlayer2Id;
         this.player1Status = player1Status;
     }
 
-    public int getPlayer1Id() {
-        return player1Id;
+    public int getSenderPlayer1Id() {
+        return senderPlayer1Id;
     }
 
-    public void setPlayer1Id(int player1Id) {
-        this.player1Id = player1Id;
+    public void setSenderPlayer1Id(int senderPlayer1Id) {
+        this.senderPlayer1Id = senderPlayer1Id;
     }
 
-    public int getPlayer2Id() {
-        return player2Id;
+    public int getReceiverPlayer2Id() {
+        return receiverPlayer2Id;
     }
 
-    public void setPlayer2Id(int player2Id) {
-        this.player2Id = player2Id;
+    public void setReceiverPlayer2Id(int receiverPlayer2Id) {
+        this.receiverPlayer2Id = receiverPlayer2Id;
     }
 
     public GameStatus getPlayer1Status() {
@@ -44,7 +44,7 @@ public class EndGameSessionRequestModel {
     public void setPlayer1Status(GameStatus player1Status) {
         this.player1Status = player1Status;
     }
-    
-    
+
+   
     
 }

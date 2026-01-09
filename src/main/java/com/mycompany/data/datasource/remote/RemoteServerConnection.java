@@ -16,18 +16,40 @@ public class RemoteServerConnection {
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    private RemoteServerConnection() {}
+    private RemoteServerConnection() {
+    }
 
-  
     public static RemoteServerConnection getInstance() {
-        if (instance == null) instance = new RemoteServerConnection();
+        if (instance == null)
+            instance = new RemoteServerConnection();
         return instance;
     }
 
     public void connect(String ip, int port) throws Exception {
+        if (socket != null && !socket.isClosed() && socket.isConnected()) {
+            return;
+        }
         this.socket = new Socket(ip, port);
         this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.out.flush();
         this.in = new ObjectInputStream(socket.getInputStream());
+    }
+
+    public void disconnect() {
+        try {
+            if (in != null)
+                in.close();
+            if (out != null)
+                out.close();
+            if (socket != null && !socket.isClosed())
+                socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            in = null;
+            out = null;
+            socket = null;
+        }
     }
 
     public void send(Object data) throws Exception {
@@ -40,10 +62,11 @@ public class RemoteServerConnection {
     public Object receive() throws Exception {
         return (in != null) ? in.readObject() : null;
     }
+
     public List receiveList() throws IOException, ClassNotFoundException {
         Object response = (in != null) ? in.readObject() : null;
         if (response instanceof List) {
-           return (List) response;
+            return (List) response;
         }
         return null;
     }

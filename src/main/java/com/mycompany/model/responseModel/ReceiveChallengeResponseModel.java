@@ -4,19 +4,23 @@
  */
 package com.mycompany.model.responseModel;
 
+import com.mycompany.model.app.Player;
+import java.io.Serializable;
+
 /**
  *
  * @author abdel
  */
-public class ReceiveChallengeResponseModel {
+public class ReceiveChallengeResponseModel implements Serializable {
+    private static final long serialVersionUID = 1L;
     int senderPlayerId;
-    int receiverPlayerId;
+    Player receiverPlayer;
     boolean accepted;
     boolean receiverPlayerIsRecording;
 
-    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted, boolean receiverPlayerIsRecording) {
+    public ReceiveChallengeResponseModel(int senderPlayerId, Player receiverPlayer, boolean accepted, boolean receiverPlayerIsRecording) {
         this.senderPlayerId = senderPlayerId;
-        this.receiverPlayerId = receiverPlayerId;
+        this.receiverPlayer = receiverPlayer;
         this.accepted = accepted;
         this.receiverPlayerIsRecording = receiverPlayerIsRecording;
     }
@@ -29,12 +33,12 @@ public class ReceiveChallengeResponseModel {
         this.senderPlayerId = senderPlayerId;
     }
 
-    public int getReceiverPlayerId() {
-        return receiverPlayerId;
+    public Player getReceiverPlayer() {
+        return receiverPlayer;
     }
 
-    public void setReceiverPlayerId(int receiverPlayerId) {
-        this.receiverPlayerId = receiverPlayerId;
+    public void setReceiverPlayer(Player receiverPlayer) {
+        this.receiverPlayer = receiverPlayer;
     }
 
     public boolean isAccepted() {

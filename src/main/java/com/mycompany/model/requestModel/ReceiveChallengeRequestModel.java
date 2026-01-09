@@ -4,33 +4,39 @@
  */
 package com.mycompany.model.requestModel;
 
+import java.io.Serializable;
+
 /**
  *
  * @author abdel
  */
-public class ReceiveChallengeRequestModel {
-    int player1Id;
-    int player2Id;
+public class ReceiveChallengeRequestModel implements Serializable {
+    private static final long serialVersionUID = 1L;
+    int senderPlayerId;
+    int receiverPlayer2Id;
 
-    public ReceiveChallengeRequestModel(int player1Id, int player2Id) {
-        this.player1Id = player1Id;
-        this.player2Id = player2Id;
+    public ReceiveChallengeRequestModel(int senderPlayerId, int receiverPlayer2Id) {
+        this.senderPlayerId = senderPlayerId;
+        this.receiverPlayer2Id = receiverPlayer2Id;
     }
 
-    public int getPlayer1Id() {
-        return player1Id;
+    public int getSenderPlayerId() {
+        return senderPlayerId;
     }
 
-    public void setPlayer1Id(int player1Id) {
-        this.player1Id = player1Id;
+    public void setSenderPlayerId(int senderPlayerId) {
+        this.senderPlayerId = senderPlayerId;
     }
 
-    public int getPlayer2Id() {
-        return player2Id;
+    public int getReceiverPlayer2Id() {
+        return receiverPlayer2Id;
     }
 
-    public void setPlayer2Id(int player2Id) {
-        this.player2Id = player2Id;
+    public void setReceiverPlayer2Id(int receiverPlayer2Id) {
+        this.receiverPlayer2Id = receiverPlayer2Id;
     }
+    
+
+   
     
 }
