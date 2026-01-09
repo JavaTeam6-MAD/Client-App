@@ -2,13 +2,20 @@ package com.mycompany.presentation.gamehistory;
 
 import com.mycompany.core.navigation.Routes;
 import com.mycompany.App;
+import com.mycompany.model.app.Game;
+import com.mycompany.model.utils.GameStatus;
+import com.mycompany.data.repo_impl.PlayerRepositoryImpl;
+import com.mycompany.data.repo_interface.PlayerRepository;
+import com.mycompany.model.app.Player;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -59,6 +66,8 @@ public class GameHistoryController implements Initializable {
     private Button btnToggleRecorded;
 
     private List<GameHistory> gameHistoryList;
+    private GameHistoryManager gameHistoryManager;
+    private PlayerRepository playerRepository;
 
     // Filter state
     private enum ResultFilter {
@@ -70,6 +79,8 @@ public class GameHistoryController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        gameHistoryManager = new GameHistoryManager();
+        playerRepository = new PlayerRepositoryImpl();
         loadGameHistory();
         updateFilterButtonStates();
         displayGameHistory();
@@ -77,53 +88,72 @@ public class GameHistoryController implements Initializable {
     }
 
     private void loadGameHistory() {
-        // Mock data - In a real application, this would fetch from a server/database
         gameHistoryList = new ArrayList<>();
 
-        gameHistoryList.add(new GameHistory(
-                "game001",
-                LocalDateTime.now().minusDays(1).minusHours(3),
-                "CyberNinja",
-                "robot",
-                true,
-                false,
-                true));
+        try {
+            // Fetch real game history from server via manager
+            List<Game> games = gameHistoryManager.getGameHistory();
+            Player currentPlayer = playerRepository.getCurrentPlayer();
 
-        gameHistoryList.add(new GameHistory(
-                "game002",
-                LocalDateTime.now().minusDays(2).minusHours(5),
-                "PixelMaster",
-                "alien",
-                false,
-                false,
-                true));
+            if (currentPlayer == null) {
+                System.err.println("No current player found");
+                return;
+            }
 
-        gameHistoryList.add(new GameHistory(
-                "game003",
-                LocalDateTime.now().minusDays(3).minusHours(7),
-                "GhostKing",
-                "ghost",
-                true,
-                false,
-                false));
+            // Convert Game model to GameHistory model
+            gameHistoryList = games.stream()
+                    .map(game -> convertGameToGameHistory(game, currentPlayer))
+                    .collect(Collectors.toList());
 
-        gameHistoryList.add(new GameHistory(
-                "game004",
-                LocalDateTime.now().minusDays(5).minusHours(2),
-                "DragonSlayer",
-                "dragon",
-                false,
-                true,
-                true));
+        } catch (Exception e) {
+            System.err.println("Error loading game history: " + e.getMessage());
+            e.printStackTrace();
 
-        gameHistoryList.add(new GameHistory(
-                "game005",
-                LocalDateTime.now().minusDays(7).minusHours(4),
-                "NeonWarrior",
-                "robot",
-                true,
-                false,
-                true));
+            // Show error to user
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Failed to load game history");
+            alert.setContentText("Could not connect to server. Please try again later.");
+            alert.show();
+        }
+    }
+
+    /**
+     * Converts a Game model from the server to a GameHistory model for UI display
+     */
+    private GameHistory convertGameToGameHistory(Game game, Player currentPlayer) {
+        // Determine opponent (the player who is not the current player)
+        Player opponent = game.getPlayer1().getId() == currentPlayer.getId()
+                ? game.getPlayer2()
+                : game.getPlayer1();
+
+        // Determine if current player won
+        boolean playerWon = false;
+        boolean isDraw = game.getStatus() == GameStatus.DRAW;
+
+        if (!isDraw) {
+            // WIN status means player1 won, LOSE means player1 lost
+            if (game.getPlayer1().getId() == currentPlayer.getId()) {
+                playerWon = game.getStatus() == GameStatus.WIN;
+            } else {
+                playerWon = game.getStatus() == GameStatus.LOSE;
+            }
+        }
+
+        // Convert Date to LocalDateTime
+        LocalDateTime dateTime = game.getDate()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        return new GameHistory(
+                String.valueOf(game.getId()),
+                dateTime,
+                opponent.getUserName(),
+                opponent.getAvatar(),
+                playerWon,
+                isDraw,
+                game.isIsRecorded());
     }
 
     private void displayGameHistory() {
