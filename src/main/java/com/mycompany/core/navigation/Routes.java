@@ -11,4 +11,5 @@ public class Routes {
     public static final String PROFILE = "ProfileScreen";
     public static final String DIFFICULTY = "difficulty";
     public static final String NETWORK_GAME = "NetworkGameScreen";
+    public static final String REPLAY_GAME = "ReplayGameScreen";
 }

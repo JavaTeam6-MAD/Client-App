@@ -2,6 +2,7 @@ package com.mycompany.presentation.gamehistory;
 
 import com.mycompany.core.navigation.Routes;
 import com.mycompany.App;
+import com.mycompany.presentation.gamehistory.ReplayGameController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -10,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -77,53 +80,71 @@ public class GameHistoryController implements Initializable {
     }
 
     private void loadGameHistory() {
-        // Mock data - In a real application, this would fetch from a server/database
         gameHistoryList = new ArrayList<>();
+        List<com.mycompany.core.util.GameRecorder.RecordedGame> files = com.mycompany.core.util.GameRecorder
+                .getRecordedGames();
 
-        gameHistoryList.add(new GameHistory(
-                "game001",
-                LocalDateTime.now().minusDays(1).minusHours(3),
-                "CyberNinja",
-                "robot",
-                true,
-                false,
-                true));
+        for (com.mycompany.core.util.GameRecorder.RecordedGame rec : files) {
+            String gameId = rec.getGameId();
+            LocalDateTime date = LocalDateTime.now();
+            try {
+                date = LocalDateTime.parse(rec.getDate(), java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        gameHistoryList.add(new GameHistory(
-                "game002",
-                LocalDateTime.now().minusDays(2).minusHours(5),
-                "PixelMaster",
-                "alien",
-                false,
-                false,
-                true));
+            String p1 = rec.getPlayer1Name();
+            String p2 = rec.getPlayer2Name();
+            String winner = rec.getWinnerName();
 
-        gameHistoryList.add(new GameHistory(
-                "game003",
-                LocalDateTime.now().minusDays(3).minusHours(7),
-                "GhostKing",
-                "ghost",
-                true,
-                false,
-                false));
+            // Logic: One of the players is "You" (based on NetworkGameController logic)
+            // Or if we used real names, we match session name.
+            // Current NetworkGameController saves "You" for the local player.
 
-        gameHistoryList.add(new GameHistory(
-                "game004",
-                LocalDateTime.now().minusDays(5).minusHours(2),
-                "DragonSlayer",
-                "dragon",
-                false,
-                true,
-                true));
+            boolean amIP1 = "You".equals(p1);
+            boolean amIP2 = "You".equals(p2);
 
-        gameHistoryList.add(new GameHistory(
-                "game005",
-                LocalDateTime.now().minusDays(7).minusHours(4),
-                "NeonWarrior",
-                "robot",
-                true,
-                false,
-                true));
+            // Fallback if "You" logic changes, try to match current player name?
+            // But strict "You" check is what we implemented.
+
+            String opponentName = amIP1 ? p2 : (amIP2 ? p1 : "Unknown");
+            String opponentChar = "robot"; // Default for now
+
+            boolean isDraw = rec.isDraw();
+            boolean playerWon = false;
+
+            if (!isDraw) {
+                if ("You".equals(winner)) {
+                    playerWon = true;
+                } else if (amIP1 && p1.equals(winner)) {
+                    playerWon = true;
+                } else if (amIP2 && p2.equals(winner)) {
+                    playerWon = true;
+                }
+            }
+
+            gameHistoryList.add(new GameHistory(
+                    gameId,
+                    date,
+                    opponentName,
+                    opponentChar,
+                    playerWon,
+                    isDraw,
+                    true // Since we loaded it from recorder, it is available
+            ));
+        }
+
+        // Mock data can be removed or kept for mixed entries?
+        // Instructions: "Implementing Replay... integrating recorded games into game
+        // history"
+        // Implicitly we should show REAL recorded games.
+        // We can keep mock data if no recordings? Or just replace mock data.
+        // I will keep only REAL data to prove it works.
+        // But if list is empty, user might think it's broken during demo if they don't
+        // record.
+        // I will add ONE mock entry if list is empty, or just leave it empty.
+        // The instructions say "Integration".
+        // I'll leave it empty (load ONLY recorded games) for "Real" feeling.
     }
 
     private void displayGameHistory() {
@@ -265,15 +286,39 @@ public class GameHistoryController implements Initializable {
     }
 
     private void onWatchReplay(GameHistory game) {
-        // In a real application, this would load and display the recorded game
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Watch Replay");
-        alert.setHeaderText("Game #" + game.getGameId());
-        alert.setContentText("Loading replay vs " + game.getOpponentName() + "...\n\n" +
-                "Date: " + game.getFormattedDate() + " at " + game.getFormattedTime() + "\n" +
-                "Result: " + game.getResultText() + "\n\n" +
-                "(Replay functionality will be implemented here)");
-        alert.show();
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    App.class.getResource(Routes.REPLAY_GAME + ".fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            com.mycompany.presentation.gamehistory.ReplayGameController controller = loader.getController();
+
+            // Find the full RecordedGame object
+            List<com.mycompany.core.util.GameRecorder.RecordedGame> files = com.mycompany.core.util.GameRecorder
+                    .getRecordedGames();
+            com.mycompany.core.util.GameRecorder.RecordedGame selectedGame = files.stream()
+                    .filter(g -> g.getGameId().equals(game.getGameId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (selectedGame != null) {
+                controller.setRecordedGame(selectedGame);
+                App.setRoot(root);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Replay Unavailable");
+                alert.setContentText("Could not find recording data for this game.");
+                alert.show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Navigation Error");
+            alert.setContentText("Could not load Replay Screen.");
+            alert.show();
+        }
     }
 
     private String getCharacterSymbol(String charId) {

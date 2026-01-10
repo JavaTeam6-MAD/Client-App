@@ -3,6 +3,7 @@ module com.mycompany {
     requires javafx.fxml;
     requires javafx.media;
     requires java.sql;
+    requires com.google.gson;
 
     opens com.mycompany to javafx.fxml;
     opens com.mycompany.presentation.auth to javafx.fxml;

@@ -29,16 +29,18 @@ public class NetworkGameController { // No Interface!
     @FXML
     private GridPane gameGrid;
     @FXML
+    private javafx.scene.layout.StackPane recordingIndicator;
+    @FXML
     private Button playAgainButton;
     @FXML
     private Button homeButton;
 
     private NetworkGameManager manager;
-
     private Button[][] buttons = new Button[3][3];
-
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
     private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
+
+    private com.mycompany.core.util.GameRecorder recorder;
 
     @FXML
     public void initialize() {
@@ -56,6 +58,22 @@ public class NetworkGameController { // No Interface!
             playerOName.setText("You");
             scoreO.setText(String.valueOf(manager.getMySessionScore()));
             scoreX.setText(String.valueOf(manager.getOpponentSessionScore()));
+        }
+
+        if (com.mycompany.presentation.networkgame.GameSession.getInstance().isRecording()) {
+            if (recordingIndicator != null) {
+                recordingIndicator.setVisible(true);
+                recordingIndicator.setManaged(true);
+            }
+            recorder = new com.mycompany.core.util.GameRecorder();
+            String p1Name = "X".equals(manager.getMySymbol()) ? "You" : manager.getOpponentName();
+            String p2Name = "O".equals(manager.getMySymbol()) ? "You" : manager.getOpponentName();
+            // For proper recording names, we should probably use real names if available
+            // But "You"/OpponentName is what displayed.
+            // Ideally we want real names for history.
+            com.mycompany.presentation.networkgame.GameSession session = com.mycompany.presentation.networkgame.GameSession
+                    .getInstance();
+            recorder.startGame(session.getGameId(), session.getMyName(), session.getOpponentName(), "X", "O");
         }
 
         updateStatus();
@@ -118,11 +136,22 @@ public class NetworkGameController { // No Interface!
 
             buttons[r][c].setGraphic(svg);
             buttons[r][c].setText("");
+
+            if (recorder != null) {
+                String pName = symbol.equals(manager.getMySymbol())
+                        ? com.mycompany.presentation.networkgame.GameSession.getInstance().getMyName()
+                        : manager.getOpponentName();
+                recorder.recordMove(pName, r, c, symbol);
+            }
         });
     }
 
-    public void showGameEnd(String msg, boolean isWin) {
+    public void showGameEnd(String msg, boolean isWin, String winnerName, boolean isDraw) {
         Platform.runLater(() -> {
+            if (recorder != null) {
+                recorder.endGame(winnerName, isDraw);
+            }
+
             gameGrid.setDisable(true);
             statusText.setText(msg);
 
@@ -139,6 +168,11 @@ public class NetworkGameController { // No Interface!
 
             playAgainButton.setVisible(true);
             homeButton.setVisible(true);
+
+            if (recordingIndicator != null) {
+                recordingIndicator.setVisible(false);
+                recordingIndicator.setManaged(false);
+            }
 
             new java.util.Timer().schedule(new java.util.TimerTask() {
                 @Override

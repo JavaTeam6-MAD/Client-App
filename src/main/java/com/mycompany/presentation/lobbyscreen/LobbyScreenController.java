@@ -196,8 +196,14 @@ public class LobbyScreenController implements Initializable {
                 // yet.
                 // Just send response.
 
+                boolean isRecording = false;
+                if (recordAlert.getResult() == yesBtn) {
+                    isRecording = true;
+                }
+
                 try {
-                    lobbyManager.respondToChallenge(true, challenge.getPlayer1Id()); // Using Logic in Manager now
+                    lobbyManager.respondToChallenge(true, challenge.getPlayer1Id(), isRecording); // Using Logic in
+                                                                                                  // Manager now
                     // Navigate to Game handled in onChallengeResponse (View Call)
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -206,7 +212,7 @@ public class LobbyScreenController implements Initializable {
             } else {
                 // Send Reject
                 try {
-                    lobbyManager.respondToChallenge(false, challenge.getPlayer1Id());
+                    lobbyManager.respondToChallenge(false, challenge.getPlayer1Id(), false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -535,8 +541,9 @@ public class LobbyScreenController implements Initializable {
             if (result.isPresent()) {
                 // Send Challenge
                 int opponentId = player.getId();
+                boolean isRecording = result.get().getValue();
                 try {
-                    lobbyManager.sendChallenge(opponentId);
+                    lobbyManager.sendChallenge(opponentId, isRecording);
                     // Show "Waiting for response" Dialog (Non-blocking or blocking?)
                     // "Sender cannot send other challenge for 10 seconds"
                     btnAction.setDisable(true);

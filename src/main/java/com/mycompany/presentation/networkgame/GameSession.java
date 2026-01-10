@@ -47,9 +47,11 @@ public class GameSession {
         return opponentSessionScore;
     }
 
+    private boolean isRecording;
+
     public void setGameSession(String gameId, int myId, String myName, int opponentId, String mySymbol,
             String opponentName,
-            boolean isMyTurn, long myScore, long opponentScore) {
+            boolean isMyTurn, long myScore, long opponentScore, boolean isRecording) {
         this.gameId = gameId;
         this.myId = myId;
         this.myName = myName;
@@ -59,6 +61,11 @@ public class GameSession {
         this.isMyTurn = isMyTurn;
         this.myScore = myScore;
         this.opponentScore = opponentScore;
+        this.isRecording = isRecording;
+    }
+
+    public boolean isRecording() {
+        return isRecording;
     }
 
     public String getGameId() {

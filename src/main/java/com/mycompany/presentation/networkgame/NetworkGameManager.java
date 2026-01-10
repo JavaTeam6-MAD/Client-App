@@ -41,7 +41,8 @@ public class NetworkGameManager {
 
     public void stopGame() {
         remoteDataSource.detachNetworkGameManager();
-        // remoteDataSource.stopListening(); // Don't stop explicit listening here if we want to keep connection for Lobby?
+        // remoteDataSource.stopListening(); // Don't stop explicit listening here if we
+        // want to keep connection for Lobby?
         // But if we go back to Lobby, LobbyManager starts listening.
         // If we Logout, we stop listening.
     }
@@ -166,24 +167,30 @@ public class NetworkGameManager {
     private void handleGameOver(String winnerSymbol) {
         String msg;
         boolean isWin = false;
+        boolean isDraw = false;
+        String winnerName = null;
+
         if (winnerSymbol == null || winnerSymbol.isEmpty()) {
             msg = "It's a Draw!";
+            isDraw = true;
             session.incrementMySessionScore();
             session.incrementOpponentSessionScore();
             playLoseSound(); // Draw sound?
         } else if (winnerSymbol.equals(session.getMySymbol())) {
             msg = "You Won! 🎉";
             isWin = true;
+            winnerName = session.getMyName();
             session.incrementMySessionScore();
             playWinSound();
         } else {
             msg = "You Lost! 😔";
+            winnerName = session.getOpponentName();
             session.incrementOpponentSessionScore();
             playLoseSound();
         }
 
         if (controller != null) {
-            controller.showGameEnd(msg, isWin);
+            controller.showGameEnd(msg, isWin, winnerName, isDraw);
             controller.updateScoreLabels(session.getMySessionScore(), session.getOpponentSessionScore());
         }
     }
@@ -241,7 +248,8 @@ public class NetworkGameManager {
                 opponentName,
                 isMyTurn,
                 myScore,
-                opponentScore);
+                opponentScore,
+                false);
     }
 
     public void onFriendsListReceived(List<Player> friends) {

@@ -56,16 +56,19 @@ public class LobbyManager {
     }
 
     private boolean isSendingChallenge = false;
+    private boolean myRecordingPreference = false;
 
-    public void sendChallenge(int opponentId) {
+    public void sendChallenge(int opponentId, boolean isRecording) {
         if (isSendingChallenge)
             return;
         isSendingChallenge = true;
+        myRecordingPreference = isRecording;
         try {
             int myId = getCurrentPlayer().getId();
             com.mycompany.model.requestModel.SendChallengeRequestModel req = new com.mycompany.model.requestModel.SendChallengeRequestModel(
                     myId, opponentId);
-            System.out.println("Sending Challenge Request to: " + opponentId);
+            req.setSenderPLayerisRecording(isRecording);
+            System.out.println("Sending Challenge Request to: " + opponentId + " (Recording: " + isRecording + ")");
             RemoteServerConnection.getInstance().send(req);
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,10 +85,22 @@ public class LobbyManager {
         }
     }
 
-    public void respondToChallenge(boolean accept, int challengerId) {
+    public void respondToChallenge(boolean accept, int challengerId, boolean isRecording) {
         try {
-            SendChallengeResponseModel resp = new SendChallengeResponseModel(accept, challengerId);
-            RemoteServerConnection.getInstance().send(resp);
+            if (accept) {
+                myRecordingPreference = isRecording;
+                int myId = getCurrentPlayer().getId();
+                com.mycompany.model.requestModel.AcceptChallengeRequestModel req = new com.mycompany.model.requestModel.AcceptChallengeRequestModel(
+                        challengerId, myId, isRecording);
+                System.out.println("Accepting Challenge from: " + challengerId + " (Recording: " + isRecording + ")");
+                RemoteServerConnection.getInstance().send(req);
+            } else {
+                int myId = getCurrentPlayer().getId();
+                com.mycompany.model.requestModel.RejectChallengeRequestModel req = new com.mycompany.model.requestModel.RejectChallengeRequestModel(
+                        challengerId, myId);
+                System.out.println("Rejecting Challenge from: " + challengerId);
+                RemoteServerConnection.getInstance().send(req);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,7 +148,8 @@ public class LobbyManager {
                     opponentName,
                     isMyTurn,
                     myScore,
-                    opponentScore);
+                    opponentScore,
+                    myRecordingPreference);
 
             if (controller != null)
                 controller.navigateToGame();
