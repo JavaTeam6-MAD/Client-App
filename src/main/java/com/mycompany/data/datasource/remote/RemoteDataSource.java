@@ -1,6 +1,7 @@
 package com.mycompany.data.datasource.remote;
 
 import com.mycompany.model.app.Player;
+import com.mycompany.model.app.Game;
 import com.mycompany.model.requestModel.LoginRequestModel;
 import com.mycompany.model.requestModel.LogoutRequestModel;
 import com.mycompany.model.requestModel.RegisterRequestModel;
@@ -10,6 +11,9 @@ import java.util.List;
 import com.mycompany.model.requestModel.ChangeNameRequestModel;
 import com.mycompany.model.requestModel.ChangePasswordRequestModel;
 import com.mycompany.model.requestModel.ChangeAvatarRequestModel;
+import com.mycompany.model.requestModel.getGameHistoryRequestModel;
+
+import java.util.ArrayList;
 
 public class RemoteDataSource {
     private static final String SERVER_IP = "localhost";
@@ -59,6 +63,9 @@ public class RemoteDataSource {
             System.err.println("Logout network error: " + e.getMessage());
         }
     }
+    public List<Game> getGameHistory(int playerId) {
+        return sendRequestForGameHistory(new getGameHistoryRequestModel(playerId));
+    }
 
     private Player sendPlayerRequest(Object request) {
         try {
@@ -76,5 +83,22 @@ public class RemoteDataSource {
         Player errorPlayer = new Player();
         errorPlayer.setId(0);
         return errorPlayer;
+    }
+
+    private List<Game> sendRequestForGameHistory(Object request) {
+        try {
+            RemoteServerConnection.getInstance().connect(SERVER_IP, SERVER_PORT);
+            RemoteServerConnection.getInstance().send(request);
+            Object response = RemoteServerConnection.getInstance().receive();
+
+            if (response instanceof List) {
+                return (List<Game>) response;
+            }
+        } catch (Exception e) {
+            System.err.println("Network error while fetching game history: " + e.getMessage());
+            e.printStackTrace();
+        }
+        // Return empty list if connection fails
+        return new ArrayList<>();
     }
 }
