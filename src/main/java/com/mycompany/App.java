@@ -1,6 +1,7 @@
 package com.mycompany;
 
 import com.mycompany.core.navigation.Routes;
+import com.mycompany.core.utils.SoundManager;
 import com.mycompany.data.datasource.local.PlayerDAO;
 
 import javafx.application.Application;
@@ -29,6 +30,15 @@ public class App extends Application {
         // Load the icon image (ensure the path is correct)
         Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/logo.png")));
         stage.getIcons().add(appIcon);
+
+        // Start background music
+        SoundManager.getInstance().playBackgroundMusic();
+    }
+
+    @Override
+    public void stop() {
+        // Cleanup resources when application closes
+        SoundManager.getInstance().cleanup();
     }
 
     public static void setRoot(String fxml) throws IOException {
