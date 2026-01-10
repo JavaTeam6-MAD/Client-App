@@ -10,9 +10,16 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -35,6 +42,9 @@ public class ComputerGameController {
     private Button playAgainButton;
     @FXML
     private Button homeButton;
+
+    private Stage videoStage;
+    private MediaPlayer mediaPlayer;
 
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
     private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
@@ -126,6 +136,7 @@ public class ComputerGameController {
                 gameManager.incrementScoreX();
                 if (soundManager != null)
                     soundManager.playSound(SoundManager.WIN);
+                playWinVideo();
             } else {
                 statusText.setText("Computer Wins!");
                 gameManager.incrementScoreO();
@@ -168,6 +179,7 @@ public class ComputerGameController {
         if (soundManager != null)
             soundManager.playSound(SoundManager.BUTTON_CLICK);
 
+        stopWinVideo();
         gameManager.resetGame();
         statusText.setText("Your Turn (X)");
         setEndGameButtonsVisible(false);
@@ -186,6 +198,8 @@ public class ComputerGameController {
     private void handleBack(ActionEvent event) {
         if (soundManager != null)
             soundManager.playSound(SoundManager.BUTTON_CLICK);
+
+        stopWinVideo();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Leave Game?");
@@ -209,10 +223,62 @@ public class ComputerGameController {
     private void onHome(ActionEvent event) {
         if (soundManager != null)
             soundManager.playSound(SoundManager.BUTTON_CLICK);
+
+        stopWinVideo();
         try {
             App.setRoot("primary");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void playWinVideo() {
+        try {
+            stopWinVideo();
+
+            String path = getClass().getResource("/com/mycompany/winVideo/win.mp4").toExternalForm();
+            Media media = new Media(path);
+            mediaPlayer = new MediaPlayer(media);
+
+            MediaView mediaView = new MediaView(mediaPlayer);
+            mediaView.setFitWidth(800);
+            mediaView.setFitHeight(600);
+            mediaView.setPreserveRatio(true);
+
+            StackPane root = new StackPane(mediaView);
+            root.setStyle("-fx-background-color: black;");
+
+            Scene scene = new Scene(root, 800, 600);
+
+            videoStage = new Stage();
+            videoStage.setTitle("You Win!");
+            videoStage.setScene(scene);
+            videoStage.initModality(Modality.APPLICATION_MODAL);
+
+            videoStage.setOnHidden(e -> stopWinVideo());
+
+            videoStage.show();
+
+            mediaPlayer.setOnEndOfMedia(() -> {
+                stopWinVideo();
+            });
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Win video not found or could not be played: " + e.getMessage());
+        }
+    }
+
+    private void stopWinVideo() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+        if (videoStage != null) {
+            if (videoStage.isShowing()) {
+                videoStage.close();
+            }
+            videoStage = null;
         }
     }
 }

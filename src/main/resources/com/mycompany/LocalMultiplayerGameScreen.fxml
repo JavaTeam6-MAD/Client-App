@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.media.MediaView?>
 
 <StackPane styleClass="root-container" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.presentation.localmultiplayergame.LocalMultiplayerGameController">
 
@@ -88,6 +89,8 @@
             <Button fx:id="homeButton" onAction="#onHome" styleClass="game-button, game-button-secondary" text="HOME" visible="false" />
         </HBox>
 
+
     </VBox>
+
 
 </StackPane>
