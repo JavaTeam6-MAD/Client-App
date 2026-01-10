@@ -45,6 +45,8 @@ public class ComputerGameController {
 
     private Stage videoStage;
     private MediaPlayer mediaPlayer;
+    private Stage loseVideoStage;
+    private MediaPlayer loseMediaPlayer;
 
     private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
     private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
@@ -142,6 +144,7 @@ public class ComputerGameController {
                 gameManager.incrementScoreO();
                 if (soundManager != null)
                     soundManager.playSound(SoundManager.LOSE);
+                playLoseVideo();
             }
             updateScoreBoard();
             endGame();
@@ -180,6 +183,7 @@ public class ComputerGameController {
             soundManager.playSound(SoundManager.BUTTON_CLICK);
 
         stopWinVideo();
+        stopLoseVideo();
         gameManager.resetGame();
         statusText.setText("Your Turn (X)");
         setEndGameButtonsVisible(false);
@@ -200,6 +204,7 @@ public class ComputerGameController {
             soundManager.playSound(SoundManager.BUTTON_CLICK);
 
         stopWinVideo();
+        stopLoseVideo();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Leave Game?");
@@ -225,6 +230,7 @@ public class ComputerGameController {
             soundManager.playSound(SoundManager.BUTTON_CLICK);
 
         stopWinVideo();
+        stopLoseVideo();
         try {
             App.setRoot("primary");
         } catch (IOException e) {
@@ -279,6 +285,56 @@ public class ComputerGameController {
                 videoStage.close();
             }
             videoStage = null;
+        }
+    }
+
+    private void playLoseVideo() {
+        try {
+            stopLoseVideo();
+
+            String path = getClass().getResource("/com/mycompany/loseVideo/defeat.mp4").toExternalForm();
+            Media media = new Media(path);
+            loseMediaPlayer = new MediaPlayer(media);
+
+            MediaView mediaView = new MediaView(loseMediaPlayer);
+            mediaView.setFitWidth(800);
+            mediaView.setFitHeight(600);
+            mediaView.setPreserveRatio(true);
+
+            StackPane root = new StackPane(mediaView);
+            root.setStyle("-fx-background-color: black;");
+
+            Scene scene = new Scene(root, 800, 600);
+
+            loseVideoStage = new Stage();
+            loseVideoStage.setTitle("You Lose!");
+            loseVideoStage.setScene(scene);
+            loseVideoStage.initModality(Modality.APPLICATION_MODAL);
+
+            loseVideoStage.setOnHidden(e -> stopLoseVideo());
+
+            loseVideoStage.show();
+
+            loseMediaPlayer.setOnEndOfMedia(() -> {
+                stopLoseVideo();
+            });
+            loseMediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Lose video not found or could not be played: " + e.getMessage());
+        }
+    }
+
+    private void stopLoseVideo() {
+        if (loseMediaPlayer != null) {
+            loseMediaPlayer.stop();
+            loseMediaPlayer.dispose();
+            loseMediaPlayer = null;
+        }
+        if (loseVideoStage != null) {
+            if (loseVideoStage.isShowing()) {
+                loseVideoStage.close();
+            }
+            loseVideoStage = null;
         }
     }
 }
