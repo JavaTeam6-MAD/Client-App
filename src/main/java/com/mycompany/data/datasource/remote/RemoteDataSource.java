@@ -44,12 +44,20 @@ public class RemoteDataSource {
         this.lobbyManager = manager;
     }
 
+    public void detachLobbyManager() {
+        this.lobbyManager = null;
+    }
+
     public LobbyManager getLobbyManager() {
         return lobbyManager;
     }
 
     public void setNetworkGameManager(NetworkGameManager manager) {
         this.networkGameManager = manager;
+    }
+
+    public void detachNetworkGameManager() {
+        this.networkGameManager = null;
     }
 
     public NetworkGameManager getNetworkGameManager() {

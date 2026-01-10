@@ -52,7 +52,7 @@ public class LobbyManager {
     }
 
     public void stopListening() {
-        RemoteDataSource.getInstance().stopListening();
+        RemoteDataSource.getInstance().detachLobbyManager();
     }
 
     private boolean isSendingChallenge = false;
@@ -99,6 +99,7 @@ public class LobbyManager {
     }
 
     public void onChallengeReceived(ReceiveChallengeRequestModel challenge) {
+        // Double check: if we are supposed to be detached, maybe controller is null
         if (controller != null)
             controller.showIncomingChallenge(challenge);
     }
