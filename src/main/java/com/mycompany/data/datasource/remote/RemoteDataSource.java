@@ -47,6 +47,8 @@ public class RemoteDataSource {
     public void stopListening() {
         if (listener != null) {
             listener.stopListener();
+            // Force disconnect to unblock readObject and kill thread
+            RemoteServerConnection.getInstance().disconnect();
             listener = null;
         }
     }

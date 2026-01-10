@@ -207,10 +207,53 @@ public class NetworkGameController implements NetworkCallback {
 
     @Override
     public void onChallengeReceived(ReceiveChallengeRequestModel challenge) {
-        // Handle "Play Again" challenge?
-        // Reuse Lobby logic or implemented here?
-        // User said: "handle the play again to make this cycle again"
-        // Same as Lobby logic basically.
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Rematch Request");
+            alert.setHeaderText("Opponent wants a rematch!");
+            alert.setContentText("Do you want to play again?");
+
+            ButtonType acceptBtn = new ButtonType("Accept", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+            ButtonType rejectBtn = new ButtonType("Reject", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(acceptBtn, rejectBtn);
+
+            if (getClass().getResource("/com/mycompany/styles.css") != null) {
+                alert.getDialogPane().getStylesheets()
+                        .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+            }
+            alert.getDialogPane().getStyleClass().add("dialog-pane");
+
+            // Auto-reject/close after timeout matches sender timeout?
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        if (alert.isShowing()) {
+                            alert.close();
+                        }
+                    });
+                }
+            }, 10000); // 10s
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            boolean accepted = (result.isPresent() && result.get() == acceptBtn);
+
+            try {
+                // Response
+                // We need challenger ID. The request has player1Id (Sender).
+                // Logic: Sender sent challenge. We respond to Sender.
+                int challengerId = challenge.getPlayer1Id();
+                com.mycompany.model.responseModel.SendChallengeResponseModel resp = new com.mycompany.model.responseModel.SendChallengeResponseModel(
+                        accepted, challengerId);
+
+                com.mycompany.data.datasource.remote.RemoteServerConnection.getInstance().send(resp);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -277,7 +320,37 @@ public class NetworkGameController implements NetworkCallback {
 
     @FXML
     private void resetGame(ActionEvent event) {
-        // Send Challenge (Play Again)
-        // Similar to Lobby
+        // Send Challenge (Play Again) is basically sending a new challenge to the same
+        // opponent.
+        try {
+            int myId = context.getMyId();
+            int opponentId = context.getOpponentId();
+
+            com.mycompany.model.requestModel.SendChallengeRequestModel req = new com.mycompany.model.requestModel.SendChallengeRequestModel(
+                    myId, opponentId);
+
+            com.mycompany.data.datasource.remote.RemoteServerConnection.getInstance().send(req);
+
+            // UI Feedback
+            statusText.setText("Requesting Rematch...");
+            playAgainButton.setDisable(true);
+
+            // Timeout reset/enable?
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        // If still disabled (no response), re-enable or show timeout
+                        if (playAgainButton.isDisabled()) {
+                            playAgainButton.setDisable(false);
+                            statusText.setText("Rematch timed out.");
+                        }
+                    });
+                }
+            }, 10000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

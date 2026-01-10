@@ -61,6 +61,16 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
         lobbyManager.startListening(this);
 
         loadFriends();
+
+        // Auto-refresh friends list every 5 seconds
+        new java.util.Timer().scheduleAtFixedRate(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                // Determine sort based on current view/tab
+                boolean sortByScore = "LEADERBOARD".equals(currentView);
+                loadFriends(sortByScore);
+            }
+        }, 5000, 5000);
     }
 
     // ... Existing methods (loadFriends, etc.) ...
@@ -256,7 +266,6 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     // ... Navigation and other methods ...
 
     // ...
-
 
     private void loadFriends(boolean sortByScore) {
         // Update Tab Active States
@@ -564,6 +573,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     @FXML
     private void onProfile() {
         try {
+            lobbyManager.stopListening();
             App.setRoot(Routes.PROFILE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -573,6 +583,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     @FXML
     private void onRecordedGames() {
         try {
+            lobbyManager.stopListening();
             App.setRoot(Routes.GAME_HISTORY);
         } catch (Exception e) {
             e.printStackTrace();
