@@ -48,6 +48,10 @@ public class NetworkGameController implements NetworkCallback {
     private GameContext context;
     private Button[][] buttons = new Button[3][3];
 
+    // SVG Paths
+    private static final String PATH_X = "M10,10 L90,90 M90,10 L10,90";
+    private static final String PATH_O = "M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10";
+
     @FXML
     public void initialize() {
         remoteDataSource = RemoteDataSource.getInstance();
@@ -59,13 +63,13 @@ public class NetworkGameController implements NetworkCallback {
         if ("X".equals(context.getMySymbol())) {
             playerXName.setText("You");
             playerOName.setText(context.getOpponentName());
-            scoreX.setText(String.valueOf(context.getMyScore()));
-            scoreO.setText(String.valueOf(context.getOpponentScore()));
+            scoreX.setText(String.valueOf(context.getMySessionScore())); // Session Score
+            scoreO.setText(String.valueOf(context.getOpponentSessionScore()));
         } else {
             playerXName.setText(context.getOpponentName());
             playerOName.setText("You");
-            scoreO.setText(String.valueOf(context.getMyScore()));
-            scoreX.setText(String.valueOf(context.getOpponentScore()));
+            scoreO.setText(String.valueOf(context.getMySessionScore()));
+            scoreX.setText(String.valueOf(context.getOpponentSessionScore()));
         }
 
         updateStatus();
@@ -103,11 +107,20 @@ public class NetworkGameController implements NetworkCallback {
             return;
         }
 
-        // Optimistic UI Update? No, wait for server response safely?
-        // Or at least disable button.
-        // Let's Optimistic:
-        clickedBtn.setText(context.getMySymbol());
-        clickedBtn.getStyleClass().add(context.getMySymbol().equals("X") ? "x-cell" : "o-cell");
+        // Optimistic UI Update using SVG
+        String path = context.getMySymbol().equals("X") ? PATH_X : PATH_O;
+        javafx.scene.shape.SVGPath svg = new javafx.scene.shape.SVGPath();
+        svg.setContent(path);
+        svg.setStyle("-fx-fill: transparent; -fx-stroke: " + (context.getMySymbol().equals("X") ? "#6900ff" : "#00ffcc")
+                + "; -fx-stroke-width: 5;");
+        svg.setScaleX(0.5);
+        svg.setScaleY(0.5);
+
+        clickedBtn.setGraphic(svg);
+        clickedBtn.setText("");
+        // clickedBtn.getStyleClass().add(context.getMySymbol().equals("X") ? "x-cell" :
+        // "o-cell");
+
         context.setMyTurn(false);
         updateStatus();
 
@@ -138,14 +151,28 @@ public class NetworkGameController implements NetworkCallback {
                     : (context.getMySymbol().equals("X") ? "O" : "X");
 
             // Check if it's my move response (ACK) or Opponent move
+            // Check if it's my move response (ACK) or Opponent move
+            String path = symbol.equals("X") ? PATH_X : PATH_O;
+            javafx.scene.shape.SVGPath svg = new javafx.scene.shape.SVGPath();
+            svg.setContent(path);
+            svg.setStyle("-fx-fill: transparent; -fx-stroke: " + (symbol.equals("X") ? "#6900ff" : "#00ffcc")
+                    + "; -fx-stroke-width: 5;");
+
+            // Adjust size to fit button (scaling)
+            svg.setScaleX(0.5);
+            svg.setScaleY(0.5);
+
             if (move.getPlayerId() == context.getMyId()) {
                 // My move confirmed.
-                buttons[r][c].setText(context.getMySymbol());
-                buttons[r][c].getStyleClass().add(context.getMySymbol().equals("X") ? "x-cell" : "o-cell");
+                buttons[r][c].setGraphic(svg);
+                buttons[r][c].setText(""); // Clear text if any
+                // buttons[r][c].getStyleClass().add(context.getMySymbol().equals("X") ?
+                // "x-cell" : "o-cell");
             } else {
                 // Opponent move
-                buttons[r][c].setText(symbol);
-                buttons[r][c].getStyleClass().add(symbol.equals("X") ? "x-cell" : "o-cell");
+                buttons[r][c].setGraphic(svg);
+                buttons[r][c].setText("");
+                // buttons[r][c].getStyleClass().add(symbol.equals("X") ? "x-cell" : "o-cell");
                 context.setMyTurn(true);
                 updateStatus();
                 if (soundManager != null)
@@ -163,17 +190,29 @@ public class NetworkGameController implements NetworkCallback {
         gameGrid.setDisable(true);
 
         String msg;
-        if (winnerSymbol == null || winnerSymbol.isEmpty()) { // Draw (Server might send Empty?)
+        if (winnerSymbol == null || winnerSymbol.isEmpty()) { // Draw
             msg = "It's a Draw!";
         } else if (winnerSymbol.equals(context.getMySymbol())) {
             msg = "You Won! 🎉";
+            context.incrementMySessionScore();
             if (soundManager != null)
                 soundManager.playSound(SoundManager.WIN);
         } else {
             msg = "You Lost! 😔";
+            context.incrementOpponentSessionScore();
             if (soundManager != null)
                 soundManager.playSound(SoundManager.LOSE);
         }
+
+        // Update UI Score immediately
+        if ("X".equals(context.getMySymbol())) {
+            scoreX.setText(String.valueOf(context.getMySessionScore()));
+            scoreO.setText(String.valueOf(context.getOpponentSessionScore()));
+        } else {
+            scoreO.setText(String.valueOf(context.getMySessionScore()));
+            scoreX.setText(String.valueOf(context.getOpponentSessionScore()));
+        }
+
         statusText.setText(msg);
 
         // Popup 5 seconds
@@ -346,6 +385,7 @@ public class NetworkGameController implements NetworkCallback {
             for (Button b : row) {
                 if (b != null) {
                     b.setText("");
+                    b.setGraphic(null);
                     b.getStyleClass().removeAll("x-cell", "o-cell");
                 }
             }
@@ -391,7 +431,7 @@ public class NetworkGameController implements NetworkCallback {
     private void onHome(ActionEvent event) {
         try {
             remoteDataSource.stopListening();
-            App.setRoot(Routes.HOME);
+            App.setRoot(Routes.LOBBY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -432,7 +472,7 @@ public class NetworkGameController implements NetworkCallback {
                         }
                     });
                 }
-            }, 10000);
+            }, 15000);
 
         } catch (Exception e) {
             e.printStackTrace();

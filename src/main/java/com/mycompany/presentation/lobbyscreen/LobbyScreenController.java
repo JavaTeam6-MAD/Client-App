@@ -89,8 +89,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                     javafx.scene.control.Alert.AlertType.CONFIRMATION);
             alert.setTitle("Incoming Challenge");
-            alert.setHeaderText("Challenge from Player ID " + challenge.getPlayer1Id()); // Using ID as name is not in
-                                                                                         // request
+            alert.setHeaderText("Challenge from " + challenge.getSenderName()); // Using Name
             alert.setContentText("Do you want to accept?");
 
             javafx.scene.control.ButtonType acceptBtn = new javafx.scene.control.ButtonType("Accept",
@@ -106,7 +105,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             }
             alert.getDialogPane().getStyleClass().add("dialog-pane");
 
-            // Auto-reject after 5 seconds if no action?
+            // Auto-reject after 8 seconds if no action?
             new java.util.Timer().schedule(new java.util.TimerTask() {
                 @Override
                 public void run() {
@@ -117,7 +116,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                         }
                     });
                 }
-            }, 5000);
+            }, 8000);
 
             java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
 
@@ -144,7 +143,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 }
                 recordAlert.getDialogPane().getStyleClass().add("dialog-pane");
 
-                // 5 sec timer for record dialog
+                // 7 sec timer for record dialog
                 new java.util.Timer().schedule(new java.util.TimerTask() {
                     @Override
                     public void run() {
@@ -154,7 +153,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                             }
                         });
                     }
-                }, 5000);
+                }, 7000);
 
                 recordAlert.showAndWait();
                 // Logic for recording preference? Model doesn't support it properly in response
@@ -215,6 +214,9 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
 
                 long myScore = amIChallenger ? response.getChallengerScore() : response.getOpponentScore();
                 long opponentScore = amIChallenger ? response.getOpponentScore() : response.getChallengerScore();
+
+                // Reset Session Scores for Fresh Game from Lobby
+                com.mycompany.presentation.networkgame.GameContext.getInstance().resetSessionScores();
 
                 com.mycompany.presentation.networkgame.GameContext.getInstance().setGameSession(
                         response.getGameIdUuid(),
@@ -563,7 +565,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                     // So show() is better, but we need to close it when response arrives.
                     // Saving reference to close it?
 
-                    // Re-enable button after 10s if no response?
+                    // Re-enable button after 15s if no response?
                     new java.util.Timer().schedule(new java.util.TimerTask() {
                         @Override
                         public void run() {
@@ -572,7 +574,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                                 waitingAlert.close();
                             });
                         }
-                    }, 10000);
+                    }, 15000);
 
                 } catch (Exception ex) {
                     ex.printStackTrace();

@@ -11,6 +11,9 @@ public class GameContext {
     private long myScore;
     private long opponentScore;
 
+    private long mySessionScore = 0;
+    private long opponentSessionScore = 0;
+
     private String myName;
 
     private GameContext() {
@@ -21,6 +24,27 @@ public class GameContext {
             instance = new GameContext();
         }
         return instance;
+    }
+
+    public void resetSessionScores() {
+        mySessionScore = 0;
+        opponentSessionScore = 0;
+    }
+
+    public void incrementMySessionScore() {
+        mySessionScore++;
+    }
+
+    public void incrementOpponentSessionScore() {
+        opponentSessionScore++;
+    }
+
+    public long getMySessionScore() {
+        return mySessionScore;
+    }
+
+    public long getOpponentSessionScore() {
+        return opponentSessionScore;
     }
 
     public void setGameSession(String gameId, int myId, String myName, int opponentId, String mySymbol,
