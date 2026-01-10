@@ -8,6 +8,8 @@ public class GameContext {
     private String mySymbol; // "X" or "O"
     private String opponentName;
     private boolean isMyTurn;
+    private long myScore;
+    private long opponentScore;
 
     private String myName;
 
@@ -23,7 +25,7 @@ public class GameContext {
 
     public void setGameSession(String gameId, int myId, String myName, int opponentId, String mySymbol,
             String opponentName,
-            boolean isMyTurn) {
+            boolean isMyTurn, long myScore, long opponentScore) {
         this.gameId = gameId;
         this.myId = myId;
         this.myName = myName;
@@ -31,6 +33,8 @@ public class GameContext {
         this.mySymbol = mySymbol;
         this.opponentName = opponentName;
         this.isMyTurn = isMyTurn;
+        this.myScore = myScore;
+        this.opponentScore = opponentScore;
     }
 
     public String getGameId() {
@@ -63,6 +67,14 @@ public class GameContext {
 
     public void setMyTurn(boolean myTurn) {
         isMyTurn = myTurn;
+    }
+
+    public long getMyScore() {
+        return myScore;
+    }
+
+    public long getOpponentScore() {
+        return opponentScore;
     }
 
     public void clear() {

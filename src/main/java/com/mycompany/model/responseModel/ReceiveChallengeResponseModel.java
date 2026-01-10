@@ -64,9 +64,12 @@ public class ReceiveChallengeResponseModel implements Serializable {
 
     String challengerName;
     String opponentName;
+    long challengerScore;
+    long opponentScore;
 
     public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted,
-            boolean receiverPlayerIsRecording, String gameIdUuid, String challengerName, String opponentName) {
+            boolean receiverPlayerIsRecording, String gameIdUuid, String challengerName, String opponentName,
+            long challengerScore, long opponentScore) {
         this.senderPlayerId = senderPlayerId;
         this.receiverPlayerId = receiverPlayerId;
         this.accepted = accepted;
@@ -74,6 +77,16 @@ public class ReceiveChallengeResponseModel implements Serializable {
         this.gameIdUuid = gameIdUuid;
         this.challengerName = challengerName;
         this.opponentName = opponentName;
+        this.challengerScore = challengerScore;
+        this.opponentScore = opponentScore;
+    }
+
+    public long getChallengerScore() {
+        return challengerScore;
+    }
+
+    public long getOpponentScore() {
+        return opponentScore;
     }
 
     public String getChallengerName() {

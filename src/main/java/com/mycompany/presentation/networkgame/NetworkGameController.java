@@ -59,9 +59,13 @@ public class NetworkGameController implements NetworkCallback {
         if ("X".equals(context.getMySymbol())) {
             playerXName.setText("You");
             playerOName.setText(context.getOpponentName());
+            scoreX.setText(String.valueOf(context.getMyScore()));
+            scoreO.setText(String.valueOf(context.getOpponentScore()));
         } else {
             playerXName.setText(context.getOpponentName());
             playerOName.setText("You");
+            scoreO.setText(String.valueOf(context.getMyScore()));
+            scoreX.setText(String.valueOf(context.getOpponentScore()));
         }
 
         updateStatus();
@@ -286,20 +290,27 @@ public class NetworkGameController implements NetworkCallback {
                 int opponentId = (myId == response.getSenderPlayerId()) ? response.getReceiverPlayerId()
                         : response.getSenderPlayerId();
 
+                long myScore = amIChallenger ? response.getChallengerScore() : response.getOpponentScore();
+                long opponentScore = amIChallenger ? response.getOpponentScore() : response.getChallengerScore();
+
                 // Reset board
                 resetInternal();
 
                 // Update Game ID if changed?
                 context.setGameSession(response.getGameIdUuid(), myId, myName, opponentId,
-                        mySymbol, opponentName, isMyTurn);
+                        mySymbol, opponentName, isMyTurn, myScore, opponentScore);
 
                 // Re-init UI names and status
                 if ("X".equals(context.getMySymbol())) {
                     playerXName.setText("You");
                     playerOName.setText(context.getOpponentName());
+                    scoreX.setText(String.valueOf(context.getMyScore()));
+                    scoreO.setText(String.valueOf(context.getOpponentScore()));
                 } else {
                     playerXName.setText(context.getOpponentName());
                     playerOName.setText("You");
+                    scoreO.setText(String.valueOf(context.getMyScore()));
+                    scoreX.setText(String.valueOf(context.getOpponentScore()));
                 }
                 updateStatus();
 
@@ -317,9 +328,14 @@ public class NetworkGameController implements NetworkCallback {
                             .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
                 }
                 alert.getDialogPane().getStyleClass().add("dialog-pane");
-                alert.show();
-                playAgainButton.setVisible(false);
-                homeButton.setVisible(true);
+                alert.showAndWait(); // Block to let user see it
+
+                try {
+                    remoteDataSource.stopListening();
+                    App.setRoot(Routes.LOBBY);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -351,6 +367,24 @@ public class NetworkGameController implements NetworkCallback {
 
     @Override
     public void onFailure(String errorMessage) {
+        javafx.application.Platform.runLater(() -> {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                    javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Connection Error");
+            alert.setHeaderText("Connection Lost");
+            alert.setContentText(errorMessage != null ? errorMessage : "Connection to server lost.");
+
+            if (getClass().getResource("/com/mycompany/styles.css") != null) {
+                alert.getDialogPane().getStylesheets()
+                        .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+            }
+            alert.getDialogPane().getStyleClass().add("dialog-pane");
+
+            alert.showAndWait();
+
+            // Redirect
+            onHome(null);
+        });
     }
 
     @FXML

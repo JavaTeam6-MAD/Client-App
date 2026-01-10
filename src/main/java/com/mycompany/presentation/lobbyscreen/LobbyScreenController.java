@@ -213,6 +213,9 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 int opponentId = (myId == response.getSenderPlayerId()) ? response.getReceiverPlayerId()
                         : response.getSenderPlayerId();
 
+                long myScore = amIChallenger ? response.getChallengerScore() : response.getOpponentScore();
+                long opponentScore = amIChallenger ? response.getOpponentScore() : response.getChallengerScore();
+
                 com.mycompany.presentation.networkgame.GameContext.getInstance().setGameSession(
                         response.getGameIdUuid(),
                         myId,
@@ -220,7 +223,9 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                         opponentId,
                         mySymbol,
                         opponentName,
-                        isMyTurn);
+                        isMyTurn,
+                        myScore,
+                        opponentScore);
 
                 try {
                     lobbyManager.stopListening();
@@ -262,7 +267,27 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     @Override
     public void onFailure(String errorMessage) {
         javafx.application.Platform.runLater(() -> {
-            // Show Error
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                    javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Connection Error");
+            alert.setHeaderText("Connection Lost");
+            alert.setContentText(errorMessage != null ? errorMessage : "Connection to server lost.");
+
+            if (getClass().getResource("/com/mycompany/styles.css") != null) {
+                alert.getDialogPane().getStylesheets()
+                        .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+            }
+            alert.getDialogPane().getStyleClass().add("dialog-pane");
+
+            alert.showAndWait();
+
+            // Redirect to Login/Home
+            try {
+                lobbyManager.stopListening();
+                App.setRoot(Routes.HOME); // Or Routes.AUTH
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -442,8 +467,8 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
         btnAction.setStyle("-fx-font-size: 12px; -fx-padding: 8 16; -fx-min-height: 36px; -fx-pref-height: 36px;");
         btnAction.setText("Challenge");
 
-        // Disable challenge if offline
-        if (!player.isIsActive()) {
+        // Disable challenge if offline or in-game (not available)
+        if (!player.isIsActive() || !player.isIsAvailable()) {
             btnAction.setDisable(true);
         }
 
