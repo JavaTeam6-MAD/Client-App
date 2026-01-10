@@ -300,6 +300,11 @@ public class NetworkGameController implements NetworkCallback {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            // If rejected, also navigate to Lobby (so both players leave)
+            if (!accepted) {
+                onHome(null);
+            }
         });
     }
 

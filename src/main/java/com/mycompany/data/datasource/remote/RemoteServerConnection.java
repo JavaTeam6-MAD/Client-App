@@ -25,6 +25,10 @@ public class RemoteServerConnection {
         return instance;
     }
 
+    public boolean isConnected() {
+        return socket != null && !socket.isClosed() && socket.isConnected();
+    }
+
     public void connect(String ip, int port) throws Exception {
         if (socket != null && !socket.isClosed() && socket.isConnected()) {
             return;

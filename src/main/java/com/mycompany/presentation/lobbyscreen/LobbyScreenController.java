@@ -342,7 +342,14 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 }
 
                 // Sort by score descending (high to low)
-                friends.sort((p1, p2) -> Long.compare(p2.getScore(), p1.getScore()));
+                // Sort by score descending (high to low)
+                friends.sort((p1, p2) -> {
+                    if (p2.getScore() > p1.getScore())
+                        return 1;
+                    if (p2.getScore() < p1.getScore())
+                        return -1;
+                    return 0;
+                });
                 currentView = "LEADERBOARD";
             } else {
                 // Sort friends: Online first, then Offline

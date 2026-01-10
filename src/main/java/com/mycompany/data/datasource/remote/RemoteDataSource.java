@@ -46,6 +46,20 @@ public class RemoteDataSource {
             // Hot swap callback
             listener.setCallback(callback);
             return;
+        } else if (RemoteServerConnection.getInstance().isConnected()) {
+            // Listener might have died or not started, but socket is open?
+            // Or listener is null but socket is connected.
+            // Try to attach listener to existing stream if possible?
+            // Accessing stream from Connection is risky if we didn't save it.
+            // RemoteServerConnection.getInstance().getInputStream() is available.
+            try {
+                ObjectInputStream in = RemoteServerConnection.getInstance().getInputStream();
+                listener = new ServerListener(in, callback);
+                listener.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
         }
         try {
             RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
@@ -58,13 +72,9 @@ public class RemoteDataSource {
     }
 
     public void stopListening() {
-        // Default behavior: Don't kill connection, just nullify callback?
-        // Or if we want to truly stop (e.g. Logout), we should have a separate method.
-        // For now, to support persistent connection, we CANNOT close the socket here.
-        // We will just remove the callback reference if possible,
-        // OR better yet, do nothing and let the next startListening take over.
-        // BUT, if we go to a screen that *doesn't* listen, we might want to stop
-        // events.
+        // Stop receiving events by effectively ignoring them.
+        // We do NOT close the connection here, so the socket remains open for the next
+        // screen (Lobby).
         if (listener != null) {
             listener.setCallback(new NetworkCallback() {
                 public void onFriendsListReceived(List<com.mycompany.model.app.Player> friends) {
@@ -85,6 +95,7 @@ public class RemoteDataSource {
                 }
 
                 public void onFailure(String errorMessage) {
+                    // Ignore failure since we are stopping listening intentionally
                 }
             });
         }
