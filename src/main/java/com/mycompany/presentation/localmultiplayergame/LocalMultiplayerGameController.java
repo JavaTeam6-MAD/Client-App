@@ -103,6 +103,13 @@ public class LocalMultiplayerGameController {
 
             if (game.checkWinner()) {
                 game.setGameActive(false);
+
+                // Highlight winning cells
+                int[][] winningLine = game.getWinningLine();
+                if (winningLine != null) {
+                    highlightWinningCells(winningLine);
+                }
+
                 game.incrementScore();
                 updateUI();
                 statusText.setText("Winner: " + (currentPlayer == 'X' ? playerXName.getText() : playerOName.getText()));
@@ -127,6 +134,25 @@ public class LocalMultiplayerGameController {
         button.setGraphic(path);
     }
 
+    private void highlightWinningCells(int[][] winningCells) {
+        for (int[] cell : winningCells) {
+            int row = cell[0];
+            int col = cell[1];
+            for (Node node : gameGrid.getChildren()) {
+                if (node instanceof Button) {
+                    Integer r = GridPane.getRowIndex(node);
+                    Integer c = GridPane.getColumnIndex(node);
+                    int nodeRow = (r == null) ? 0 : r;
+                    int nodeCol = (c == null) ? 0 : c;
+                    if (nodeRow == row && nodeCol == col) {
+                        node.getStyleClass().add("winning-cell");
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private void updateUI() {
         scoreX.setText(String.valueOf(game.getScoreX()));
         scoreO.setText(String.valueOf(game.getScoreO()));
@@ -145,6 +171,7 @@ public class LocalMultiplayerGameController {
         for (Node node : gameGrid.getChildren()) {
             if (node instanceof Button) {
                 ((Button) node).setGraphic(null);
+                node.getStyleClass().remove("winning-cell");
             }
         }
         setEndGameButtonsVisible(false);

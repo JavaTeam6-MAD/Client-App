@@ -205,4 +205,16 @@ public class ComputerGameManager {
                 return false;
         return true;
     }
+
+    public int[] getWinningLine(char p) {
+        char[] board = state.getBoard();
+        int[][] wins = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, { 0, 4, 8 },
+                { 2, 4, 6 } };
+        for (int[] w : wins) {
+            if (board[w[0]] == p && board[w[1]] == p && board[w[2]] == p) {
+                return w;
+            }
+        }
+        return null;
+    }
 }

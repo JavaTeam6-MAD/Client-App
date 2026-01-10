@@ -11,7 +11,7 @@ package com.mycompany.presentation.localmultiplayergame;
 public class LocalGameManager {
     // Private instance of the state to maintain encapsulation
     private LocalGameState state = new LocalGameState();
-    
+
     public LocalGameManager() {
         // Initialize the board array within the state
         state.setBoard(new char[3][3]);
@@ -19,7 +19,7 @@ public class LocalGameManager {
         state.setScoreX(0);
         state.setScoreY(0);
     }
-    
+
     public void resetGame() {
         char[][] currentBoard = state.getBoard();
         for (int i = 0; i < 3; i++) {
@@ -30,45 +30,49 @@ public class LocalGameManager {
         state.setIsXTurn(true);
         state.setGameActive(true);
     }
-    
+
     public boolean makeMove(int row, int col) {
         boolean madeMove = false;
         char[][] currentBoard = state.getBoard();
-        
-        if(state.isGameActive() && currentBoard[row][col] == ' ') {
+
+        if (state.isGameActive() && currentBoard[row][col] == ' ') {
             currentBoard[row][col] = state.isIsXTurn() ? 'X' : 'O';
             madeMove = true;
         }
         return madeMove;
     }
-    
+
     public boolean checkWinner() {
         boolean isWin = false;
         char[][] currentBoard = state.getBoard();
-        
+
         // Rows and Columns
         for (int i = 0; i < 3; i++) {
-            if (currentBoard[i][0] != ' ' && currentBoard[i][0] == currentBoard[i][1] && currentBoard[i][1] == currentBoard[i][2])
+            if (currentBoard[i][0] != ' ' && currentBoard[i][0] == currentBoard[i][1]
+                    && currentBoard[i][1] == currentBoard[i][2])
                 isWin = true;
-            if (currentBoard[0][i] != ' ' && currentBoard[0][i] == currentBoard[1][i] && currentBoard[0][i] == currentBoard[2][i])
+            if (currentBoard[0][i] != ' ' && currentBoard[0][i] == currentBoard[1][i]
+                    && currentBoard[0][i] == currentBoard[2][i])
                 isWin = true;
         }
         // Diagonals
-        if (currentBoard[0][0] != ' ' && currentBoard[0][0] == currentBoard[1][1] && currentBoard[0][0] == currentBoard[2][2])
+        if (currentBoard[0][0] != ' ' && currentBoard[0][0] == currentBoard[1][1]
+                && currentBoard[0][0] == currentBoard[2][2])
             isWin = true;
-        if (currentBoard[0][2] != ' ' && currentBoard[0][2] == currentBoard[1][1] && currentBoard[0][2] == currentBoard[2][0])
+        if (currentBoard[0][2] != ' ' && currentBoard[0][2] == currentBoard[1][1]
+                && currentBoard[0][2] == currentBoard[2][0])
             isWin = true;
 
         return isWin;
     }
-    
+
     public boolean isBoardFull() {
         boolean isFull = true;
         char[][] currentBoard = state.getBoard();
-        
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                if(currentBoard[i][j] == ' ') {
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (currentBoard[i][j] == ' ') {
                     isFull = false;
                     break;
                 }
@@ -76,42 +80,74 @@ public class LocalGameManager {
         }
         return isFull;
     }
-    
+
     public void nextTurn() {
         state.setIsXTurn(!state.isIsXTurn());
     }
-    
+
     public char getCurrentPlayer() {
         return state.isIsXTurn() ? 'X' : 'O';
     }
-    
+
     public void incrementScore() {
-        if(state.isIsXTurn()) {
+        if (state.isIsXTurn()) {
             state.setScoreX(state.getScoreX() + 1);
         } else {
             state.setScoreY(state.getScoreY() + 1);
         }
     }
-    
+
     public int getScoreX() {
         return state.getScoreX();
     }
-    
+
     public int getScoreO() {
         return state.getScoreY();
     }
-    
+
     public boolean isGameActive() {
         return state.isGameActive();
     }
-    
+
     public void setGameActive(boolean active) {
         state.setGameActive(active);
     }
-    
+
     // Helper to allow the controller to set player names in the state
     public void setPlayerNames(String xName, String oName) {
         state.setPlayerXName(xName);
         state.setPlayerOName(oName);
+    }
+
+    public int[][] getWinningLine() {
+        char[][] currentBoard = state.getBoard();
+
+        // Check rows
+        for (int i = 0; i < 3; i++) {
+            if (currentBoard[i][0] != ' ' && currentBoard[i][0] == currentBoard[i][1]
+                    && currentBoard[i][1] == currentBoard[i][2]) {
+                return new int[][] { { i, 0 }, { i, 1 }, { i, 2 } };
+            }
+        }
+
+        // Check columns
+        for (int i = 0; i < 3; i++) {
+            if (currentBoard[0][i] != ' ' && currentBoard[0][i] == currentBoard[1][i]
+                    && currentBoard[0][i] == currentBoard[2][i]) {
+                return new int[][] { { 0, i }, { 1, i }, { 2, i } };
+            }
+        }
+
+        // Check diagonals
+        if (currentBoard[0][0] != ' ' && currentBoard[0][0] == currentBoard[1][1]
+                && currentBoard[0][0] == currentBoard[2][2]) {
+            return new int[][] { { 0, 0 }, { 1, 1 }, { 2, 2 } };
+        }
+        if (currentBoard[0][2] != ' ' && currentBoard[0][2] == currentBoard[1][1]
+                && currentBoard[0][2] == currentBoard[2][0]) {
+            return new int[][] { { 0, 2 }, { 1, 1 }, { 2, 0 } };
+        }
+
+        return null;
     }
 }

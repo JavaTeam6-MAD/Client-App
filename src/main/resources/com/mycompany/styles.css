@@ -189,12 +189,14 @@
     -fx-effect: dropshadow(gaussian, rgba(208, 0, 255, 0.8), 15, 0, 0, 0);
 }
 
-/* Winning Line Highlight */
+/* Winning Line Highlight with Animation */
 .winning-cell {
-    -fx-border-color: #00FFFF;
-    -fx-border-width: 2;
-    -fx-background-color: rgba(0, 255, 255, 0.1);
-    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 20, 0, 0, 0);
+    -fx-border-width: 3;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-background-color: rgba(255, 215, 0, 0.2);
+    -fx-border-color: #FFD700;
+    -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.9), 25, 0, 0, 0);
 }
 
 /* General Buttons */
@@ -345,7 +347,7 @@
 
 .dialog-pane.information .button {
     -fx-background-color: linear-gradient(to right, #00C853, #69F0AE);
-    -fx-text-fill: #003300; 
+    -fx-text-fill: #003300;
     -fx-effect: dropshadow(gaussian, rgba(0, 200, 83, 0.5), 10, 0, 0, 3);
 }
 
@@ -355,7 +357,7 @@
 }
 
 /* Dialog Content Text */
-.dialog-pane > .content.label {
+.dialog-pane>.content.label {
     -fx-text-fill: #e2e8f0;
     -fx-font-size: 14px;
     -fx-padding: 20 20 20 20;

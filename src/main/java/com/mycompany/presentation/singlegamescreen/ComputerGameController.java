@@ -133,6 +133,13 @@ public class ComputerGameController {
     private boolean checkGameOver(char player) {
         if (gameManager.checkWin(player)) {
             gameManager.setGameActive(false);
+
+            // Highlight winning cells
+            int[] winningLine = gameManager.getWinningLine(player);
+            if (winningLine != null) {
+                highlightWinningCells(winningLine);
+            }
+
             if (player == 'X') {
                 statusText.setText("You Win!");
                 gameManager.incrementScoreX();
@@ -167,6 +174,13 @@ public class ComputerGameController {
         button.setGraphic(path);
     }
 
+    private void highlightWinningCells(int[] winningIndices) {
+        for (int index : winningIndices) {
+            Button btn = (Button) gameGrid.getChildren().get(index);
+            btn.getStyleClass().add("winning-cell");
+        }
+    }
+
     private void updateScoreBoard() {
         scoreX.setText(String.valueOf(gameManager.getScoreX()));
         scoreO.setText(String.valueOf(gameManager.getScoreO()));
@@ -194,6 +208,7 @@ public class ComputerGameController {
                 Button btn = (Button) node;
                 btn.setGraphic(null);
                 btn.setDisable(false);
+                btn.getStyleClass().remove("winning-cell");
             }
         }
     }
