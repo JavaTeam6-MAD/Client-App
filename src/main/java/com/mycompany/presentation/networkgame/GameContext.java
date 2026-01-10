@@ -9,6 +9,8 @@ public class GameContext {
     private String opponentName;
     private boolean isMyTurn;
 
+    private String myName;
+
     private GameContext() {
     }
 
@@ -19,10 +21,12 @@ public class GameContext {
         return instance;
     }
 
-    public void setGameSession(String gameId, int myId, int opponentId, String mySymbol, String opponentName,
+    public void setGameSession(String gameId, int myId, String myName, int opponentId, String mySymbol,
+            String opponentName,
             boolean isMyTurn) {
         this.gameId = gameId;
         this.myId = myId;
+        this.myName = myName;
         this.opponentId = opponentId;
         this.mySymbol = mySymbol;
         this.opponentName = opponentName;
@@ -35,6 +39,10 @@ public class GameContext {
 
     public int getMyId() {
         return myId;
+    }
+
+    public String getMyName() {
+        return myName;
     }
 
     public int getOpponentId() {

@@ -16,6 +16,19 @@ public class RemoteDataSource {
     private static String serverIp = "localhost";
     private static final int SERVER_PORT = 12345;
 
+    private static RemoteDataSource instance;
+    private ServerListener listener;
+
+    private RemoteDataSource() {
+    }
+
+    public static synchronized RemoteDataSource getInstance() {
+        if (instance == null) {
+            instance = new RemoteDataSource();
+        }
+        return instance;
+    }
+
     public static void setServerIp(String ip) {
         serverIp = ip;
     }
@@ -28,10 +41,10 @@ public class RemoteDataSource {
         return sendPlayerRequest(new RegisterRequestModel(username, password));
     }
 
-    private ServerListener listener;
-
     public void startListening(NetworkCallback callback) {
         if (listener != null && listener.isAlive()) {
+            // Hot swap callback
+            listener.setCallback(callback);
             return;
         }
         try {
@@ -45,9 +58,41 @@ public class RemoteDataSource {
     }
 
     public void stopListening() {
+        // Default behavior: Don't kill connection, just nullify callback?
+        // Or if we want to truly stop (e.g. Logout), we should have a separate method.
+        // For now, to support persistent connection, we CANNOT close the socket here.
+        // We will just remove the callback reference if possible,
+        // OR better yet, do nothing and let the next startListening take over.
+        // BUT, if we go to a screen that *doesn't* listen, we might want to stop
+        // events.
+        if (listener != null) {
+            listener.setCallback(new NetworkCallback() {
+                public void onFriendsListReceived(List<com.mycompany.model.app.Player> friends) {
+                }
+
+                public void onChallengeReceived(
+                        com.mycompany.model.requestModel.ReceiveChallengeRequestModel challenge) {
+                }
+
+                public void onChallengeResponse(
+                        com.mycompany.model.responseModel.ReceiveChallengeResponseModel response) {
+                }
+
+                public void onMoveReceived(com.mycompany.model.responseModel.MakeMoveResponseModel move) {
+                }
+
+                public void onGameEnd(com.mycompany.model.requestModel.EndGameSessionRequestModel endRequest) {
+                }
+
+                public void onFailure(String errorMessage) {
+                }
+            });
+        }
+    }
+
+    public void disconnect() {
         if (listener != null) {
             listener.stopListener();
-            // Force disconnect to unblock readObject and kill thread
             RemoteServerConnection.getInstance().disconnect();
             listener = null;
         }

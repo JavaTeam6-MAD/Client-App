@@ -50,7 +50,7 @@ public class NetworkGameController implements NetworkCallback {
 
     @FXML
     public void initialize() {
-        remoteDataSource = new RemoteDataSource(); // Or reuse singleton logic if available
+        remoteDataSource = RemoteDataSource.getInstance();
         remoteDataSource.startListening(this);
         soundManager = SoundManager.getInstance();
         context = GameContext.getInstance();
@@ -103,6 +103,7 @@ public class NetworkGameController implements NetworkCallback {
         // Or at least disable button.
         // Let's Optimistic:
         clickedBtn.setText(context.getMySymbol());
+        clickedBtn.getStyleClass().add(context.getMySymbol().equals("X") ? "x-cell" : "o-cell");
         context.setMyTurn(false);
         updateStatus();
 
@@ -135,12 +136,12 @@ public class NetworkGameController implements NetworkCallback {
             // Check if it's my move response (ACK) or Opponent move
             if (move.getPlayerId() == context.getMyId()) {
                 // My move confirmed.
-                // If I already updated UI optimistically, check consistency?
-                // For simplicity, ensure UI is set.
                 buttons[r][c].setText(context.getMySymbol());
+                buttons[r][c].getStyleClass().add(context.getMySymbol().equals("X") ? "x-cell" : "o-cell");
             } else {
                 // Opponent move
                 buttons[r][c].setText(symbol);
+                buttons[r][c].getStyleClass().add(symbol.equals("X") ? "x-cell" : "o-cell");
                 context.setMyTurn(true);
                 updateStatus();
                 if (soundManager != null)
@@ -260,16 +261,65 @@ public class NetworkGameController implements NetworkCallback {
         // Handle Play Again response
         Platform.runLater(() -> {
             if (response.isAccepted()) {
+                // Determine new Game Session details
+                String myName = context.getMyName();
+                // Note: If context is cleared, myName is lost?
+                // We should ensure context retains myName or we fetch it.
+                // Assuming internal reset doesn't clear context entirely or we get it before
+                // reset.
+
+                String challengerName = response.getChallengerName();
+                String opponentNameResp = response.getOpponentName();
+                boolean amIChallenger = myName.equals(challengerName);
+                String mySymbol = amIChallenger ? "X" : "O";
+                boolean isMyTurn = amIChallenger;
+                String opponentName = amIChallenger ? opponentNameResp : challengerName;
+
+                // Logic for opponent ID might need verification if IDs swap?
+                // Sender ID in response is capable of being either P1 or P2 depending on who
+                // accepted.
+                // We should keep myId constant. Opponent ID is the "other" ID in the message.
+                // Actually, simpler: context.getOpponentId() should remain same if playing same
+                // person.
+                // But let's be robust using response IDs.
+                int myId = context.getMyId();
+                int opponentId = (myId == response.getSenderPlayerId()) ? response.getReceiverPlayerId()
+                        : response.getSenderPlayerId();
+
                 // Reset board
                 resetInternal();
+
                 // Update Game ID if changed?
-                context.setGameSession(response.getGameIdUuid(), context.getMyId(), context.getOpponentId(),
-                        context.getMySymbol(), context.getOpponentName(), context.isMyTurn());
-                // Note: Logic for who starts next? Server decides? For tic tac toe usually
-                // loser starts or alternate.
-                // Assuming context update is enough.
+                context.setGameSession(response.getGameIdUuid(), myId, myName, opponentId,
+                        mySymbol, opponentName, isMyTurn);
+
+                // Re-init UI names and status
+                if ("X".equals(context.getMySymbol())) {
+                    playerXName.setText("You");
+                    playerOName.setText(context.getOpponentName());
+                } else {
+                    playerXName.setText(context.getOpponentName());
+                    playerOName.setText("You");
+                }
+                updateStatus();
+
             } else {
                 statusText.setText("Opponent rejected rematch.");
+                // Re-enable play again button?
+                playAgainButton.setDisable(true); // Or leave disabled.
+                // Should show alert?
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Rejected");
+                alert.setHeaderText(null);
+                alert.setContentText("Opponent rejected rematch.");
+                if (getClass().getResource("/com/mycompany/styles.css") != null) {
+                    alert.getDialogPane().getStylesheets()
+                            .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+                }
+                alert.getDialogPane().getStyleClass().add("dialog-pane");
+                alert.show();
+                playAgainButton.setVisible(false);
+                homeButton.setVisible(true);
             }
         });
     }
@@ -278,8 +328,10 @@ public class NetworkGameController implements NetworkCallback {
         gameGrid.setDisable(false);
         for (Button[] row : buttons) {
             for (Button b : row) {
-                if (b != null)
+                if (b != null) {
                     b.setText("");
+                    b.getStyleClass().removeAll("x-cell", "o-cell");
+                }
             }
         }
         playAgainButton.setVisible(false);

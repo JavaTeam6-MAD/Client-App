@@ -19,6 +19,10 @@ public class ServerListener extends Thread {
         this.callback = callback;
     }
 
+    public void setCallback(NetworkCallback callback) {
+        this.callback = callback;
+    }
+
     public void stopListener() {
         running = false;
         try {

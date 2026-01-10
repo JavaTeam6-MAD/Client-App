@@ -13,7 +13,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     private final PlayerDAO playerDAO;
 
     public PlayerRepositoryImpl() {
-        this.remoteDataSource = new RemoteDataSource();
+        this.remoteDataSource = RemoteDataSource.getInstance();
         this.playerDAO = new PlayerDAO();
     }
 

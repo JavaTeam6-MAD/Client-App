@@ -35,7 +35,7 @@ public class RemoteServerConnection {
         this.in = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void disconnect() {
+    public synchronized void disconnect() {
         try {
             if (in != null)
                 in.close();
@@ -52,14 +52,14 @@ public class RemoteServerConnection {
         }
     }
 
-    public void send(Object data) throws Exception {
+    public synchronized void send(Object data) throws Exception {
         if (out != null) {
             out.writeObject(data);
             out.flush();
         }
     }
 
-    public Object receive() throws Exception {
+    public synchronized Object receive() throws Exception {
         return (in != null) ? in.readObject() : null;
     }
 

@@ -41,7 +41,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     private VBox listContainer;
 
     private String currentView = "FRIENDS"; // FRIENDS or LEADERBOARD
-    private String pendingChallengeId = null;
+    private javafx.scene.control.Alert pendingChallengeAlert;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -188,6 +188,11 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     public void onChallengeResponse(com.mycompany.model.responseModel.ReceiveChallengeResponseModel response) {
         javafx.application.Platform.runLater(() -> {
             if (response.isAccepted()) {
+                if (pendingChallengeAlert != null && pendingChallengeAlert.isShowing()) {
+                    pendingChallengeAlert.close();
+                    pendingChallengeAlert = null;
+                }
+
                 // Game Started!
                 System.out.println("Challenge Accepted! Game ID: " + response.getGameIdUuid());
 
@@ -211,6 +216,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 com.mycompany.presentation.networkgame.GameContext.getInstance().setGameSession(
                         response.getGameIdUuid(),
                         myId,
+                        myName,
                         opponentId,
                         mySymbol,
                         opponentName,
@@ -223,6 +229,10 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                     e.printStackTrace();
                 }
             } else {
+                if (pendingChallengeAlert != null && pendingChallengeAlert.isShowing()) {
+                    pendingChallengeAlert.close();
+                    pendingChallengeAlert = null;
+                }
                 // Rejected
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                         javafx.scene.control.Alert.AlertType.INFORMATION);
@@ -518,6 +528,8 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                         waitingAlert.getDialogPane().getStylesheets()
                                 .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
                     }
+                    pendingChallengeAlert = waitingAlert;
+
                     waitingAlert.getDialogPane().getStyleClass().add("dialog-pane");
 
                     waitingAlert.show(); // Non-blocking so we can receive response?
