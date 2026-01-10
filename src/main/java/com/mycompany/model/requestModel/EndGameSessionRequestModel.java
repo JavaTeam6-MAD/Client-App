@@ -10,7 +10,10 @@ import com.mycompany.model.utils.GameStatus;
  *
  * @author abdel
  */
-public class EndGameSessionRequestModel {
+import java.io.Serializable;
+
+public class EndGameSessionRequestModel implements Serializable {
+    private static final long serialVersionUID = 1L;
     int player1Id;
     int player2Id;
     GameStatus player1Status;
@@ -44,7 +47,5 @@ public class EndGameSessionRequestModel {
     public void setPlayer1Status(GameStatus player1Status) {
         this.player1Status = player1Status;
     }
-    
-    
-    
+
 }

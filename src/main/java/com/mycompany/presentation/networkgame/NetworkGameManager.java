@@ -41,9 +41,6 @@ public class NetworkGameManager {
 
     public void stopGame() {
         remoteDataSource.detachNetworkGameManager();
-        // remoteDataSource.stopListening(); // Don't stop explicit listening here if we want to keep connection for Lobby?
-        // But if we go back to Lobby, LobbyManager starts listening.
-        // If we Logout, we stop listening.
     }
 
     // --- Business Logic Methods called by Controller ---
