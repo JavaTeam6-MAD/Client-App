@@ -55,14 +55,30 @@ public class LobbyManager {
         RemoteDataSource.getInstance().stopListening();
     }
 
+    private boolean isSendingChallenge = false;
+
     public void sendChallenge(int opponentId) {
+        if (isSendingChallenge)
+            return;
+        isSendingChallenge = true;
         try {
             int myId = getCurrentPlayer().getId();
             com.mycompany.model.requestModel.SendChallengeRequestModel req = new com.mycompany.model.requestModel.SendChallengeRequestModel(
                     myId, opponentId);
+            System.out.println("Sending Challenge Request to: " + opponentId);
             RemoteServerConnection.getInstance().send(req);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            // Reset after short delay or immediately?
+            // Should reset when response comes?
+            // Or just simple debounce protection (e.g. 1 sec).
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    isSendingChallenge = false;
+                }
+            }, 1000);
         }
     }
 
