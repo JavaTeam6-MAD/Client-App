@@ -5,12 +5,15 @@ import com.mycompany.model.requestModel.LoginRequestModel;
 import com.mycompany.model.requestModel.LogoutRequestModel;
 import com.mycompany.model.requestModel.RegisterRequestModel;
 import com.mycompany.model.requestModel.getFriendsRequestModel;
+import com.mycompany.presentation.lobbyscreen.LobbyManager;
+import com.mycompany.presentation.networkgame.NetworkGameManager;
 
 import java.util.List;
 import com.mycompany.model.requestModel.ChangeNameRequestModel;
 import com.mycompany.model.requestModel.ChangePasswordRequestModel;
 import com.mycompany.model.requestModel.ChangeAvatarRequestModel;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 public class RemoteDataSource {
     private static String serverIp = "localhost";
@@ -18,6 +21,10 @@ public class RemoteDataSource {
 
     private static RemoteDataSource instance;
     private ServerListener listener;
+
+    // References to Active Managers
+    private LobbyManager lobbyManager;
+    private NetworkGameManager networkGameManager;
 
     private RemoteDataSource() {
     }
@@ -33,6 +40,22 @@ public class RemoteDataSource {
         serverIp = ip;
     }
 
+    public void setLobbyManager(LobbyManager manager) {
+        this.lobbyManager = manager;
+    }
+
+    public LobbyManager getLobbyManager() {
+        return lobbyManager;
+    }
+
+    public void setNetworkGameManager(NetworkGameManager manager) {
+        this.networkGameManager = manager;
+    }
+
+    public NetworkGameManager getNetworkGameManager() {
+        return networkGameManager;
+    }
+
     public Player login(String username, String password) {
         return sendPlayerRequest(new LoginRequestModel(username, password));
     }
@@ -41,20 +64,13 @@ public class RemoteDataSource {
         return sendPlayerRequest(new RegisterRequestModel(username, password));
     }
 
-    public void startListening(NetworkCallback callback) {
+    public void startListening() {
         if (listener != null && listener.isAlive()) {
-            // Hot swap callback
-            listener.setCallback(callback);
             return;
         } else if (RemoteServerConnection.getInstance().isConnected()) {
-            // Listener might have died or not started, but socket is open?
-            // Or listener is null but socket is connected.
-            // Try to attach listener to existing stream if possible?
-            // Accessing stream from Connection is risky if we didn't save it.
-            // RemoteServerConnection.getInstance().getInputStream() is available.
             try {
                 ObjectInputStream in = RemoteServerConnection.getInstance().getInputStream();
-                listener = new ServerListener(in, callback);
+                listener = new ServerListener(in);
                 listener.start();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -64,7 +80,7 @@ public class RemoteDataSource {
         try {
             RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
             ObjectInputStream in = RemoteServerConnection.getInstance().getInputStream();
-            listener = new ServerListener(in, callback);
+            listener = new ServerListener(in);
             listener.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,57 +88,31 @@ public class RemoteDataSource {
     }
 
     public void stopListening() {
-        // Stop receiving events by effectively ignoring them.
-        // We do NOT close the connection here, so the socket remains open for the next
-        // screen (Lobby).
-        if (listener != null) {
-            listener.setCallback(new NetworkCallback() {
-                public void onFriendsListReceived(List<com.mycompany.model.app.Player> friends) {
-                }
-
-                public void onChallengeReceived(
-                        com.mycompany.model.requestModel.ReceiveChallengeRequestModel challenge) {
-                }
-
-                public void onChallengeResponse(
-                        com.mycompany.model.responseModel.ReceiveChallengeResponseModel response) {
-                }
-
-                public void onMoveReceived(com.mycompany.model.responseModel.MakeMoveResponseModel move) {
-                }
-
-                public void onGameEnd(com.mycompany.model.requestModel.EndGameSessionRequestModel endRequest) {
-                }
-
-                public void onFailure(String errorMessage) {
-                    // Ignore failure since we are stopping listening intentionally
-                }
-            });
-        }
+        // Just stop local processing if needed
     }
 
     public void disconnect() {
         if (listener != null) {
             listener.stopListener();
-            // Actually close the socket
             RemoteServerConnection.getInstance().disconnect();
             listener = null;
         }
-        // Force socket close even if listener is null (safety)
         RemoteServerConnection.getInstance().disconnect();
+        // Clear references
+        lobbyManager = null;
+        networkGameManager = null;
     }
 
     public List<Player> getFriends(int userId) {
         try {
             RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
             RemoteServerConnection.getInstance().send(new getFriendsRequestModel(userId));
-            // Response handled by Listener
         } catch (Exception e) {
             System.err.println("Error loading friends: " + e.getMessage());
             e.printStackTrace();
             RemoteServerConnection.getInstance().disconnect();
         }
-        return new java.util.ArrayList<>(); // Empty list, populated async
+        return new ArrayList<>();
     }
 
     public Player changeUserName(int id, String newName) {

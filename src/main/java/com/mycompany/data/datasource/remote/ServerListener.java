@@ -5,33 +5,23 @@ import com.mycompany.model.requestModel.ReceiveChallengeRequestModel;
 import com.mycompany.model.requestModel.EndGameSessionRequestModel;
 import com.mycompany.model.responseModel.MakeMoveResponseModel;
 import com.mycompany.model.responseModel.ReceiveChallengeResponseModel;
+import com.mycompany.presentation.lobbyscreen.LobbyManager;
+import com.mycompany.presentation.networkgame.NetworkGameManager;
 
 import java.io.ObjectInputStream;
 import java.util.List;
 
 public class ServerListener extends Thread {
     private ObjectInputStream in;
-    private NetworkCallback callback;
     private boolean running = true;
 
-    public ServerListener(ObjectInputStream in, NetworkCallback callback) {
+    // Direct dependencies via RemoteDataSource, no callback passing
+    public ServerListener(ObjectInputStream in) {
         this.in = in;
-        this.callback = callback;
-    }
-
-    public void setCallback(NetworkCallback callback) {
-        this.callback = callback;
     }
 
     public void stopListener() {
         running = false;
-        try {
-            // Closing the stream/socket usually interrupts the read,
-            // but we might want to interact with RemoteServerConnection instead.
-            // For now, we rely on the loop check or IO exception.
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -44,33 +34,55 @@ public class ServerListener extends Thread {
         } catch (Exception e) {
             System.out.println("ServerListener stopped or connection lost: " + e.getMessage());
             if (running) {
-                callback.onFailure("Connection lost");
+                // Notify both managers of failure possibility
+                NetworkGameManager netManager = RemoteDataSource.getInstance().getNetworkGameManager();
+                if (netManager != null)
+                    netManager.onFailure("Connection lost");
+
+                LobbyManager lobbyManager = RemoteDataSource.getInstance().getLobbyManager();
+                if (lobbyManager != null)
+                    lobbyManager.onFailure("Connection lost");
             }
         }
     }
 
     private void handleMessage(Object msg) {
-        // Run callbacks on JavaFX Inteface Thread?
-        // Best practice: The Controller should handle Platform.runLater if needed,
-        // BUT to be safe and convenient, we can wrap here or let the caller decide.
-        // Let's pass raw data and let Controller use Platform.runLater.
+        RemoteDataSource rds = RemoteDataSource.getInstance();
+        NetworkGameManager netMgr = rds.getNetworkGameManager();
+        LobbyManager lobbyMgr = rds.getLobbyManager();
 
         if (msg instanceof List) {
             try {
-                // Assuming it's the friends list
+                // Friends List -> Lobby
                 List<Player> friends = (List<Player>) msg;
-                callback.onFriendsListReceived(friends);
+                if (lobbyMgr != null)
+                    lobbyMgr.onFriendsListReceived(friends);
             } catch (ClassCastException e) {
-                // Ignore if not List<Player>
             }
         } else if (msg instanceof ReceiveChallengeRequestModel) {
-            callback.onChallengeReceived((ReceiveChallengeRequestModel) msg);
+            // Challenge Received -> Lobby OR Game?
+            if (netMgr != null)
+                netMgr.onChallengeReceived((ReceiveChallengeRequestModel) msg);
+            if (lobbyMgr != null)
+                lobbyMgr.onChallengeReceived((ReceiveChallengeRequestModel) msg);
+
         } else if (msg instanceof ReceiveChallengeResponseModel) {
-            callback.onChallengeResponse((ReceiveChallengeResponseModel) msg);
+            // Challenge Response -> Game Start or Rejection
+            if (netMgr != null)
+                netMgr.onChallengeResponse((ReceiveChallengeResponseModel) msg);
+            if (lobbyMgr != null)
+                lobbyMgr.onChallengeResponse((ReceiveChallengeResponseModel) msg);
+
         } else if (msg instanceof MakeMoveResponseModel) {
-            callback.onMoveReceived((MakeMoveResponseModel) msg);
+            // Move -> Game
+            if (netMgr != null)
+                netMgr.onMoveReceived((MakeMoveResponseModel) msg);
+
         } else if (msg instanceof EndGameSessionRequestModel) {
-            callback.onGameEnd((EndGameSessionRequestModel) msg);
+            // Game End (Forfeit) -> Game
+            if (netMgr != null)
+                netMgr.onGameEnd((EndGameSessionRequestModel) msg);
+
         } else {
             System.out.println("Unknown message received: " + msg.getClass().getSimpleName());
         }

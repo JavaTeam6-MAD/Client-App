@@ -1,6 +1,7 @@
 package com.mycompany.data.repo_impl;
 
 import com.mycompany.data.datasource.local.PlayerDAO;
+
 import com.mycompany.data.datasource.remote.RemoteDataSource;
 import com.mycompany.data.repo_interface.PlayerRepository;
 import com.mycompany.model.app.Player;
@@ -39,8 +40,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public Player changeUserName(String name) {
         Player currentPlayer = playerDAO.get();
         if (currentPlayer == null || currentPlayer.getId() == 0) {
-            // Handle case where no user is logged in if necessary, though UI should prevent
-            // this
+            // Handle case where no user is logged in
             return new Player();
         }
 
@@ -114,8 +114,8 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         }
     }
 
-    public void startListening(com.mycompany.data.datasource.remote.NetworkCallback callback) {
-        remoteDataSource.startListening(callback);
+    public void startListening() {
+        remoteDataSource.startListening();
     }
 
     public void stopListening() {

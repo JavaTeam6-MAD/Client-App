@@ -16,8 +16,30 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import com.mycompany.model.app.Player;
+import com.mycompany.model.requestModel.ReceiveChallengeRequestModel;
 
-public class LobbyScreenController implements Initializable, com.mycompany.data.datasource.remote.NetworkCallback {
+import com.mycompany.model.responseModel.ReceiveChallengeResponseModel;
+import java.util.Optional;
+import java.util.Timer;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Priority;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
+import java.util.ArrayList;
+
+public class LobbyScreenController implements Initializable {
 
     LobbyManager lobbyManager;
 
@@ -40,12 +62,18 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     @FXML
     private VBox listContainer;
 
-    private String currentView = "FRIENDS"; // FRIENDS or LEADERBOARD
-    private javafx.scene.control.Alert pendingChallengeAlert;
+    private enum ViewMode {
+        FRIENDS,
+        LEADERBOARD
+    }
+
+    private ViewMode currentView = ViewMode.FRIENDS;
+    private Alert pendingChallengeAlert;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         lobbyManager = new LobbyManager();
+        lobbyManager.setController(this);
         Player player = lobbyManager.getCurrentPlayer();
         if (player != null) {
             lblUserName.setText(player.getUserName());
@@ -57,8 +85,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             }
         }
 
-        // Start Listening for Server Events
-        lobbyManager.startListening(this);
+        // Start Listening defined in Manager ctor
 
         loadFriends();
 
@@ -67,7 +94,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             @Override
             public void run() {
                 // Determine sort based on current view/tab
-                boolean sortByScore = "LEADERBOARD".equals(currentView);
+                boolean sortByScore = (currentView == ViewMode.LEADERBOARD);
                 loadFriends(sortByScore);
             }
         }, 5000, 5000);
@@ -76,26 +103,24 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     // ... Existing methods (loadFriends, etc.) ...
 
     // Network Callback Implementation
-    @Override
-    public void onFriendsListReceived(List<Player> friends) {
-        javafx.application.Platform.runLater(() -> {
+    public void updateFriendsList(List<Player> friends) {
+        Platform.runLater(() -> {
             updatePlayerList(friends);
         });
     }
 
-    @Override
-    public void onChallengeReceived(com.mycompany.model.requestModel.ReceiveChallengeRequestModel challenge) {
-        javafx.application.Platform.runLater(() -> {
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                    javafx.scene.control.Alert.AlertType.CONFIRMATION);
+    public void showIncomingChallenge(ReceiveChallengeRequestModel challenge) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(
+                    Alert.AlertType.CONFIRMATION);
             alert.setTitle("Incoming Challenge");
             alert.setHeaderText("Challenge from " + challenge.getSenderName()); // Using Name
             alert.setContentText("Do you want to accept?");
 
-            javafx.scene.control.ButtonType acceptBtn = new javafx.scene.control.ButtonType("Accept",
-                    javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
-            javafx.scene.control.ButtonType rejectBtn = new javafx.scene.control.ButtonType("Reject",
-                    javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+            ButtonType acceptBtn = new ButtonType("Accept",
+                    ButtonBar.ButtonData.OK_DONE);
+            ButtonType rejectBtn = new ButtonType("Reject",
+                    ButtonBar.ButtonData.CANCEL_CLOSE);
 
             alert.getButtonTypes().setAll(acceptBtn, rejectBtn);
 
@@ -106,10 +131,10 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             alert.getDialogPane().getStyleClass().add("dialog-pane");
 
             // Auto-reject after 8 seconds if no action?
-            new java.util.Timer().schedule(new java.util.TimerTask() {
+            new Timer().schedule(new java.util.TimerTask() {
                 @Override
                 public void run() {
-                    javafx.application.Platform.runLater(() -> {
+                    Platform.runLater(() -> {
                         if (alert.isShowing()) {
                             alert.close();
                             // Can't easily force result here, but closing usually returns null/cancel
@@ -118,7 +143,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 }
             }, 8000);
 
-            java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = alert.showAndWait();
 
             boolean accepted = false;
             if (result.isPresent() && result.get() == acceptBtn) {
@@ -127,14 +152,14 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
 
             if (accepted) {
                 // Show "Record?" Dialog
-                javafx.scene.control.Alert recordAlert = new javafx.scene.control.Alert(
-                        javafx.scene.control.Alert.AlertType.CONFIRMATION);
+                Alert recordAlert = new Alert(
+                        Alert.AlertType.CONFIRMATION);
                 recordAlert.setTitle("Record Game?");
                 recordAlert.setContentText("Do you want to record this game?");
-                javafx.scene.control.ButtonType yesBtn = new javafx.scene.control.ButtonType("Yes",
-                        javafx.scene.control.ButtonBar.ButtonData.YES);
-                javafx.scene.control.ButtonType noBtn = new javafx.scene.control.ButtonType("No",
-                        javafx.scene.control.ButtonBar.ButtonData.NO);
+                ButtonType yesBtn = new ButtonType("Yes",
+                        ButtonBar.ButtonData.YES);
+                ButtonType noBtn = new ButtonType("No",
+                        ButtonBar.ButtonData.NO);
                 recordAlert.getButtonTypes().setAll(yesBtn, noBtn);
 
                 if (getClass().getResource("/com/mycompany/styles.css") != null) {
@@ -144,10 +169,10 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 recordAlert.getDialogPane().getStyleClass().add("dialog-pane");
 
                 // 7 sec timer for record dialog
-                new java.util.Timer().schedule(new java.util.TimerTask() {
+                new Timer().schedule(new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        javafx.application.Platform.runLater(() -> {
+                        Platform.runLater(() -> {
                             if (recordAlert.isShowing()) {
                                 recordAlert.close();
                             }
@@ -161,11 +186,8 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 // Just send response.
 
                 try {
-                    com.mycompany.model.responseModel.SendChallengeResponseModel resp = new com.mycompany.model.responseModel.SendChallengeResponseModel(
-                            true, challenge.getPlayer1Id());
-                    com.mycompany.data.datasource.remote.RemoteServerConnection.getInstance().send(resp);
-
-                    // Navigate to Game handled in onChallengeResponse
+                    lobbyManager.respondToChallenge(true, challenge.getPlayer1Id()); // Using Logic in Manager now
+                    // Navigate to Game handled in onChallengeResponse (View Call)
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -173,9 +195,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             } else {
                 // Send Reject
                 try {
-                    com.mycompany.model.responseModel.SendChallengeResponseModel resp = new com.mycompany.model.responseModel.SendChallengeResponseModel(
-                            false, challenge.getPlayer1Id());
-                    com.mycompany.data.datasource.remote.RemoteServerConnection.getInstance().send(resp);
+                    lobbyManager.respondToChallenge(false, challenge.getPlayer1Id());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -183,66 +203,31 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
         });
     }
 
-    @Override
-    public void onChallengeResponse(com.mycompany.model.responseModel.ReceiveChallengeResponseModel response) {
-        javafx.application.Platform.runLater(() -> {
+    public void handleChallengeResponse(ReceiveChallengeResponseModel response) {
+        Platform.runLater(() -> {
             if (response.isAccepted()) {
                 if (pendingChallengeAlert != null && pendingChallengeAlert.isShowing()) {
                     pendingChallengeAlert.close();
                     pendingChallengeAlert = null;
                 }
 
-                // Game Started!
+                // logic moved to manager
+
+                // Navigate also handled via separate call from Manager -> View if needed,
+                // but View.navigateToGame() is called by Manager.
+                // So this method mainly updates UI if we stayed here, but we are leaving.
+                // We can print log or show toast?
+
                 System.out.println("Challenge Accepted! Game ID: " + response.getGameIdUuid());
 
-                int myId = lobbyManager.getCurrentPlayer().getId();
-                String myName = lobbyManager.getCurrentPlayer().getUserName();
-
-                String challengerName = response.getChallengerName();
-                String opponentNameResp = response.getOpponentName();
-
-                boolean amIChallenger = myName.equals(challengerName);
-
-                String mySymbol = amIChallenger ? "X" : "O";
-                boolean isMyTurn = amIChallenger;
-
-                // If I am Challenger, opponent is OpponentName.
-                // If I am Opponent, opponent is ChallengerName.
-                String opponentName = amIChallenger ? opponentNameResp : challengerName;
-                int opponentId = (myId == response.getSenderPlayerId()) ? response.getReceiverPlayerId()
-                        : response.getSenderPlayerId();
-
-                long myScore = amIChallenger ? response.getChallengerScore() : response.getOpponentScore();
-                long opponentScore = amIChallenger ? response.getOpponentScore() : response.getChallengerScore();
-
-                // Reset Session Scores for Fresh Game from Lobby
-                com.mycompany.presentation.networkgame.GameContext.getInstance().resetSessionScores();
-
-                com.mycompany.presentation.networkgame.GameContext.getInstance().setGameSession(
-                        response.getGameIdUuid(),
-                        myId,
-                        myName,
-                        opponentId,
-                        mySymbol,
-                        opponentName,
-                        isMyTurn,
-                        myScore,
-                        opponentScore);
-
-                try {
-                    lobbyManager.stopListening();
-                    App.setRoot(Routes.NETWORK_GAME);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             } else {
                 if (pendingChallengeAlert != null && pendingChallengeAlert.isShowing()) {
                     pendingChallengeAlert.close();
                     pendingChallengeAlert = null;
                 }
                 // Rejected
-                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                        javafx.scene.control.Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(
+                        Alert.AlertType.INFORMATION);
                 alert.setTitle("Challenge Rejected");
                 alert.setHeaderText(null);
                 alert.setContentText("The player rejected your challenge.");
@@ -256,19 +241,19 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
         });
     }
 
-    @Override
-    public void onMoveReceived(com.mycompany.model.responseModel.MakeMoveResponseModel move) {
-        // Not handled here, handled in Game Controller
+    public void navigateToGame() {
+        Platform.runLater(() -> {
+            try {
+                lobbyManager.stopListening();
+                App.setRoot(Routes.NETWORK_GAME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    @Override
-    public void onGameEnd(com.mycompany.model.requestModel.EndGameSessionRequestModel endRequest) {
-        // Not handled here
-    }
-
-    @Override
-    public void onFailure(String errorMessage) {
-        javafx.application.Platform.runLater(() -> {
+    public void showError(String errorMessage) {
+        Platform.runLater(() -> {
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                     javafx.scene.control.Alert.AlertType.ERROR);
             alert.setTitle("Connection Error");
@@ -300,29 +285,26 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
 
     private void loadFriends(boolean sortByScore) {
         // Update Tab Active States
-        String activeStyle = "-fx-background-color: rgba(168, 85, 247, 0.2); -fx-border-color: #a855f7;";
-        String inactiveStyle = "-fx-background-color: transparent; -fx-border-color: rgba(255,255,255,0.1);";
+        // Update Tab Active States
+        btnTabFriends.getStyleClass().removeAll("tab-button-active", "tab-button-inactive", "tab-button-left");
+        btnTabLeaderboard.getStyleClass().removeAll("tab-button-active", "tab-button-inactive", "tab-button-right");
+
+        // Ensure base shape classes
+        btnTabFriends.getStyleClass().add("tab-button-left");
+        btnTabLeaderboard.getStyleClass().add("tab-button-right");
 
         if (sortByScore) {
-            btnTabFriends.setStyle(
-                    "-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
-                            + inactiveStyle);
-            btnTabLeaderboard.setStyle(
-                    "-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
-                            + activeStyle);
+            btnTabFriends.getStyleClass().add("tab-button-inactive");
+            btnTabLeaderboard.getStyleClass().add("tab-button-active");
         } else {
-            btnTabFriends.setStyle(
-                    "-fx-background-radius: 20 0 0 0; -fx-border-radius: 20 0 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
-                            + activeStyle);
-            btnTabLeaderboard.setStyle(
-                    "-fx-background-radius: 0 20 0 0; -fx-border-radius: 0 20 0 0; -fx-border-width: 0 0 2 0; -fx-min-width: 150; "
-                            + inactiveStyle);
+            btnTabFriends.getStyleClass().add("tab-button-active");
+            btnTabLeaderboard.getStyleClass().add("tab-button-inactive");
         }
 
         // Run on background thread to avoid blocking UI
         new Thread(() -> {
             // storage in ArrayList to ensure mutability
-            List<Player> friends = new java.util.ArrayList<>(lobbyManager.getFriends());
+            List<Player> friends = new ArrayList<>(lobbyManager.getFriends());
 
             if (sortByScore) {
                 // Add current player for leaderboard
@@ -350,7 +332,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                         return -1;
                     return 0;
                 });
-                currentView = "LEADERBOARD";
+                currentView = ViewMode.LEADERBOARD;
             } else {
                 // Sort friends: Online first, then Offline
                 friends.sort((p1, p2) -> {
@@ -363,10 +345,10 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                         return 1;
                     return 0;
                 });
-                currentView = "FRIENDS";
+                currentView = ViewMode.FRIENDS;
             }
 
-            javafx.application.Platform.runLater(() -> {
+            Platform.runLater(() -> {
                 updatePlayerList(friends);
             });
         }).start();
@@ -392,7 +374,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             if (currentUser != null && p.getId() == currentUser.getId()) {
                 // If in FRIENDS view, skip current user (don't show self in friends list)
                 // If in LEADERBOARD view, show current user
-                if (!"LEADERBOARD".equals(currentView)) {
+                if (currentView != ViewMode.LEADERBOARD) {
                     continue;
                 }
             }
@@ -415,35 +397,34 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     private HBox createPlayerItem(Player player) {
         HBox item = new HBox(10);
         item.getStyleClass().add("player-item");
-        item.setPadding(new javafx.geometry.Insets(10));
-        item.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        item.setPadding(new Insets(10));
+        item.setAlignment(Pos.CENTER_LEFT);
 
         // Highlight current player in Leaderboard
         Player currentUser = lobbyManager.getCurrentPlayer();
         if (currentUser != null && player.getId() == currentUser.getId()) {
-            item.setStyle(
-                    "-fx-border-color: #6900ff; -fx-border-width: 2px; -fx-border-radius: 10px; -fx-background-radius: 10px;");
+            item.getStyleClass().add("player-item-current");
         }
 
         // Avatar
-        javafx.scene.layout.StackPane avatar = new javafx.scene.layout.StackPane();
+        StackPane avatar = new StackPane();
         avatar.getStyleClass().add("player-avatar");
         Label avatarEmoji = new Label(getCharacterSymbol(player.getAvatar()));
         avatarEmoji.getStyleClass().add("player-avatar-text");
 
         // Status Indicator
-        javafx.scene.shape.Circle statusDot = new javafx.scene.shape.Circle(5);
+        Circle statusDot = new Circle(5);
         if (player.isIsActive()) {
-            statusDot.setFill(javafx.scene.paint.Color.LIMEGREEN);
+            statusDot.setFill(Color.LIMEGREEN);
         } else {
-            statusDot.setFill(javafx.scene.paint.Color.GRAY);
+            statusDot.setFill(Color.GRAY);
         }
-        statusDot.setStroke(javafx.scene.paint.Color.WHITE);
+        statusDot.setStroke(Color.WHITE);
         statusDot.setStrokeWidth(1);
 
         avatar.getChildren().addAll(avatarEmoji, statusDot);
-        javafx.scene.layout.StackPane.setAlignment(statusDot, javafx.geometry.Pos.BOTTOM_RIGHT);
-        javafx.scene.layout.StackPane.setMargin(statusDot, new javafx.geometry.Insets(0, 0, 4, 4));
+        StackPane.setAlignment(statusDot, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(statusDot, new Insets(0, 0, 4, 4));
 
         // Info
         VBox info = new VBox(2);
@@ -466,15 +447,21 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             statusColor = "#f59e0b"; // Amber/Orange
         }
         Label availability = new Label(statusText);
-        availability.setStyle("-fx-font-size: 10px; -fx-text-fill: " + statusColor + ";");
+        availability.getStyleClass().add("status-label");
+        if (!player.isIsActive()) {
+            availability.getStyleClass().add("status-label-offline");
+        } else if (player.isIsAvailable()) {
+            availability.getStyleClass().add("status-label-available");
+        } else {
+            availability.getStyleClass().add("status-label-ingame");
+        }
 
         info.getChildren().addAll(name, score, availability);
-        javafx.scene.layout.HBox.setHgrow(info, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(info, Priority.ALWAYS);
 
         // Action Button
         Button btnAction = new Button();
-        btnAction.getStyleClass().addAll("game-button", "game-button-outline");
-        btnAction.setStyle("-fx-font-size: 12px; -fx-padding: 8 16; -fx-min-height: 36px; -fx-pref-height: 36px;");
+        btnAction.getStyleClass().addAll("game-button", "game-button-outline", "game-button-small");
         btnAction.setText("Challenge");
 
         // Disable challenge if offline or in-game (not available)
@@ -489,22 +476,22 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             // For now, let's keep it simple as requested: "Dialog with checkbox to record
             // and choose symbol"
 
-            javafx.scene.control.Dialog<javafx.util.Pair<String, Boolean>> dialog = new javafx.scene.control.Dialog<>();
+            Dialog<Pair<String, Boolean>> dialog = new Dialog<>();
             dialog.setTitle("Challenge " + player.getUserName());
             dialog.setHeaderText("Challenge Settings");
 
             // Set the button types
-            javafx.scene.control.ButtonType sendButtonType = new javafx.scene.control.ButtonType("Send Challenge",
-                    javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(sendButtonType, javafx.scene.control.ButtonType.CANCEL);
+            ButtonType sendButtonType = new ButtonType("Send Challenge",
+                    ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(sendButtonType, ButtonType.CANCEL);
 
             // Create UI
-            javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+            GridPane grid = new GridPane();
             grid.setHgap(10);
             grid.setVgap(10);
-            grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+            grid.setPadding(new Insets(20, 150, 10, 10));
 
-            javafx.scene.control.CheckBox recordCb = new javafx.scene.control.CheckBox("Record Game");
+            CheckBox recordCb = new CheckBox("Record Game");
             // Symbol Choice (e.g. ComboBox or Toggle) - defaulting to X/O logic handled by
             // server/client?
             // User requested "choose the symbol i want to play with".
@@ -527,33 +514,25 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
 
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == sendButtonType) {
-                    return new javafx.util.Pair<>("X", recordCb.isSelected());
+                    return new Pair<>("X", recordCb.isSelected());
                 }
                 return null;
             });
 
-            java.util.Optional<javafx.util.Pair<String, Boolean>> result = dialog.showAndWait();
+            Optional<Pair<String, Boolean>> result = dialog.showAndWait();
 
             if (result.isPresent()) {
                 // Send Challenge
-                int myId = lobbyManager.getCurrentPlayer().getId();
                 int opponentId = player.getId();
-                com.mycompany.model.requestModel.SendChallengeRequestModel req = new com.mycompany.model.requestModel.SendChallengeRequestModel(
-                        myId, opponentId);
-
-                // Note: Request model might need update to carry "record" and "symbol" info if
-                // server supports it.
-                // Current usage implies basic challenge.
-
                 try {
-                    com.mycompany.data.datasource.remote.RemoteServerConnection.getInstance().send(req);
+                    lobbyManager.sendChallenge(opponentId);
                     // Show "Waiting for response" Dialog (Non-blocking or blocking?)
                     // "Sender cannot send other challenge for 10 seconds"
                     btnAction.setDisable(true);
 
                     // Show visual feedback
-                    javafx.scene.control.Alert waitingAlert = new javafx.scene.control.Alert(
-                            javafx.scene.control.Alert.AlertType.INFORMATION);
+                    Alert waitingAlert = new Alert(
+                            Alert.AlertType.INFORMATION);
                     waitingAlert.setTitle("Waiting");
                     waitingAlert.setHeaderText(null);
                     waitingAlert.setContentText("Waiting for " + player.getUserName() + " to respond...");
@@ -577,7 +556,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                     new java.util.Timer().schedule(new java.util.TimerTask() {
                         @Override
                         public void run() {
-                            javafx.application.Platform.runLater(() -> {
+                            Platform.runLater(() -> {
                                 btnAction.setDisable(false);
                                 waitingAlert.close();
                             });
@@ -593,7 +572,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
         item.getChildren().addAll(avatar, info);
 
         // Only show Challenge button in Friends view
-        if (!"LEADERBOARD".equals(currentView)) {
+        if (currentView != ViewMode.LEADERBOARD) {
             item.getChildren().add(btnAction);
         }
 
@@ -644,20 +623,20 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     @FXML
     private void onLogout() {
         try {
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                    javafx.scene.control.Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(
+                    Alert.AlertType.CONFIRMATION);
             alert.setTitle("Logout");
             alert.setHeaderText(null);
             alert.setContentText("Are you sure you want to logout?");
 
-            javafx.scene.control.DialogPane dialogPane = alert.getDialogPane();
+            DialogPane dialogPane = alert.getDialogPane();
             if (getClass().getResource("/com/mycompany/styles.css") != null) {
                 dialogPane.getStylesheets().add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
             }
             dialogPane.getStyleClass().add("dialog-pane");
 
-            java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 lobbyManager.logout();
                 lobbyManager.disconnect();
                 App.setRoot(Routes.AUTH);

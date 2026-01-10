@@ -1,11 +1,11 @@
 package com.mycompany.presentation.networkgame;
 
-public class GameContext {
-    private static GameContext instance;
+public class GameSession {
+    private static GameSession instance;
     private String gameId;
     private int myId;
     private int opponentId;
-    private String mySymbol; // "X" or "O"
+    private String mySymbol;
     private String opponentName;
     private boolean isMyTurn;
     private long myScore;
@@ -16,12 +16,12 @@ public class GameContext {
 
     private String myName;
 
-    private GameContext() {
+    private GameSession() {
     }
 
-    public static GameContext getInstance() {
+    public static GameSession getInstance() {
         if (instance == null) {
-            instance = new GameContext();
+            instance = new GameSession();
         }
         return instance;
     }
