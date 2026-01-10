@@ -278,8 +278,22 @@ public class NetworkGameController { // No Interface!
 
     @FXML
     private void handleBack(ActionEvent event) {
-        // Seamless Forfeit via Manager (no alert)
-        manager.forfeitGame();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Game");
+        alert.setHeaderText("Forfeit Game?");
+        alert.setContentText("If you leave now, you will lose the game.");
+
+        // Styling
+        if (getClass().getResource("/com/mycompany/styles.css") != null) {
+            alert.getDialogPane().getStylesheets()
+                    .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+        }
+        alert.getDialogPane().getStyleClass().add("dialog-pane");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            manager.forfeitGame();
+        }
     }
 
     @FXML

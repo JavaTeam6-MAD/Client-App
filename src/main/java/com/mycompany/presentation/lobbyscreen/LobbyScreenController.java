@@ -70,6 +70,8 @@ public class LobbyScreenController implements Initializable {
     private ViewMode currentView = ViewMode.FRIENDS;
     private Alert pendingChallengeAlert;
 
+    private Timer refreshTimer;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         lobbyManager = new LobbyManager();
@@ -90,7 +92,8 @@ public class LobbyScreenController implements Initializable {
         loadFriends();
 
         // Auto-refresh friends list every 5 seconds
-        new java.util.Timer().scheduleAtFixedRate(new java.util.TimerTask() {
+        refreshTimer = new Timer();
+        refreshTimer.scheduleAtFixedRate(new java.util.TimerTask() {
             @Override
             public void run() {
                 // Determine sort based on current view/tab
@@ -98,6 +101,14 @@ public class LobbyScreenController implements Initializable {
                 loadFriends(sortByScore);
             }
         }, 5000, 5000);
+    }
+
+    private void cleanup() {
+        if (refreshTimer != null) {
+            refreshTimer.cancel();
+            refreshTimer.purge();
+        }
+        lobbyManager.stopListening(); // Use detach logic inside manager
     }
 
     // ... Existing methods (loadFriends, etc.) ...
@@ -244,7 +255,7 @@ public class LobbyScreenController implements Initializable {
     public void navigateToGame() {
         Platform.runLater(() -> {
             try {
-                lobbyManager.stopListening();
+                cleanup();
                 App.setRoot(Routes.NETWORK_GAME);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -592,7 +603,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onProfile() {
         try {
-            lobbyManager.stopListening();
+            cleanup();
             App.setRoot(Routes.PROFILE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -602,7 +613,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onRecordedGames() {
         try {
-            lobbyManager.stopListening();
+            cleanup();
             App.setRoot(Routes.GAME_HISTORY);
         } catch (Exception e) {
             e.printStackTrace();
@@ -612,8 +623,9 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onBack() {
         try {
-            lobbyManager.leaveLobby();
-            lobbyManager.disconnect(); // Ensure socket closed so next login works
+            lobbyManager.leaveLobby(); // Sets unavailable
+            cleanup(); // Stops timer and detach
+            lobbyManager.disconnect(); // Ensure socket closed
             App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();
