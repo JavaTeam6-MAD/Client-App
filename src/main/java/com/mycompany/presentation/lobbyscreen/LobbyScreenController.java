@@ -284,8 +284,9 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             alert.showAndWait();
 
             // Redirect to Login/Home
+            // Redirect to Login/Home
             try {
-                lobbyManager.stopListening();
+                lobbyManager.disconnect(); // Ensure clean disconnect
                 App.setRoot(Routes.HOME); // Or Routes.AUTH
             } catch (Exception e) {
                 e.printStackTrace();
@@ -626,7 +627,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
     private void onBack() {
         try {
             lobbyManager.leaveLobby();
-            lobbyManager.stopListening();
+            lobbyManager.disconnect(); // Ensure socket closed so next login works
             App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();
@@ -651,7 +652,7 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
             java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
                 lobbyManager.logout();
-                lobbyManager.stopListening();
+                lobbyManager.disconnect();
                 App.setRoot(Routes.AUTH);
             }
         } catch (Exception e) {

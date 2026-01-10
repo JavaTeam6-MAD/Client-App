@@ -36,4 +36,8 @@ public class LobbyManager {
     public void stopListening() {
         ((PlayerRepositoryImpl) playerRepository).stopListening();
     }
+
+    public void disconnect() {
+        com.mycompany.data.datasource.remote.RemoteDataSource.getInstance().disconnect();
+    }
 }

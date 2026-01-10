@@ -103,7 +103,8 @@ public class NetworkGameController implements NetworkCallback {
         }
 
         Button clickedBtn = (Button) event.getSource();
-        if (!clickedBtn.getText().isEmpty()) {
+        // Check if button is already occupied (Text or Graphic)
+        if (!clickedBtn.getText().isEmpty() || clickedBtn.getGraphic() != null) {
             return;
         }
 
@@ -192,6 +193,9 @@ public class NetworkGameController implements NetworkCallback {
         String msg;
         if (winnerSymbol == null || winnerSymbol.isEmpty()) { // Draw
             msg = "It's a Draw!";
+            // Draw: Increment BOTH
+            context.incrementMySessionScore();
+            context.incrementOpponentSessionScore();
         } else if (winnerSymbol.equals(context.getMySymbol())) {
             msg = "You Won! 🎉";
             context.incrementMySessionScore();
@@ -397,11 +401,22 @@ public class NetworkGameController implements NetworkCallback {
 
     @Override
     public void onGameEnd(EndGameSessionRequestModel endRequest) {
-        // Opponent left?
+        // Opponent left / Forfeit
         Platform.runLater(() -> {
-            statusText.setText("Opponent left the game.");
-            gameGrid.setDisable(true);
-            homeButton.setVisible(true);
+            // Show Alert
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game Over");
+            alert.setHeaderText("Opponent Disconnected");
+            alert.setContentText("Your opponent has disconnected. You Won! (+30 XP)");
+            if (getClass().getResource("/com/mycompany/styles.css") != null) {
+                alert.getDialogPane().getStylesheets()
+                        .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+            }
+            alert.getDialogPane().getStyleClass().add("dialog-pane");
+            alert.showAndWait();
+
+            // Redirect to Lobby
+            onHome(null);
         });
     }
 
@@ -440,7 +455,36 @@ public class NetworkGameController implements NetworkCallback {
     @FXML
     private void handleBack(ActionEvent event) {
         // Confirm forfeit
-        onHome(event);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Forfeit Game");
+        alert.setHeaderText("Warning: Forfeit");
+        alert.setContentText("If you leave now, you will lose the game and 30 points. Are you sure?");
+
+        if (getClass().getResource("/com/mycompany/styles.css") != null) {
+            alert.getDialogPane().getStylesheets()
+                    .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+        }
+        alert.getDialogPane().getStyleClass().add("dialog-pane");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Send Forfeit Request
+            try {
+                // Using EndGameSessionRequestModel with arbitrary status to signal forfeit
+                // Server interprets EndGameSessionRequestModel as forfeit from sender
+                com.mycompany.model.utils.GameStatus status = com.mycompany.model.utils.GameStatus.LOSE; // I lose
+                com.mycompany.model.requestModel.EndGameSessionRequestModel req = new com.mycompany.model.requestModel.EndGameSessionRequestModel(
+                        context.getMyId(), context.getOpponentId(), status);
+
+                com.mycompany.data.datasource.remote.RemoteServerConnection.getInstance().send(req);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Navigate away
+            onHome(event);
+        }
     }
 
     @FXML

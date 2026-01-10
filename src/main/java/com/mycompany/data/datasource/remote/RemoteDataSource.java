@@ -93,9 +93,12 @@ public class RemoteDataSource {
     public void disconnect() {
         if (listener != null) {
             listener.stopListener();
+            // Actually close the socket
             RemoteServerConnection.getInstance().disconnect();
             listener = null;
         }
+        // Force socket close even if listener is null (safety)
+        RemoteServerConnection.getInstance().disconnect();
     }
 
     public List<Player> getFriends(int userId) {
