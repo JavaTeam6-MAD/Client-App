@@ -184,18 +184,6 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
         });
     }
 
-    private String getPlayerName(int id) {
-        Player current = lobbyManager.getCurrentPlayer();
-        if (current != null && current.getId() == id)
-            return current.getUserName();
-
-        for (Player p : lobbyManager.getFriends()) {
-            if (p.getId() == id)
-                return p.getUserName();
-        }
-        return "Unknown Player";
-    }
-
     @Override
     public void onChallengeResponse(com.mycompany.model.responseModel.ReceiveChallengeResponseModel response) {
         javafx.application.Platform.runLater(() -> {
@@ -204,16 +192,21 @@ public class LobbyScreenController implements Initializable, com.mycompany.data.
                 System.out.println("Challenge Accepted! Game ID: " + response.getGameIdUuid());
 
                 int myId = lobbyManager.getCurrentPlayer().getId();
-                // Determine opponent ID and My ID
-                // The receiver ID in response is the one who ACCEPTED.
-                // The sender ID is the one who CHALLENGED.
-                // I could be either.
+                String myName = lobbyManager.getCurrentPlayer().getUserName();
 
+                String challengerName = response.getChallengerName();
+                String opponentNameResp = response.getOpponentName();
+
+                boolean amIChallenger = myName.equals(challengerName);
+
+                String mySymbol = amIChallenger ? "X" : "O";
+                boolean isMyTurn = amIChallenger;
+
+                // If I am Challenger, opponent is OpponentName.
+                // If I am Opponent, opponent is ChallengerName.
+                String opponentName = amIChallenger ? opponentNameResp : challengerName;
                 int opponentId = (myId == response.getSenderPlayerId()) ? response.getReceiverPlayerId()
                         : response.getSenderPlayerId();
-                String mySymbol = (myId == response.getSenderPlayerId()) ? "X" : "O";
-                boolean isMyTurn = (mySymbol.equals("X"));
-                String opponentName = getPlayerName(opponentId);
 
                 com.mycompany.presentation.networkgame.GameContext.getInstance().setGameSession(
                         response.getGameIdUuid(),

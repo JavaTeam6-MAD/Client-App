@@ -10,17 +10,19 @@ public class ReceiveChallengeResponseModel implements Serializable {
     boolean receiverPlayerIsRecording;
     // Fields for Game Start details
     int gameId;
-    String gameIdUuid; 
+    String gameIdUuid;
 
-    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted, boolean receiverPlayerIsRecording) {
+    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted,
+            boolean receiverPlayerIsRecording) {
         this.senderPlayerId = senderPlayerId;
         this.receiverPlayerId = receiverPlayerId;
         this.accepted = accepted;
         this.receiverPlayerIsRecording = receiverPlayerIsRecording;
     }
-    
+
     // Overloaded for Game Start
-    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted, boolean receiverPlayerIsRecording, String gameIdUuid) {
+    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted,
+            boolean receiverPlayerIsRecording, String gameIdUuid) {
         this.senderPlayerId = senderPlayerId;
         this.receiverPlayerId = receiverPlayerId;
         this.accepted = accepted;
@@ -59,11 +61,33 @@ public class ReceiveChallengeResponseModel implements Serializable {
     public void setReceiverPlayerIsRecording(boolean receiverPlayerIsRecording) {
         this.receiverPlayerIsRecording = receiverPlayerIsRecording;
     }
-    
+
+    String challengerName;
+    String opponentName;
+
+    public ReceiveChallengeResponseModel(int senderPlayerId, int receiverPlayerId, boolean accepted,
+            boolean receiverPlayerIsRecording, String gameIdUuid, String challengerName, String opponentName) {
+        this.senderPlayerId = senderPlayerId;
+        this.receiverPlayerId = receiverPlayerId;
+        this.accepted = accepted;
+        this.receiverPlayerIsRecording = receiverPlayerIsRecording;
+        this.gameIdUuid = gameIdUuid;
+        this.challengerName = challengerName;
+        this.opponentName = opponentName;
+    }
+
+    public String getChallengerName() {
+        return challengerName;
+    }
+
+    public String getOpponentName() {
+        return opponentName;
+    }
+
     public String getGameIdUuid() {
         return gameIdUuid;
     }
-    
+
     public void setGameIdUuid(String gameIdUuid) {
         this.gameIdUuid = gameIdUuid;
     }
