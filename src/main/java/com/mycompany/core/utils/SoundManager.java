@@ -16,8 +16,11 @@ public class SoundManager {
 
     private static SoundManager instance;
     private Map<String, MediaPlayer> soundEffects;
+    private MediaPlayer backgroundMusicPlayer;
     private boolean soundEnabled = true;
+    private boolean musicEnabled = true;
     private double soundVolume = 0.6;
+    private double musicVolume = 0.3;
 
     // Sound effect keys
     public static final String BUTTON_CLICK = "button_click";
@@ -53,6 +56,7 @@ public class SoundManager {
             loadSound(WIN, "/com/mycompany/sounds/win.wav");
             loadSound(LOSE, "/com/mycompany/sounds/lose.wav");
             loadSound(DRAW, "/com/mycompany/sounds/draw.wav");
+            loadBackgroundMusic("/com/mycompany/sounds/background.mp3");
         } catch (Exception e) {
             System.err.println("Error loading sounds: " + e.getMessage());
         }
@@ -119,9 +123,88 @@ public class SoundManager {
     }
 
     /**
+     * Load background music with looping
+     */
+    private void loadBackgroundMusic(String resourcePath) {
+        try {
+            URL resource = getClass().getResource(resourcePath);
+            if (resource != null) {
+                Media music = new Media(resource.toString());
+                backgroundMusicPlayer = new MediaPlayer(music);
+                backgroundMusicPlayer.setVolume(musicVolume);
+                backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                System.out.println("Background music loaded successfully from: " + resourcePath);
+            } else {
+                System.err.println("Background music file not found: " + resourcePath);
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading background music: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Play background music
+     */
+    public void playBackgroundMusic() {
+        if (backgroundMusicPlayer != null && musicEnabled) {
+            try {
+                backgroundMusicPlayer.play();
+            } catch (Exception e) {
+                System.err.println("Error playing background music: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Stop background music
+     */
+    public void stopBackgroundMusic() {
+        if (backgroundMusicPlayer != null) {
+            try {
+                backgroundMusicPlayer.stop();
+            } catch (Exception e) {
+                System.err.println("Error stopping background music: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Toggle background music on/off
+     */
+    public void toggleBackgroundMusic() {
+        musicEnabled = !musicEnabled;
+        if (musicEnabled) {
+            playBackgroundMusic();
+        } else {
+            stopBackgroundMusic();
+        }
+    }
+
+    /**
+     * Check if background music is enabled
+     */
+    public boolean isBackgroundMusicEnabled() {
+        return musicEnabled;
+    }
+
+    /**
+     * Set background music volume (0.0 to 1.0)
+     */
+    public void setMusicVolume(double volume) {
+        this.musicVolume = Math.max(0.0, Math.min(1.0, volume));
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.setVolume(musicVolume);
+        }
+    }
+
+    /**
      * Cleanup resources when application closes
      */
     public void cleanup() {
         soundEffects.values().forEach(MediaPlayer::dispose);
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.dispose();
+        }
     }
 }

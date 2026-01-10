@@ -77,4 +77,19 @@
         <!-- Footer Text -->
         <Label text="Choose your game mode to start playing" styleClass="footer-text" />
     </VBox>
+
+    <!-- Music Toggle Button (Top-Right Corner) -->
+    <Button fx:id="musicToggleButton" 
+            onAction="#onToggleMusic" 
+            styleClass="music-toggle-button"
+            StackPane.alignment="TOP_RIGHT">
+        <StackPane.margin>
+            <Insets top="20" right="20" bottom="20" left="20" />
+        </StackPane.margin>
+        <graphic>
+            <SVGPath fx:id="musicIcon" 
+                     content="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" 
+                     styleClass="music-icon" />
+        </graphic>
+    </Button>
 </StackPane>
