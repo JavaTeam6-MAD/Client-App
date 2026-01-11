@@ -5,6 +5,7 @@ import com.mycompany.model.requestModel.ReceiveChallengeRequestModel;
 import com.mycompany.model.requestModel.EndGameSessionRequestModel;
 import com.mycompany.model.responseModel.MakeMoveResponseModel;
 import com.mycompany.model.responseModel.ReceiveChallengeResponseModel;
+import com.mycompany.model.notification.ServerShutdownNotification;
 import com.mycompany.presentation.gamehistory.GameHistoryManager;
 import com.mycompany.presentation.lobbyscreen.LobbyManager;
 import com.mycompany.presentation.networkgame.NetworkGameManager;
@@ -62,7 +63,7 @@ public class ServerListener extends Thread {
                         lobbyMgr.onFriendsListReceived((List<Player>) msg);
                 } else if (first instanceof com.mycompany.model.app.Game) {
                     // Game History -> History Manager
-                   GameHistoryManager historyMgr = rds.getGameHistoryManager();
+                    GameHistoryManager historyMgr = rds.getGameHistoryManager();
                     if (historyMgr != null)
                         historyMgr.onGameHistoryReceived((List<com.mycompany.model.app.Game>) msg);
                 }
@@ -102,6 +103,12 @@ public class ServerListener extends Thread {
             // Game End (Forfeit) -> Game
             if (netMgr != null)
                 netMgr.onGameEnd((EndGameSessionRequestModel) msg);
+
+        } else if (msg instanceof ServerShutdownNotification) {
+            // Server Shutdown -> Handle gracefully
+            ServerShutdownNotification notification = (ServerShutdownNotification) msg;
+            System.out.println("Server shutdown notification received: " + notification.getMessage());
+            RemoteDataSource.getInstance().handleServerShutdown(notification.getMessage());
 
         } else {
             System.out.println("Unknown message received: " + msg.getClass().getSimpleName());

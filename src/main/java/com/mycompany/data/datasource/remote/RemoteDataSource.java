@@ -30,7 +30,6 @@ public class RemoteDataSource {
     private NetworkGameManager networkGameManager;
     private GameHistoryManager gameHistoryManager;
 
-
     private RemoteDataSource() {
     }
 
@@ -69,7 +68,6 @@ public class RemoteDataSource {
         return networkGameManager;
     }
 
-
     public void setGameHistoryManager(GameHistoryManager manager) {
         this.gameHistoryManager = manager;
     }
@@ -80,6 +78,44 @@ public class RemoteDataSource {
 
     public com.mycompany.presentation.gamehistory.GameHistoryManager getGameHistoryManager() {
         return gameHistoryManager;
+    }
+
+    /**
+     * Handle server shutdown notification
+     * Shows alert to user and redirects to home screen
+     */
+    public void handleServerShutdown(String message) {
+        javafx.application.Platform.runLater(() -> {
+            try {
+                // Show alert
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                        javafx.scene.control.Alert.AlertType.WARNING);
+                alert.setTitle("Server Down");
+                alert.setHeaderText("Connection Lost");
+                alert.setContentText(message != null ? message : "Server has shut down");
+                alert.showAndWait();
+
+                // Disconnect from server
+                RemoteServerConnection.getInstance().disconnect();
+
+                // Stop listener
+                if (listener != null) {
+                    listener.stopListener();
+                    listener = null;
+                }
+
+                // Clear managers
+                lobbyManager = null;
+                networkGameManager = null;
+                gameHistoryManager = null;
+
+                // Navigate to home screen
+                com.mycompany.App.setRoot(com.mycompany.core.navigation.Routes.HOME);
+            } catch (Exception e) {
+                System.err.println("Error handling server shutdown: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     public Player login(String username, String password) {
@@ -147,13 +183,13 @@ public class RemoteDataSource {
         try {
             RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
             RemoteServerConnection.getInstance()
-                    
+
                     .send(new com.mycompany.model.requestModel.GetGamesRequestModel(userId));
         } catch (Exception e) {
             e.printStackTrace();
             RemoteServerConnection.getInstance().disconnect();
         }
-         return new ArrayList<>();
+        return new ArrayList<>();
     }
 
     public Player changeUserName(int id, String newName) {
