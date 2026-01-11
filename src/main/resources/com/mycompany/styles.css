@@ -1,0 +1,649 @@
+/* XO Game - Cyberpunk/Neon Theme */
+
+/* Root Container - Dark Grid Background */
+.root-container {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        #0B122E;
+    /* Very dark blue/black base */
+    -fx-background-size: 40px 40px, 40px 40px, cover;
+    -fx-background-repeat: repeat, repeat, no-repeat;
+    -fx-min-width: 640;
+    -fx-min-height: 480;
+}
+
+/* Typography */
+.game-title {
+    -fx-text-fill: #F85768;
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-weight: bold;
+    -fx-font-size: 80px;
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.5), 20, 0, 0, 0);
+}
+
+.game-subtitle {
+    -fx-text-fill: #9ca3af;
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-style: italic;
+    -fx-font-size: 24px;
+}
+
+/* Card / Panels */
+.game-card {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    /* Subtle transparent card */
+    -fx-background-radius: 25;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 25;
+    -fx-border-width: 1.5;
+}
+
+/* Back Button */
+.back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 8 16 8 16;
+}
+
+.back-button:hover {
+    -fx-text-fill: #ffffff;
+}
+
+.back-icon {
+    -fx-fill: #6b7280;
+    -fx-scale-x: 0.8;
+    -fx-scale-y: 0.8;
+}
+
+.back-button:hover .back-icon {
+    -fx-fill: #ffffff;
+}
+
+.back-label {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.back-button:hover .back-label {
+    -fx-text-fill: #ffffff;
+}
+
+/* Score Board HUD */
+.score-board {
+    -fx-background-color: #0F1221;
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    /* Outer glow for HUD feel */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0, 0, 5);
+}
+
+.score-label {
+    -fx-text-fill: #8F9BB3;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.score-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.score-value-x {
+    -fx-text-fill: #00FFFF;
+    /* Cyan */
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.6), 10, 0, 0, 0);
+}
+
+.score-value-o {
+    -fx-text-fill: #C000FF;
+    /* Purple */
+    -fx-effect: dropshadow(gaussian, rgba(192, 0, 255, 0.6), 10, 0, 0, 0);
+}
+
+.vs-text {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 20px;
+    -fx-opacity: 0.8;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* Status Text */
+.status-text {
+    -fx-font-size: 24px;
+    -fx-text-fill: #00FFFF;
+    /* Default to Cyan for "You Win" style */
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.4), 10, 0, 0, 0);
+}
+
+.status-text-normal {
+    -fx-text-fill: #ffffff;
+    -fx-effect: none;
+}
+
+/* Grid Container */
+.game-grid-container {
+    -fx-alignment: center;
+}
+
+/* Grid Cells (Buttons) */
+.grid-cell {
+    -fx-background-color: #0F1221;
+    -fx-background-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+    /* We remove font-size here as we are using SVGs, but keep it for fallback */
+    -fx-cursor: hand;
+    -fx-min-width: 100px;
+    -fx-min-height: 100px;
+    -fx-pref-width: 100px;
+    -fx-pref-height: 100px;
+    -fx-alignment: center;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    /* Fallback */
+}
+
+.grid-cell-x {
+    -fx-text-fill: #00FFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.6), 10, 0, 0, 0);
+}
+
+.grid-cell-o {
+    -fx-text-fill: #C000FF;
+    -fx-effect: dropshadow(gaussian, rgba(192, 0, 255, 0.6), 10, 0, 0, 0);
+}
+
+.grid-cell:hover {
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-background-color: #161B2E;
+}
+
+/* SVG Icon Styles */
+.icon-x {
+    -fx-stroke: #00FFFF;
+    -fx-stroke-width: 8;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+    /* Lines only for X */
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 15, 0, 0, 0);
+}
+
+.icon-o {
+    -fx-stroke: #C000FF;
+    /* Purple/Magenta */
+    -fx-stroke-width: 8;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+    /* Circle outline */
+    -fx-effect: dropshadow(gaussian, rgba(208, 0, 255, 0.8), 15, 0, 0, 0);
+}
+
+/* Winning Line Highlight */
+.winning-cell {
+    -fx-border-color: #00FFFF;
+    -fx-border-width: 2;
+    -fx-background-color: rgba(0, 255, 255, 0.1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 20, 0, 0, 0);
+}
+
+/* General Buttons */
+/* General Buttons */
+.game-button {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-padding: 14 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 4);
+    -fx-font-size: 16px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.game-button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.game-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Play vs Computer (Red/Pink Gradient) */
+.game-button-primary {
+    -fx-background-color: linear-gradient(to right, #F85768, #FE7958);
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.4), 15, 0, 0, 5);
+}
+
+.game-button-primary:hover {
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.6), 20, 0, 0, 8);
+}
+
+/* Local Multiplayer (Purple Gradient) */
+.game-button-secondary {
+    -fx-background-color: linear-gradient(to right, #7D51FE, #A857FE);
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(125, 81, 254, 0.4), 15, 0, 0, 5);
+}
+
+.game-button-secondary:hover {
+    -fx-background-color: linear-gradient(to right, #8D65FE, #B66AFE);
+    -fx-effect: dropshadow(gaussian, rgba(125, 81, 254, 0.6), 20, 0, 0, 8);
+}
+
+/* Network (Cyber/Blue Outline or Dark) */
+.game-button-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #00E5FF;
+    -fx-border-width: 2.5;
+    -fx-border-radius: 15;
+    -fx-text-fill: #00E5FF;
+}
+
+.game-button-outline:hover {
+    -fx-background-color: rgba(0, 229, 255, 0.1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.4), 15, 0, 0, 0);
+}
+
+.game-button-outline .button-icon {
+    -fx-fill: #00E5FF;
+}
+
+/* Play Again Button - Enhanced */
+.play-again-button {
+    -fx-background-color: linear-gradient(to right, #00C853, #69F0AE);
+    /* Neon Green Gradient */
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-background-radius: 30;
+    -fx-padding: 12 30;
+    -fx-effect: dropshadow(gaussian, rgba(105, 240, 174, 0.6), 15, 0, 0, 5);
+    -fx-cursor: hand;
+}
+
+.play-again-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(105, 240, 174, 0.8), 20, 0, 0, 8);
+}
+
+.play-again-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Alert / Dialog Styling - Base */
+.dialog-pane {
+    -fx-background-color: #0B122E;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20, 0, 0, 0);
+}
+
+/* Error Dialog (Red) */
+.dialog-pane.error {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, rgba(233, 69, 96, 0.1) 0%, transparent 100%),
+        #0B122E;
+    -fx-border-color: #e94560;
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 20, 0, 0, 0);
+}
+
+.dialog-pane.error:header .header-panel {
+    -fx-background-color: rgba(233, 69, 96, 0.08);
+    -fx-border-color: rgba(233, 69, 96, 0.3);
+}
+
+.dialog-pane.error:header .header-panel .label {
+    -fx-text-fill: #F85768;
+}
+
+.dialog-pane.error .button {
+    -fx-background-color: linear-gradient(to right, #F85768, #e94560);
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.5), 10, 0, 0, 3);
+}
+
+.dialog-pane.error .button:hover {
+    -fx-background-color: linear-gradient(to right, #ff5e78, #F85768);
+    -fx-effect: dropshadow(gaussian, rgba(248, 87, 104, 0.7), 15, 0, 0, 5);
+}
+
+/* Information/Success Dialog (Green/Cyan) */
+.dialog-pane.information {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 0% 100%, rgba(0, 200, 83, 0.1) 0%, transparent 100%),
+        #0B122E;
+    -fx-border-color: #00C853;
+    -fx-effect: dropshadow(gaussian, rgba(0, 200, 83, 0.4), 20, 0, 0, 0);
+}
+
+.dialog-pane.information:header .header-panel {
+    -fx-background-color: rgba(0, 200, 83, 0.08);
+    -fx-border-color: rgba(0, 200, 83, 0.3);
+}
+
+.dialog-pane.information:header .header-panel .label {
+    -fx-text-fill: #00C853;
+}
+
+.dialog-pane.information .button {
+    -fx-background-color: linear-gradient(to right, #00C853, #69F0AE);
+    -fx-text-fill: #003300; 
+    -fx-effect: dropshadow(gaussian, rgba(0, 200, 83, 0.5), 10, 0, 0, 3);
+}
+
+.dialog-pane.information .button:hover {
+    -fx-background-color: linear-gradient(to right, #69F0AE, #00C853);
+    -fx-effect: dropshadow(gaussian, rgba(105, 240, 174, 0.7), 15, 0, 0, 5);
+}
+
+/* Dialog Content Text */
+.dialog-pane > .content.label {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 14px;
+    -fx-padding: 20 20 20 20;
+}
+
+/* Header Panel Base */
+.dialog-pane:header .header-panel {
+    -fx-padding: 16;
+    -fx-border-width: 0 0 1 0;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Base Dialog Buttons */
+.dialog-pane .button {
+    /* Fallback if specific class not matched */
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 10 20;
+}
+
+.dialog-pane .button-bar {
+    -fx-padding: 16;
+}
+
+/* Cancel Button Specific Styling (Keep as is) */
+.dialog-pane .button:cancel {
+    -fx-background-color: transparent;
+    -fx-border-color: #6b7280;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-text-fill: #9ca3af;
+    -fx-effect: none;
+}
+
+.dialog-pane .button:cancel:hover {
+    -fx-border-color: #ffffff;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 8, 0, 0, 0);
+}
+
+.player-item {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 12;
+}
+
+.player-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+.player-name {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.player-score {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+}
+
+.player-avatar {
+    -fx-background-color: rgba(233, 69, 96, 0.2);
+    -fx-background-radius: 50%;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-alignment: center;
+}
+
+.player-avatar-text {
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+}
+
+/* Status Indicators */
+.status-indicator-online {
+    -fx-fill: #10b981;
+    /* Green */
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.5), 6, 0, 0, 0);
+}
+
+.status-indicator-offline {
+    -fx-fill: #6b7280;
+    /* Gray */
+}
+
+/* Inputs */
+.input-label {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 14px;
+}
+
+/* Inputs & Auth */
+.input-container {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 8;
+    -fx-padding: 0 12;
+}
+
+.input-container:focused-within {
+    -fx-border-color: #e94560;
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 10, 0, 0, 0);
+}
+
+.auth-input {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 12 0;
+}
+
+.input-icon {
+    -fx-fill: #9ca3af;
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+}
+
+.input-container:focused-within .input-icon {
+    -fx-fill: #e94560;
+}
+
+.auth-header {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.auth-subheader {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 14px;
+}
+
+/* Button Internals */
+.button-label {
+    -fx-text-fill: inherit;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.button-icon {
+    -fx-fill: inherit;
+    -fx-fill: white;
+}
+
+.game-button-primary {
+    /* Same as base game-button */
+}
+
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9ca3af;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.link-button:hover {
+    -fx-text-fill: #e94560;
+}
+
+.footer-text {
+    -fx-text-fill: #4b5563;
+    -fx-font-size: 12px;
+}
+
+.difficulty-easy {
+    -fx-background-color: linear-gradient(to right, #10b981, #34d399);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.4), 15, 0, 0, 5);
+}
+
+.difficulty-easy:hover {
+    -fx-background-color: linear-gradient(to right, #34d399, #10b981);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.6), 20, 0, 0, 8);
+}
+
+.difficulty-medium {
+    -fx-background-color: linear-gradient(to right, #f59e0b, #fbbf24);
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.4), 15, 0, 0, 5);
+}
+
+.difficulty-medium:hover {
+    -fx-background-color: linear-gradient(to right, #fbbf24, #f59e0b);
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.6), 20, 0, 0, 8);
+}
+
+.difficulty-hard {
+    -fx-background-color: linear-gradient(to right, #ef4444, #f87171);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 15, 0, 0, 5);
+}
+
+.difficulty-hard:hover {
+    -fx-background-color: linear-gradient(to right, #f87171, #ef4444);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.6), 20, 0, 0, 8);
+}
+
+/* Danger Button (Red Gradient) */
+.game-button-danger {
+    -fx-background-color: linear-gradient(to right, #ef4444, #f87171);
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 15, 0, 0, 5);
+}
+
+.game-button-danger:hover {
+    -fx-background-color: linear-gradient(to right, #f87171, #ef4444);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.6), 20, 0, 0, 8);
+}
+
+/* Refactored Inline Styles */
+
+/* Lobby Tabs */
+.tab-button-active {
+    -fx-background-color: rgba(168, 85, 247, 0.2);
+    -fx-border-color: #a855f7;
+    -fx-border-width: 0 0 2 0;
+    -fx-min-width: 150;
+}
+
+.tab-button-inactive {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 0 0 2 0;
+    -fx-min-width: 150;
+}
+
+.tab-button-left {
+    -fx-background-radius: 20 0 0 0;
+    -fx-border-radius: 20 0 0 0;
+}
+
+.tab-button-right {
+    -fx-background-radius: 0 20 0 0;
+    -fx-border-radius: 0 20 0 0;
+}
+
+/* Current Player Highlight */
+.player-item-current {
+    -fx-border-color: #6900ff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+/* Status Labels */
+.status-label {
+    -fx-font-size: 10px;
+}
+
+.status-label-offline {
+    -fx-text-fill: #9ca3af;
+}
+
+.status-label-available {
+    -fx-text-fill: #10b981;
+}
+
+.status-label-ingame {
+    -fx-text-fill: #f59e0b;
+}
+
+/* Small Game Button */
+.game-button-small {
+    -fx-font-size: 12px;
+    -fx-padding: 8 16;
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+}
+
+/* Network Game Move Paths */
+.move-path-base {
+    -fx-fill: transparent;
+    -fx-stroke-width: 5;
+    -fx-scale-x: 0.5;
+    -fx-scale-y: 0.5;
+}
+
+.move-path-x {
+    -fx-stroke: #6900ff;
+}
+
+.move-path-o {
+    -fx-stroke: #00ffcc;
+}
