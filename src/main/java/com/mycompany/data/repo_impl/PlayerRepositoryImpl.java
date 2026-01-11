@@ -110,7 +110,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public void setPlayerUnavailable() {
         Player player = playerDAO.get();
         if (player != null) {
-            remoteDataSource.logout(player.getId());
+            remoteDataSource.makeUnavailable(player.getId());
         }
     }
 

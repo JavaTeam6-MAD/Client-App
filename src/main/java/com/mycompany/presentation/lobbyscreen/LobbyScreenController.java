@@ -613,7 +613,7 @@ public class LobbyScreenController implements Initializable {
     private void onBack() {
         try {
             lobbyManager.leaveLobby();
-            lobbyManager.disconnect(); // Ensure socket closed so next login works
+           // lobbyManager.disconnect(); 
             App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();

@@ -12,6 +12,7 @@ import java.util.List;
 import com.mycompany.model.requestModel.ChangeNameRequestModel;
 import com.mycompany.model.requestModel.ChangePasswordRequestModel;
 import com.mycompany.model.requestModel.ChangeAvatarRequestModel;
+import com.mycompany.model.requestModel.MakeUnavailableRequestModel;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
@@ -106,7 +107,6 @@ public class RemoteDataSource {
             listener = null;
         }
         RemoteServerConnection.getInstance().disconnect();
-        // Clear references
         lobbyManager = null;
         networkGameManager = null;
     }
@@ -118,7 +118,7 @@ public class RemoteDataSource {
         } catch (Exception e) {
             System.err.println("Error loading friends: " + e.getMessage());
             e.printStackTrace();
-            RemoteServerConnection.getInstance().disconnect();
+          //  RemoteServerConnection.getInstance().disconnect();
         }
         return new ArrayList<>();
     }
@@ -133,6 +133,15 @@ public class RemoteDataSource {
 
     public Player changeAvatar(int id, String avatar) {
         return sendPlayerRequest(new ChangeAvatarRequestModel(id, avatar));
+    }
+    public void makeUnavailable(int id){
+    try{
+      RemoteServerConnection.getInstance().send(new MakeUnavailableRequestModel(id));
+          System.out.println(id);
+    }catch(Exception e){
+    e.printStackTrace();
+    System.out.println(id);
+    }
     }
 
     public void logout(int playerId) {
@@ -158,7 +167,7 @@ public class RemoteDataSource {
         } catch (Exception e) {
             System.err.println("Network error: " + e.getMessage());
             e.printStackTrace();
-            RemoteServerConnection.getInstance().disconnect();
+            //RemoteServerConnection.getInstance().disconnect();
         }
         Player errorPlayer = new Player();
         errorPlayer.setId(0);

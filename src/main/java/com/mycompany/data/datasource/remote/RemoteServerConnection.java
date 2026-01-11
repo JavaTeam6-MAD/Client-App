@@ -41,12 +41,14 @@ public class RemoteServerConnection {
 
     public synchronized void disconnect() {
         try {
+             
             if (in != null)
                 in.close();
             if (out != null)
                 out.close();
             if (socket != null && !socket.isClosed())
                 socket.close();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
