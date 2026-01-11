@@ -46,7 +46,7 @@ public class ServerListener extends Thread {
         }
     }
 
-    private void handleMessage(Object msg) {
+    private synchronized void handleMessage(Object msg) {
         RemoteDataSource rds = RemoteDataSource.getInstance();
         NetworkGameManager netMgr = rds.getNetworkGameManager();
         LobbyManager lobbyMgr = rds.getLobbyManager();

@@ -100,7 +100,7 @@ public class LobbyScreenController implements Initializable {
                 boolean sortByScore = (currentView == ViewMode.LEADERBOARD);
                 loadFriends(sortByScore);
             }
-        }, 3000, 3000);
+        }, 6000, 6000);
     }
 
     private void cleanup() {
