@@ -70,6 +70,8 @@ public class LobbyScreenController implements Initializable {
     private ViewMode currentView = ViewMode.FRIENDS;
     private Alert pendingChallengeAlert;
 
+    private Timer refreshTimer;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         lobbyManager = new LobbyManager();
@@ -89,15 +91,24 @@ public class LobbyScreenController implements Initializable {
 
         loadFriends();
 
-        // Auto-refresh friends list every 5 seconds
-        new java.util.Timer().scheduleAtFixedRate(new java.util.TimerTask() {
+        // Auto-refresh friends list every 3 seconds
+        refreshTimer = new Timer();
+        refreshTimer.scheduleAtFixedRate(new java.util.TimerTask() {
             @Override
             public void run() {
                 // Determine sort based on current view/tab
                 boolean sortByScore = (currentView == ViewMode.LEADERBOARD);
                 loadFriends(sortByScore);
             }
-        }, 5000, 5000);
+        }, 3000, 3000);
+    }
+
+    private void cleanup() {
+        if (refreshTimer != null) {
+            refreshTimer.cancel();
+            refreshTimer.purge();
+        }
+        lobbyManager.stopListening();
     }
 
     // ... Existing methods (loadFriends, etc.) ...
@@ -244,7 +255,7 @@ public class LobbyScreenController implements Initializable {
     public void navigateToGame() {
         Platform.runLater(() -> {
             try {
-                lobbyManager.stopListening();
+                cleanup();
                 App.setRoot(Routes.NETWORK_GAME);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -271,7 +282,7 @@ public class LobbyScreenController implements Initializable {
             // Redirect to Login/Home
             // Redirect to Login/Home
             try {
-                lobbyManager.disconnect(); // Ensure clean disconnect
+                // lobbyManager.disconnect(); // Ensure clean disconnect
                 App.setRoot(Routes.HOME); // Or Routes.AUTH
             } catch (Exception e) {
                 e.printStackTrace();
@@ -592,7 +603,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onProfile() {
         try {
-            lobbyManager.stopListening();
+            cleanup();
             App.setRoot(Routes.PROFILE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -602,7 +613,7 @@ public class LobbyScreenController implements Initializable {
     @FXML
     private void onRecordedGames() {
         try {
-            lobbyManager.stopListening();
+            cleanup();
             App.setRoot(Routes.GAME_HISTORY);
         } catch (Exception e) {
             e.printStackTrace();
@@ -613,7 +624,8 @@ public class LobbyScreenController implements Initializable {
     private void onBack() {
         try {
             lobbyManager.leaveLobby();
-           // lobbyManager.disconnect(); 
+            cleanup();
+            lobbyManager.disconnect();
             App.setRoot(Routes.HOME);
         } catch (Exception e) {
             e.printStackTrace();

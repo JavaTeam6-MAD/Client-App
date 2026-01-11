@@ -203,7 +203,7 @@ public class NetworkGameController { // No Interface!
     }
 
     public void resetGameUI() {
-        resetInternal();
+        Platform.runLater(this::resetInternal);
     }
 
     public void showRematchRejected() {

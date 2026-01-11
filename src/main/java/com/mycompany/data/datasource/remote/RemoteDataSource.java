@@ -66,6 +66,7 @@ public class RemoteDataSource {
     }
 
     public Player login(String username, String password) {
+        System.out.println(username + password + "  login data source");
         return sendPlayerRequest(new LoginRequestModel(username, password));
     }
 
@@ -100,16 +101,18 @@ public class RemoteDataSource {
         // Just stop local processing if needed
     }
 
-    public void disconnect() {
-        if (listener != null) {
-            listener.stopListener();
-            RemoteServerConnection.getInstance().disconnect();
-            listener = null;
-        }
-        RemoteServerConnection.getInstance().disconnect();
-        lobbyManager = null;
-        networkGameManager = null;
-    }
+    /*
+     * public void disconnect() {
+     * if (listener != null) {
+     * listener.stopListener();
+     * RemoteServerConnection.getInstance().disconnect();
+     * listener = null;
+     * }
+     * RemoteServerConnection.getInstance().disconnect();
+     * lobbyManager = null;
+     * networkGameManager = null;
+     * }
+     */
 
     public List<Player> getFriends(int userId) {
         try {
@@ -118,7 +121,7 @@ public class RemoteDataSource {
         } catch (Exception e) {
             System.err.println("Error loading friends: " + e.getMessage());
             e.printStackTrace();
-          //  RemoteServerConnection.getInstance().disconnect();
+            // RemoteServerConnection.getInstance().disconnect();
         }
         return new ArrayList<>();
     }
@@ -134,14 +137,16 @@ public class RemoteDataSource {
     public Player changeAvatar(int id, String avatar) {
         return sendPlayerRequest(new ChangeAvatarRequestModel(id, avatar));
     }
-    public void makeUnavailable(int id){
-    try{
-      RemoteServerConnection.getInstance().send(new MakeUnavailableRequestModel(id));
-          System.out.println(id);
-    }catch(Exception e){
-    e.printStackTrace();
-    System.out.println(id);
-    }
+
+    public void makeUnavailable(int id) {
+        try {
+            listener.stopListener();
+            RemoteServerConnection.getInstance().send(new MakeUnavailableRequestModel(id));
+            System.out.println(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(id);
+        }
     }
 
     public void logout(int playerId) {
@@ -167,7 +172,7 @@ public class RemoteDataSource {
         } catch (Exception e) {
             System.err.println("Network error: " + e.getMessage());
             e.printStackTrace();
-            //RemoteServerConnection.getInstance().disconnect();
+            RemoteServerConnection.getInstance().disconnect();
         }
         Player errorPlayer = new Player();
         errorPlayer.setId(0);

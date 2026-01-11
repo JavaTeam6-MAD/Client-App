@@ -48,7 +48,7 @@ public class LobbyManager {
     }
 
     public void disconnect() {
-        RemoteDataSource.getInstance().disconnect();
+        // RemoteDataSource.getInstance().disconnect();
     }
 
     public void stopListening() {
