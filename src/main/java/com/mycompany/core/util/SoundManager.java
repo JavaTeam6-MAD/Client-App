@@ -1,4 +1,4 @@
-package com.mycompany.core.utils;
+package com.mycompany.core.util;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;

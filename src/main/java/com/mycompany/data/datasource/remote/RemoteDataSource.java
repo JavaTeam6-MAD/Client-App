@@ -1,5 +1,6 @@
 package com.mycompany.data.datasource.remote;
 
+import com.mycompany.model.app.Game;
 import com.mycompany.model.app.Player;
 import com.mycompany.model.requestModel.LoginRequestModel;
 import com.mycompany.model.requestModel.LogoutRequestModel;
@@ -13,6 +14,7 @@ import com.mycompany.model.requestModel.ChangeNameRequestModel;
 import com.mycompany.model.requestModel.ChangePasswordRequestModel;
 import com.mycompany.model.requestModel.ChangeAvatarRequestModel;
 import com.mycompany.model.requestModel.MakeUnavailableRequestModel;
+import com.mycompany.presentation.gamehistory.GameHistoryManager;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
@@ -26,6 +28,8 @@ public class RemoteDataSource {
     // References to Active Managers
     private LobbyManager lobbyManager;
     private NetworkGameManager networkGameManager;
+    private GameHistoryManager gameHistoryManager;
+
 
     private RemoteDataSource() {
     }
@@ -63,6 +67,19 @@ public class RemoteDataSource {
 
     public NetworkGameManager getNetworkGameManager() {
         return networkGameManager;
+    }
+
+
+    public void setGameHistoryManager(GameHistoryManager manager) {
+        this.gameHistoryManager = manager;
+    }
+
+    public void detachGameHistoryManager() {
+        this.gameHistoryManager = null;
+    }
+
+    public com.mycompany.presentation.gamehistory.GameHistoryManager getGameHistoryManager() {
+        return gameHistoryManager;
     }
 
     public Player login(String username, String password) {
@@ -121,9 +138,22 @@ public class RemoteDataSource {
         } catch (Exception e) {
             System.err.println("Error loading friends: " + e.getMessage());
             e.printStackTrace();
-            // RemoteServerConnection.getInstance().disconnect();
+            RemoteServerConnection.getInstance().disconnect();
         }
         return new ArrayList<>();
+    }
+
+    public List<Game> getGameHistory(int userId) {
+        try {
+            RemoteServerConnection.getInstance().connect(serverIp, SERVER_PORT);
+            RemoteServerConnection.getInstance()
+                    
+                    .send(new com.mycompany.model.requestModel.GetGamesRequestModel(userId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            RemoteServerConnection.getInstance().disconnect();
+        }
+         return new ArrayList<>();
     }
 
     public Player changeUserName(int id, String newName) {

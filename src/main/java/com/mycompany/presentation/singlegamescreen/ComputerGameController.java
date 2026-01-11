@@ -1,7 +1,7 @@
 package com.mycompany.presentation.singlegamescreen;
 
 import com.mycompany.App;
-import com.mycompany.core.utils.SoundManager;
+import com.mycompany.core.util.SoundManager;
 import javafx.animation.PauseTransition;
 
 import javafx.event.ActionEvent;

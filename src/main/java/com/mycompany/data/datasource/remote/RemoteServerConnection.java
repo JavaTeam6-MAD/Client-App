@@ -61,6 +61,7 @@ public class RemoteServerConnection {
     public synchronized void send(Object data) throws Exception {
         if (out != null) {
             out.writeObject(data);
+            System.out.print(data);
             out.flush();
         }
     }

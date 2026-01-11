@@ -2,7 +2,7 @@ package com.mycompany.presentation.game;
 
 import com.mycompany.core.navigation.Routes;
 import com.mycompany.App;
-import com.mycompany.core.utils.SoundManager;
+import com.mycompany.core.util.SoundManager;
 
 import javafx.animation.ScaleTransition;
 import javafx.event.ActionEvent;

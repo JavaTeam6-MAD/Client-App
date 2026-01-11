@@ -5,6 +5,7 @@ import com.mycompany.model.requestModel.ReceiveChallengeRequestModel;
 import com.mycompany.model.requestModel.EndGameSessionRequestModel;
 import com.mycompany.model.responseModel.MakeMoveResponseModel;
 import com.mycompany.model.responseModel.ReceiveChallengeResponseModel;
+import com.mycompany.presentation.gamehistory.GameHistoryManager;
 import com.mycompany.presentation.lobbyscreen.LobbyManager;
 import com.mycompany.presentation.networkgame.NetworkGameManager;
 
@@ -52,12 +53,31 @@ public class ServerListener extends Thread {
         LobbyManager lobbyMgr = rds.getLobbyManager();
 
         if (msg instanceof List) {
-            try {
-                // Friends List -> Lobby
-                List<Player> friends = (List<Player>) msg;
+            List<?> list = (List<?>) msg;
+            if (!list.isEmpty()) {
+                Object first = list.get(0);
+                if (first instanceof Player) {
+                    // Friends List -> Lobby
+                    if (lobbyMgr != null)
+                        lobbyMgr.onFriendsListReceived((List<Player>) msg);
+                } else if (first instanceof com.mycompany.model.app.Game) {
+                    // Game History -> History Manager
+                   GameHistoryManager historyMgr = rds.getGameHistoryManager();
+                    if (historyMgr != null)
+                        historyMgr.onGameHistoryReceived((List<com.mycompany.model.app.Game>) msg);
+                }
+            } else {
+                // Empty list - hard to distinguish, maybe send to both or assume friends?
+                // Or better: Server should wrap lists in ResponseModels.
+                // For now, if empty, we can just ignore or safely send empty list if we knew
+                // the context.
+                // But without context, we can't route 100% correctly if connection is shared.
+                // However, usually we are in one screen at a time.
                 if (lobbyMgr != null)
-                    lobbyMgr.onFriendsListReceived(friends);
-            } catch (ClassCastException e) {
+                    lobbyMgr.onFriendsListReceived(new java.util.ArrayList<>());
+                com.mycompany.presentation.gamehistory.GameHistoryManager historyMgr = rds.getGameHistoryManager();
+                if (historyMgr != null)
+                    historyMgr.onGameHistoryReceived(new java.util.ArrayList<>());
             }
         } else if (msg instanceof ReceiveChallengeRequestModel) {
             // Challenge Received -> Lobby OR Game?

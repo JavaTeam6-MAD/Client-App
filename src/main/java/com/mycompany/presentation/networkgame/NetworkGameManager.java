@@ -1,6 +1,6 @@
 package com.mycompany.presentation.networkgame;
 
-import com.mycompany.core.utils.SoundManager;
+import com.mycompany.core.util.SoundManager;
 import com.mycompany.data.datasource.remote.RemoteDataSource;
 import com.mycompany.data.datasource.remote.RemoteServerConnection;
 import com.mycompany.model.app.Player;
