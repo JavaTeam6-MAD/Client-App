@@ -5,6 +5,8 @@ import com.mycompany.App;
 import com.mycompany.model.app.Game;
 import com.mycompany.model.app.Player;
 import com.mycompany.model.utils.GameStatus;
+import com.mycompany.presentation.networkgame.GameRecorder;
+import com.mycompany.presentation.replay.ReplayManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,33 +30,40 @@ import javafx.scene.shape.SVGPath;
 
 public class GameHistoryController implements Initializable, GameHistoryListener {
 
-    @FXML private VBox gamesListContainer;
-    @FXML private Label lblEmptyState, lblTotalGames, lblWins, lblLosses, lblDraws;
-    @FXML private Button btnFilterAll, btnFilterWin, btnFilterLoss, btnFilterDraw, btnToggleRecorded;
+    @FXML
+    private VBox gamesListContainer;
+    @FXML
+    private Label lblEmptyState, lblTotalGames, lblWins, lblLosses, lblDraws;
+    @FXML
+    private Button btnFilterAll, btnFilterWin, btnFilterLoss, btnFilterDraw, btnToggleRecorded;
 
     private List<Game> gameHistoryList = new ArrayList<>();
     private GameHistoryManager manager;
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM dd, yyyy");
     private SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
 
-    private enum ResultFilter { ALL, WIN, LOSS, DRAW }
+    private enum ResultFilter {
+        ALL, WIN, LOSS, DRAW
+    }
+
     private ResultFilter currentResultFilter = ResultFilter.ALL;
     private boolean showOnlyRecorded = false;
+    private java.util.Map<Integer, GameRecorder.RecordedGame> localRecordingsMap = new java.util.HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // LINKING: Initialize Manager and attach this Controller as the Listener
         this.manager = new GameHistoryManager();
         this.manager.setListener(this);
-        
+
         // Initial UI State
         updateFilterButtonStates();
-        
-        // Trigger data load
-        manager.loadGameHistory();
+
+        // Trigger data load (Local Only)
+        loadLocalGames();
     }
 
-    // Implementation of GameHistoryListener
+    // Implementation of GameHistoryListener (Unused for local mostly)
     @Override
     public void onDataLoaded(List<Game> games) {
         this.gameHistoryList = games;
@@ -74,15 +83,19 @@ public class GameHistoryController implements Initializable, GameHistoryListener
         List<Game> filteredGames = gameHistoryList.stream()
                 .filter(game -> {
                     boolean isP1 = game.getPlayer1().getId() == currentPlayer.getId();
-                    boolean won = (isP1 && game.getStatus() == GameStatus.WIN) || 
-                                  (!isP1 && game.getStatus() == GameStatus.LOSE);
+                    boolean won = (isP1 && game.getStatus() == GameStatus.WIN) ||
+                            (!isP1 && game.getStatus() == GameStatus.LOSE);
                     boolean isDraw = game.getStatus() == GameStatus.DRAW;
 
                     switch (currentResultFilter) {
-                        case WIN: return won && !isDraw;
-                        case LOSS: return !won && !isDraw;
-                        case DRAW: return isDraw;
-                        default: return true;
+                        case WIN:
+                            return won && !isDraw;
+                        case LOSS:
+                            return !won && !isDraw;
+                        case DRAW:
+                            return isDraw;
+                        default:
+                            return true;
                     }
                 })
                 .filter(game -> !showOnlyRecorded || game.isIsRecorded())
@@ -113,9 +126,11 @@ public class GameHistoryController implements Initializable, GameHistoryListener
         String resultText = "LOSS";
         String resultColor = "#e94560";
         if (game.getStatus() == GameStatus.DRAW) {
-            resultText = "DRAW"; resultColor = "#9ca3af";
+            resultText = "DRAW";
+            resultColor = "#9ca3af";
         } else if ((isP1 && game.getStatus() == GameStatus.WIN) || (!isP1 && game.getStatus() == GameStatus.LOSE)) {
-            resultText = "WIN"; resultColor = "#00d2ff";
+            resultText = "WIN";
+            resultColor = "#00d2ff";
         }
 
         // Top Row: Date and Badge
@@ -123,9 +138,11 @@ public class GameHistoryController implements Initializable, GameHistoryListener
         topRow.setAlignment(Pos.CENTER_LEFT);
         Label dateLbl = new Label(dateFormatter.format(game.getDate()));
         dateLbl.setStyle("-fx-text-fill: #e2e8f0; -fx-font-weight: bold;");
-        Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
         Label badge = new Label(resultText);
-        badge.setStyle("-fx-background-color: " + resultColor + "; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 20;");
+        badge.setStyle("-fx-background-color: " + resultColor
+                + "; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 20;");
         topRow.getChildren().addAll(dateLbl, spacer, badge);
 
         // Bottom Row: Opponent and Replay
@@ -136,10 +153,20 @@ public class GameHistoryController implements Initializable, GameHistoryListener
         bottomRow.getChildren().add(oppLbl);
 
         if (game.isIsRecorded()) {
-            Region spacer2 = new Region(); HBox.setHgrow(spacer2, Priority.ALWAYS);
-            Button replayBtn = new Button("Replay");
-            replayBtn.setOnAction(e -> onWatchReplay(game));
-            bottomRow.getChildren().addAll(spacer2, replayBtn);
+            // Make card clickable
+            card.setStyle(
+                    "-fx-padding: 16; -fx-background-color: rgba(255, 255, 255, 0.1); -fx-background-radius: 12; -fx-cursor: hand;");
+            card.setOnMouseClicked(e -> onWatchReplay(game));
+
+            // Add icon or label?
+            Label recLbl = new Label("▶ Watch Replay");
+            recLbl.setStyle("-fx-text-fill: #00FFFF; -fx-font-size: 10px;");
+            Region spacer2 = new Region();
+            HBox.setHgrow(spacer2, Priority.ALWAYS);
+            bottomRow.getChildren().addAll(spacer2, recLbl);
+        } else {
+            card.setStyle(
+                    "-fx-padding: 16; -fx-background-color: rgba(255, 255, 255, 0.05); -fx-background-radius: 12;");
         }
 
         card.getChildren().addAll(topRow, bottomRow);
@@ -154,23 +181,97 @@ public class GameHistoryController implements Initializable, GameHistoryListener
             return (isP1 && g.getStatus() == GameStatus.WIN) || (!isP1 && g.getStatus() == GameStatus.LOSE);
         }).count();
         long draws = gameHistoryList.stream().filter(g -> g.getStatus() == GameStatus.DRAW).count();
-        
+
         lblTotalGames.setText(String.valueOf(total));
         lblWins.setText(String.valueOf(wins));
         lblDraws.setText(String.valueOf(draws));
         lblLosses.setText(String.valueOf(total - wins - draws));
     }
 
-    @FXML private void onFilterAll() { currentResultFilter = ResultFilter.ALL; updateUI(); }
-    @FXML private void onFilterWin() { currentResultFilter = ResultFilter.WIN; updateUI(); }
-    @FXML private void onFilterLoss() { currentResultFilter = ResultFilter.LOSS; updateUI(); }
-    @FXML private void onFilterDraw() { currentResultFilter = ResultFilter.DRAW; updateUI(); }
-    
-    @FXML 
-    private void onToggleRecorded() { 
-        showOnlyRecorded = !showOnlyRecorded; 
-        btnToggleRecorded.setText(showOnlyRecorded ? "ON" : "OFF");
-        updateUI(); 
+    @FXML
+    private void onFilterAll() {
+        currentResultFilter = ResultFilter.ALL;
+        updateUI();
+    }
+
+    @FXML
+    private void onFilterWin() {
+        currentResultFilter = ResultFilter.WIN;
+        updateUI();
+    }
+
+    @FXML
+    private void onFilterLoss() {
+        currentResultFilter = ResultFilter.LOSS;
+        updateUI();
+    }
+
+    @FXML
+    private void onFilterDraw() {
+        currentResultFilter = ResultFilter.DRAW;
+        updateUI();
+    }
+
+    @FXML
+    private void onToggleRecorded() {
+        showOnlyRecorded = !showOnlyRecorded;
+        updateUI();
+
+        if (showOnlyRecorded) {
+            loadLocalGames();
+        } else {
+            manager.loadGameHistory(); // Reload server history
+        }
+    }
+
+    private void loadLocalGames() {
+        localRecordingsMap.clear();
+        gameHistoryList.clear(); // Clear server games for this view
+        List<GameRecorder.RecordedGame> recs = GameRecorder.getInstance().listRecordings();
+
+        int tempId = -1;
+        for (GameRecorder.RecordedGame rg : recs) {
+            Game g = new Game();
+            g.setId(tempId);
+            g.setDate(new java.util.Date(rg.date));
+            g.setIsRecorded(true);
+
+            Player p1 = new Player();
+            p1.setUserName(rg.player1);
+            p1.setId(100); // Mock
+            Player p2 = new Player();
+            p2.setUserName(rg.player2);
+            p2.setId(101); // Mock
+            g.setPlayer1(p1);
+            g.setPlayer2(p2);
+
+            // Determine status for "Current Player" perspective?
+            // "Current Player" in app context is manager.getCurrentPlayer().
+            // Ideally we should match names.
+            Player me = manager.getCurrentPlayer();
+            boolean amIP1 = me.getUserName().equals(rg.player1);
+            boolean amIP2 = me.getUserName().equals(rg.player2);
+
+            if (rg.winner == null || rg.winner.equals("DRAW")) {
+                g.setStatus(GameStatus.DRAW);
+            } else if ((amIP1 && rg.winner.equals("WIN")) || (amIP2 && rg.winner.equals("LOSE"))) {
+                // Heuristic: winner string in file is simple "WIN"/"LOSE" relative to... whom?
+                // In GameRecorder.saveGame(winner, status), we passed 'winnerSymbol' name, and
+                // status.
+                // Wait, saveGame(String winner, String status)
+                // calls: saveGame(session.getMyName(), "WIN")
+                // So 'winner' field in JSON is the NAME of the winner.
+                g.setStatus(rg.winner.equals(me.getUserName()) ? GameStatus.WIN : GameStatus.LOSE);
+            } else {
+                g.setStatus(GameStatus.LOSE); // Default fallback
+            }
+
+            localRecordingsMap.put(tempId, rg);
+            gameHistoryList.add(g);
+            tempId--;
+        }
+        displayGameHistory();
+        updateStats(); // Update stats based on loaded recordings?
     }
 
     private void updateUI() {
@@ -193,10 +294,24 @@ public class GameHistoryController implements Initializable, GameHistoryListener
     @FXML
     private void onBack() {
         manager.detach(); // Important to clean up listeners
-        try { App.setRoot(Routes.LOBBY); } catch (IOException e) { e.printStackTrace(); }
+        try {
+            App.setRoot(Routes.LOBBY);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void onWatchReplay(Game game) {
-        new Alert(Alert.AlertType.INFORMATION, "Loading replay for Game #" + game.getId()).show();
+        GameRecorder.RecordedGame rg = localRecordingsMap.get(game.getId());
+        if (rg != null) {
+            ReplayManager.getInstance().setGameToReplay(rg);
+            try {
+                App.setRoot(Routes.REPLAY_GAME);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Replay file not found locally.").show();
+        }
     }
 }

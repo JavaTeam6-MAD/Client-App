@@ -32,6 +32,8 @@ public class NetworkGameController { // No Interface!
     private Button playAgainButton;
     @FXML
     private Button homeButton;
+    @FXML
+    private javafx.scene.layout.StackPane recordingIndicator;
 
     private NetworkGameManager manager;
 
@@ -60,6 +62,11 @@ public class NetworkGameController { // No Interface!
 
         updateStatus();
         initGrid();
+
+        if (manager.isRecording() && recordingIndicator != null) {
+            recordingIndicator.setVisible(true);
+            recordingIndicator.setManaged(true);
+        }
     }
 
     private void initGrid() {

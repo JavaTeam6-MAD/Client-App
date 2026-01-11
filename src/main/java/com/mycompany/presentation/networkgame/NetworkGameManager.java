@@ -36,6 +36,16 @@ public class NetworkGameManager {
         this.controller = controller;
         if (controller != null) {
             remoteDataSource.startListening();
+
+            // Start Recording if session requires it
+            if (session.isRecording()) {
+                GameRecorder.getInstance().startRecording(
+                        session.getGameId(),
+                        session.getMyName(),
+                        session.getOpponentName(),
+                        session.getMySymbol(),
+                        session.getMySymbol().equals("X") ? "O" : "X");
+            }
         }
     }
 
@@ -63,6 +73,8 @@ public class NetworkGameManager {
             if (controller != null)
                 controller.showConnectionError("Failed to send move.");
         }
+
+        // Recording happens in onMoveReceived when server confirms the move
     }
 
     // Extracted Sound Logic
@@ -95,6 +107,7 @@ public class NetworkGameManager {
     }
 
     public void forfeitGame() {
+        GameRecorder.getInstance().saveGame(session.getOpponentName(), "LOSE"); // Saved as Loss
         try {
             EndGameSessionRequestModel req = new EndGameSessionRequestModel(
                     session.getMyId(), session.getOpponentId(), GameStatus.LOSE);
@@ -157,6 +170,8 @@ public class NetworkGameManager {
 
         if (move.isGameOver()) {
             handleGameOver(move.getWinner());
+        } else {
+            GameRecorder.getInstance().recordMove(r, c, symbol);
         }
     }
 
@@ -179,6 +194,9 @@ public class NetworkGameManager {
             playLoseSound();
         }
 
+        GameRecorder.getInstance().saveGame(winnerSymbol,
+                isWin ? "WIN" : (winnerSymbol == null || winnerSymbol.isEmpty() ? "DRAW" : "LOSE"));
+
         if (controller != null) {
             controller.showGameEnd(msg, isWin);
             controller.updateScoreLabels(session.getMySessionScore(), session.getOpponentSessionScore());
@@ -189,6 +207,7 @@ public class NetworkGameManager {
         // Opponent Forfeit
         session.incrementMySessionScore();
         playWinSound();
+        GameRecorder.getInstance().saveGame(session.getMyName(), "WIN");
         if (controller != null) {
             controller.showOpponentForfeit();
         }
@@ -238,7 +257,9 @@ public class NetworkGameManager {
                 opponentName,
                 isMyTurn,
                 myScore,
-                opponentScore);
+                opponentScore,
+                true); // Maintain recording state or default to true? Ideally should read from
+                       // previous session or response.
     }
 
     public void onFriendsListReceived(List<Player> friends) {
@@ -268,5 +289,9 @@ public class NetworkGameManager {
 
     public boolean isMyTurn() {
         return session.isMyTurn();
+    }
+
+    public boolean isRecording() {
+        return session.isRecording();
     }
 }

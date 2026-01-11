@@ -34,7 +34,7 @@
             </Button>
 
             <VBox alignment="CENTER_LEFT" spacing="4">
-                <Label style="-fx-font-size: 32px;" styleClass="game-title" text="Game History" />
+                <Label style="-fx-font-size: 32px;" styleClass="game-title" text="Recorded Games" />
                 <Label style="-fx-font-size: 14px;" styleClass="game-subtitle" text="Your Match Records" />
             </VBox>
         </HBox>
@@ -80,11 +80,9 @@
                 <Button fx:id="btnFilterDraw" text="Draws" onAction="#onFilterDraw" 
                         styleClass="game-button, game-button-outline" 
                         style="-fx-padding: 4 12; -fx-font-size: 11px; -fx-min-width: 50;" />
-                <Label text="|" style="-fx-text-fill: rgba(255,255,255,0.2); -fx-font-size: 16px;" />
-                <Label text="Recorded:" styleClass="input-label" style="-fx-font-size: 11px;" />
-                <Button fx:id="btnToggleRecorded" text="OFF" onAction="#onToggleRecorded" 
-                        styleClass="game-button, game-button-outline" 
-                        style="-fx-padding: 4 12; -fx-font-size: 11px; -fx-min-width: 50;" />
+                        
+                <!-- Toggle Button Hidden/Removed as we only show Local -->
+                <Button fx:id="btnToggleRecorded" text="OFF" onAction="#onToggleRecorded" visible="false" managed="false" />
             </HBox>
 
             <!-- Games List -->

@@ -16,6 +16,7 @@ module com.mycompany {
     opens com.mycompany.presentation.profile to javafx.fxml;
     opens com.mycompany.presentation.singlegamescreen to javafx.fxml;
     opens com.mycompany.presentation.networkgame to javafx.fxml;
+    opens com.mycompany.presentation.replay to javafx.fxml;
 
     exports com.mycompany;
 }

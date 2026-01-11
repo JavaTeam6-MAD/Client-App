@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.SVGPath?>
+
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.presentation.replay.ReplayGameController"
+           styleClass="root-container" stylesheets="@styles.css">
+
+    <!-- Back Button (Top Left) -->
+    <Button styleClass="back-button" onAction="#handleBack" StackPane.alignment="TOP_LEFT">
+        <graphic>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <SVGPath content="M19 12H5M12 19l-7-7 7-7" styleClass="back-icon"/>
+                <Label text="BACK" styleClass="back-label"/>
+            </HBox>
+        </graphic>
+        <StackPane.margin>
+            <Insets top="24" left="24"/>
+        </StackPane.margin>
+    </Button>
+
+    <!-- Replay Label (Top Right) -->
+    <Label text="REPLAY MODE" 
+           style="-fx-text-fill: #00FFFF; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 16; -fx-background-color: rgba(0, 255, 255, 0.1); -fx-background-radius: 20;" 
+           StackPane.alignment="TOP_RIGHT">
+        <StackPane.margin>
+            <Insets top="24" right="24"/>
+        </StackPane.margin>
+    </Label>
+
+    <VBox alignment="CENTER" spacing="24" maxWidth="480">
+        <padding>
+            <Insets top="40" bottom="24" left="24" right="24"/>
+        </padding>
+
+        <!-- Score Board HUD -->
+        <HBox styleClass="score-board" alignment="CENTER" spacing="0" prefHeight="100" prefWidth="480">
+            <padding>
+                <Insets top="16" bottom="16" left="32" right="32"/>
+            </padding>
+            
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Label fx:id="playerXName" text="Player 1" styleClass="score-label"/>
+                <Label fx:id="scoreX" text="X" styleClass="score-value, score-value-x"/>
+            </VBox>
+            
+            <Label text="VS" styleClass="vs-text"/>
+            
+            <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <Label fx:id="playerOName" text="Player 2" styleClass="score-label"/>
+                <Label fx:id="scoreO" text="O" styleClass="score-value, score-value-o"/>
+            </VBox>
+        </HBox>
+
+        <!-- Status Text -->
+        <Label fx:id="statusText" text="Starting Replay..." styleClass="status-text"/>
+
+        <!-- Game Grid -->
+        <VBox styleClass="game-grid-container" alignment="CENTER">
+            <GridPane fx:id="gameGrid" hgap="12" vgap="12" alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" />
+                    <ColumnConstraints hgrow="NEVER" />
+                    <ColumnConstraints hgrow="NEVER" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="NEVER" />
+                    <RowConstraints vgrow="NEVER" />
+                    <RowConstraints vgrow="NEVER" />
+                </rowConstraints>
+
+                <Button userData="0" styleClass="grid-cell" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <Button userData="1" styleClass="grid-cell" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Button userData="2" styleClass="grid-cell" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                
+                <Button userData="3" styleClass="grid-cell" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Button userData="4" styleClass="grid-cell" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Button userData="5" styleClass="grid-cell" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                
+                <Button userData="6" styleClass="grid-cell" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <Button userData="7" styleClass="grid-cell" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Button userData="8" styleClass="grid-cell" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            </GridPane>
+        </VBox>
+
+    </VBox>
+
+</StackPane>
+

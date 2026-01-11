@@ -57,22 +57,22 @@ public class LobbyManager {
 
     private boolean isSendingChallenge = false;
 
-    public void sendChallenge(int opponentId) {
+    private boolean pendingRecordingPreference = false;
+
+    public void sendChallenge(int opponentId, boolean record) {
         if (isSendingChallenge)
             return;
         isSendingChallenge = true;
+        pendingRecordingPreference = record;
         try {
             int myId = getCurrentPlayer().getId();
             com.mycompany.model.requestModel.SendChallengeRequestModel req = new com.mycompany.model.requestModel.SendChallengeRequestModel(
                     myId, opponentId);
-            System.out.println("Sending Challenge Request to: " + opponentId);
+            System.out.println("Sending Challenge Request to: " + opponentId + " (Record: " + record + ")");
             RemoteServerConnection.getInstance().send(req);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // Reset after short delay or immediately?
-            // Should reset when response comes?
-            // Or just simple debounce protection (e.g. 1 sec).
             new java.util.Timer().schedule(new java.util.TimerTask() {
                 @Override
                 public void run() {
@@ -80,6 +80,11 @@ public class LobbyManager {
                 }
             }, 1000);
         }
+    }
+
+    public void respondToChallenge(boolean accept, int challengerId, boolean record) {
+        pendingRecordingPreference = record;
+        respondToChallenge(accept, challengerId);
     }
 
     public void respondToChallenge(boolean accept, int challengerId) {
@@ -123,7 +128,6 @@ public class LobbyManager {
             long myScore = amIChallenger ? response.getChallengerScore() : response.getOpponentScore();
             long opponentScore = amIChallenger ? response.getOpponentScore() : response.getChallengerScore();
 
-            GameSession.getInstance().resetSessionScores();
             GameSession.getInstance().setGameSession(
                     response.getGameIdUuid(),
                     myId,
@@ -133,7 +137,8 @@ public class LobbyManager {
                     opponentName,
                     isMyTurn,
                     myScore,
-                    opponentScore);
+                    opponentScore,
+                    pendingRecordingPreference); // Use stored preference
 
             if (controller != null)
                 controller.navigateToGame();
