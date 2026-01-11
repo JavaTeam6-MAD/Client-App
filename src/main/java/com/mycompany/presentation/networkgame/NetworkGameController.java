@@ -11,6 +11,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
 import java.util.Optional;
 
@@ -128,37 +132,107 @@ public class NetworkGameController { // No Interface!
         });
     }
 
+
     public void showGameEnd(String msg, boolean isWin) {
         Platform.runLater(() -> {
             gameGrid.setDisable(true);
             statusText.setText(msg);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Game Over");
-            alert.setHeaderText(null);
-            alert.setContentText(msg);
-
-            if (getClass().getResource("/com/mycompany/styles.css") != null) {
-                alert.getDialogPane().getStylesheets()
-                        .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+            // Play victory video if player won
+            if (isWin) {
+                playVictoryVideo(() -> showGameEndAlert(msg));
+            } else {
+                showGameEndAlert(msg);
             }
-            alert.getDialogPane().getStyleClass().add("dialog-pane");
-
-            playAgainButton.setVisible(true);
-            homeButton.setVisible(true);
-
-            new java.util.Timer().schedule(new java.util.TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        if (alert.isShowing())
-                            alert.close();
-                    });
-                }
-            }, 5000);
-
-            alert.show();
         });
+    }
+
+    private void showGameEndAlert(String msg) {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        if (getClass().getResource("/com/mycompany/styles.css") != null) {
+            alert.getDialogPane().getStylesheets()
+                    .add(getClass().getResource("/com/mycompany/styles.css").toExternalForm());
+        }
+        alert.getDialogPane().getStyleClass().add("dialog-pane");
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    if (alert.isShowing())
+                        alert.close();
+                });
+            }
+        }, 5000);
+
+        alert.show();
+
+        playAgainButton.setVisible(true);
+        homeButton.setVisible(true);
+
+    }
+
+    private void playVictoryVideo(Runnable onComplete) {
+        try {
+            // Try to load video from resources
+            String videoPath = getClass().getResource("/com/mycompany/videos/victory.mp4") != null
+                    ? getClass().getResource("/com/mycompany/videos/victory.mp4").toExternalForm()
+                    : null;
+
+            if (videoPath == null) {
+                System.out.println("Victory video not found, skipping video playback");
+                if (onComplete != null) onComplete.run();
+                return;
+            }
+
+            Media media = new Media(videoPath);
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            MediaView mediaView = new MediaView(mediaPlayer);
+
+            // Get the root pane to add video overlay
+            StackPane root = (StackPane) gameGrid.getScene().getRoot();
+
+            // Create overlay container
+            StackPane videoOverlay = new StackPane();
+            videoOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);");
+            videoOverlay.getChildren().add(mediaView);
+
+            // Fit video to scene size
+            mediaView.setFitWidth(root.getWidth());
+            mediaView.setFitHeight(root.getHeight());
+            mediaView.setPreserveRatio(true);
+
+            // Add overlay to root
+            root.getChildren().add(videoOverlay);
+
+            // Play video
+            mediaPlayer.setOnEndOfMedia(() -> {
+                Platform.runLater(() -> {
+                    mediaPlayer.dispose();
+                    root.getChildren().remove(videoOverlay);
+                    if (onComplete != null) onComplete.run();
+                });
+            });
+
+            mediaPlayer.setOnError(() -> {
+                System.err.println("Error playing victory video: " + mediaPlayer.getError());
+                Platform.runLater(() -> {
+                    mediaPlayer.dispose();
+                    root.getChildren().remove(videoOverlay);
+                    if (onComplete != null) onComplete.run();
+                });
+            });
+
+            mediaPlayer.play();
+
+        } catch (Exception e) {
+            System.err.println("Failed to play victory video: " + e.getMessage());
+            e.printStackTrace();
+            if (onComplete != null) onComplete.run();
+        }
     }
 
     public void updateScoreLabels(long myScore, long opponentScore) {
